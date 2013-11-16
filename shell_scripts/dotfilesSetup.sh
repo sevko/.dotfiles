@@ -17,7 +17,6 @@ files=(".tmux.conf" ".bashrc" ".zshrc" ".vimrc" ".gitconfig")
 
 for file in $files
 do
-
 	#trim leading period
 	if [ "$file[0,1]" = "." ]
 	then
