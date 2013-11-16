@@ -62,6 +62,7 @@
 
 	alias g="git"
 	alias gs="git status"
+	alias gc="g commit"
 	alias gpu="git pull"
 
 # variables
