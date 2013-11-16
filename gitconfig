@@ -1,0 +1,39 @@
+[user]
+	name = Severyn Kozak
+	email = severyn.kozak@gmail.com
+
+[credential]
+	helper = cache --timeout=3600
+
+[core]
+	editor = vim
+
+[merge]
+	tool = vimdiff
+
+[push]
+	default = simple
+
+[color]
+	ui = always
+
+[commit]
+	template = /home/sevko/.dotfiles/git/commitMessage.txt
+
+[color "branch"]
+  current = yellow
+  local = yellow
+  remote = magenta
+
+[color "diff"]
+  meta = cyan
+  frag = magenta bold
+  old = red bold
+  new = green
+  whitespace = white reverse
+
+[color "status"]
+  added = green
+  changed = red bold
+  untracked = cyan
+  branch = red bold
