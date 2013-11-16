@@ -144,17 +144,21 @@
 
 	augroup window
 		autocmd!
-		autocmd WinEnter					*					call NERDTreeQuit()
+		autocmd WinEnter	*	call NERDTreeQuit()
 	augroup END
 
 	augroup new_buffer
 		autocmd!
-		autocmd bufnewfile			*.java	:0r ~/.vim/templates/java.txt | exe "normal gg2e2li" . expand("%:t:r") . " \<Esc> 2ji" .  expand("%:t:r") . "() \<Esc>oa\<BS>\<tab>"
-		autocmd bufnewfile			*.html	:0r~/.vim/templates/html.txt | exe "normal 4j"
-		autocmd bufnewfile			*.c		:0r ~/.vim/templates/c.txt
+		autocmd bufnewfile			*.java	:0r ~/.vim/templates/java.txt 
+							\| exe "normal gg2e2li" . expand("%:t:r") 
+							\. " \<Esc> 2ji" .  expand("%:t:r") 
+							\. "() \<Esc>oa\<BS>\<tab>"
 
-		autocmd bufnewfile			*		exe "normal Gddk"
-		autocmd bufnewfile			*		startinsert
+		autocmd bufnewfile		*.html	:0r~/.vim/templates/html.txt | exe "normal 4j"
+		autocmd bufnewfile		*.c		:0r ~/.vim/templates/c.txt
+
+		autocmd bufnewfile		*		exe "normal Gddk"
+		autocmd bufnewfile		*		startinsert
 
 		autocmd BufRead,BufNewFile	*		syn match parens /[()\[\]{}]/ | hi parens ctermfg=green 
 		autocmd BufRead,BufNewFile	*		hi MatchParen ctermfg=DarkRed ctermbg=none
@@ -162,22 +166,22 @@
 
 	augroup file_specific
 		autocmd!
-		autocmd BufRead 	~/.vimrc								exe "normal! zM"
-		autocmd BufWrite	~/.vimrc								source ~/.vimrc
-		autocmd BufRead 	~/.vimrc inoremap	<buffer>	func	func!<space><cr>endfunc<Esc><Up>$a
-		autocmd BufRead 	~/.vimrc inoremap	<buffer>	if		if<cr>endif<Esc>k$a<space>
-		autocmd BufRead 	~/.vimrc inoremap	<buffer>	while	while<cr>endwhile<Esc>k$a<space>
-		autocmd BufRead 	~/.vimrc inoremap	<buffer>	augroup	augroup<cr>autocmd!<cr>augroup END<Esc>2k$a<space>
+		autocmd BufRead   ~/.vimrc	exe "normal! zM"
+		autocmd BufWrite  ~/.vimrc	source ~/.vimrc
+		autocmd BufRead   ~/.vimrc inoremap  <buffer>  func	func!<space><cr>endfunc<Esc><Up>$a
+		autocmd BufRead   ~/.vimrc inoremap  <buffer>  if		if<cr>endif<Esc>k$a<space>
+		autocmd BufRead   ~/.vimrc inoremap  <buffer>  while	while<cr>endwhile<Esc>k$a<space>
+		autocmd BufRead   ~/.vimrc inoremap  <buffer>  augroup	augroup<cr>autocmd!<cr>augroup END<Esc>2k$a<space>
 
-		autocmd BufRead 	~/.bashrc inoremap	<buffer>	if		if<cr>then<cr>fi<Esc>2k$a<space>
-		autocmd BufRead 	~/.bashrc inoremap	<buffer>	for		for<cr>do<cr>done<Esc>2k$a<space>
-		autocmd BufRead 	~/.bashrc inoremap	<buffer>	while	while<cr>do<cr>done<Esc>2k$a<space>
+		autocmd BufRead   ~/.bashrc inoremap	<buffer>  if		if<cr>then<cr>fi<Esc>2k$a<space>
+		autocmd BufRead   ~/.bashrc inoremap	<buffer>  for		for<cr>do<cr>done<Esc>2k$a<space>
+		autocmd BufRead   ~/.bashrc inoremap	<buffer>  while	while<cr>do<cr>done<Esc>2k$a<space>
 	augroup END
 
 	augroup universal
-		autocmd FileType	*	call <SID>def_base_syntax()
-		"au BufWritePre		*	:set binary | set noeol
-		"au BufWritePost	*	:set nobinary | set eol
+		autocmd FileType  *	call <SID>def_base_syntax()
+		"au BufWritePre   *	:set binary | set noeol
+		"au BufWritePost  *	:set nobinary | set eol
 	augroup END
 
 	augroup filetype_html
@@ -197,15 +201,15 @@
 
 	augroup filetype_c
 		autocmd!
-		autocmd FileType c	inoremap <buffer>	if		if()<Left>
-		autocmd FileType c	inoremap <buffer>	for 	for(;;)<Left><Left><Left>
+		autocmd FileType c	inoremap <buffer>	if   	if()<Left>
+		autocmd FileType c	inoremap <buffer>	for  	for(;;)<Left><Left><Left>
 		autocmd FileType c	inoremap <buffer>	while	while()<Left>
 	augroup END
 
 	augroup filetype_text
 		autocmd!
 		autocmd Filetype gitcommit	setlocal spell textwidth=72
-		autocmd Filetype markdown	setlocal spell textwidth=72
+		autocmd Filetype markdown 	setlocal spell textwidth=72
 	augroup END
 
 	augroup filetype_sh
@@ -217,7 +221,7 @@
 		autocmd! 
 		autocmd InsertEnter 	*	:set number	
 		autocmd InsertLeave 	*	:set relativenumber
-		autocmd FocusLost		*	:set number
+		autocmd FocusLost   	*	:set number
 		autocmd FocusGained 	*	:set relativenumber
 	augroup END
 
@@ -228,24 +232,24 @@
 	" =============== GLOBAL ===============  
 		
 		" Split Resize functions
-		noremap		<up>		<esc>:call ResizeUp()<cr>
-		noremap		<down>		<esc>:call ResizeDown()<cr>
-		noremap		<left>		<esc>:call ResizeLeft()<cr>
-		noremap		<right>		<esc>:call ResizeRight()<cr>
+		noremap 	<up>    	<esc>:call ResizeUp()<cr>
+		noremap 	<down>  	<esc>:call ResizeDown()<cr>
+		noremap 	<left>  	<esc>:call ResizeLeft()<cr>
+		noremap 	<right> 	<esc>:call ResizeRight()<cr>
 
-		map			<S-up>		<up><up><Up>
-		map			<S-down>	<down><down><down>
-		map			<S-left>	<left><left><left>
-		map			<S-right>	<right><right><right>
+		map 		<S-up>   	<up><up><Up>
+		map 		<S-down> 	<down><down><down>
+		map 		<S-left> 	<left><left><left>
+		map 		<S-right>	<right><right><right>
 
-		noremap		<F1>		:NERDTreeToggle<cr>
+		noremap 	<F1>     	:NERDTreeToggle<cr>
 
-		map		<leader>c		<plug>NERDCommenterToggle
-		map		<leader>cz		<plug>NerdComComment
+		map 		<leader>c   	<plug>NERDCommenterToggle
+		map 		<leader>cz		<plug>NerdComComment
 
 	" =============== Normal ===============   
 
-		noremap		<leader>ev	:vsplit $MYVIMRC<cr>
+		noremap 	<leader>ev	:vsplit $MYVIMRC<cr>
 		nnoremap	<leader>w	<esc>:w<cr> 
 		nnoremap	<leader>q	<esc>:q<cr>
 		nnoremap	<leader>wq	<esc>:wq<cr>
@@ -253,10 +257,10 @@
 		nnoremap	<leader>wa	<esc>:wa<cr>
 
 		" Faster navigation
-		nnoremap	H			b
-		nnoremap	L			w
-		nnoremap	J			4j
-		nnoremap	K			4k
+		nnoremap	H   		b
+		nnoremap	L   		w
+		nnoremap	J   		4j
+		nnoremap	K   		4k
 		nnoremap	<leader>l	$
 		nnoremap	<leader>h	^
 		nnoremap	<leader>j	G
@@ -264,19 +268,19 @@
 
 		nnoremap	<leader>n	:call NumberToggle()<cr>
 		nnoremap	<Tab>		.
-		nnoremap	=			=<cr>
-		nnoremap	f			za
-		nnoremap	F			zi
+		nnoremap	=    		=<cr>
+		nnoremap	f    		za
+		nnoremap	F    		zi
 		nnoremap	<leader>t	:tabnext<CR>
 
 		nnoremap	<leader>r	:wincmd r<CR>
 
 		nnoremap	<c-a>		ggvG$
-		nnoremap	"			:call Enquote()<cr>
-		nnoremap	b			<c-v>
-		nnoremap	rt			:retab!<cr>
-		nnoremap	tt			:tabf 
-		nmap		gs			ysiw
+		nnoremap	"   		:call Enquote()<cr>
+		nnoremap	b   		<c-v>
+		nnoremap	rt  		:retab!<cr>
+		nnoremap	tt  		:tabf 
+		nmap		gs  		ysiw
 
 		" tmux/vim pane navigation
 		if exists('$TMUX')
@@ -293,10 +297,10 @@
 	" =============== Operator-Pending =============== 
 
 		" Faster navigation
-		onoremap	H			b
-		onoremap	L			w
-		onoremap	J			4j
-		onoremap	K			4k
+		onoremap	H   		b
+		onoremap	L   		w
+		onoremap	J   		4j
+		onoremap	K   		4k
 		onoremap	<leader>l	$
 		onoremap	<leader>h	^
 		onoremap	<leader>j	G
@@ -305,31 +309,31 @@
 	" =============== Insert ===============  
 
 		inoremap	<special><expr>		<Esc>[200~ SmartPaste()
-		inoremap	<c-u>		<esc>lwbveUe 
-		inoremap	<expr> j	((pumvisible())?("\<C-n>"):("j"))	"Scroll down auto-complete menu with j
-		inoremap	<expr> k	((pumvisible())?("\<C-p>"):("k"))	"Scroll up auto-complete menu with k
-		inoremap	<Tab>		<C-R>=Tab_Or_Complete()<CR>
-		inoremap	jk			<esc>
+		inoremap	<c-u>   	<esc>lwbveUe 
+		inoremap	<expr> j	((pumvisible())?("\<C-n>"):("j"))	"Scroll down auto-complete menu w/ j
+		inoremap	<expr> k	((pumvisible())?("\<C-p>"):("k"))	"Scroll up auto-complete menu w/ k
+		inoremap	<Tab>   	<C-R>=Tab_Or_Complete()<CR>
+		inoremap	jk      	<esc>
 
-		inoremap	"			""<Left>
-		inoremap	'			''<Left>
-		inoremap	(			()<Left>
-		inoremap	((			()
-		inoremap	[			[]<Left>
-		inoremap	{{			{}<Left>
-		inoremap	{			{<CR>}<Esc>O
+		inoremap	"   		""<Left>
+		inoremap	'   		''<Left>
+		inoremap	(   		()<Left>
+		inoremap	((  		()
+		inoremap	[   		[]<Left>
+		inoremap	{{  		{}<Left>
+		inoremap	{   		{<CR>}<Esc>O
 
-		inoremap	<up>		<esc>:call ResizeUp()<cr>
-		inoremap	<down>		<esc>:call ResizeDown()<cr>
-		inoremap	<left>		<esc>:call ResizeLeft()<cr>
-		inoremap	<right>		<esc>:call ResizeRight()<cr>
+		inoremap	<up>    	<esc>:call ResizeUp()<cr>
+		inoremap	<down>  	<esc>:call ResizeDown()<cr>
+		inoremap	<left>  	<esc>:call ResizeLeft()<cr>
+		inoremap	<right> 	<esc>:call ResizeRight()<cr>
 
-		imap		<S-up>		<up><up>
-		imap		<S-down>	<down><down>
-		imap		<S-left>	<left><left>
+		imap		<S-up>   	<up><up>
+		imap		<S-down> 	<down><down>
+		imap		<S-left> 	<left><left>
 		imap		<S-right>	<right><right>
 	
-		imap		<c-c>		<plug>NERDCommenterInsert
+		imap		<c-c>    	<plug>NERDCommenterInsert
 
 	" =============== Visual ===============  
 
@@ -340,13 +344,13 @@
 		vnoremap	<leader>h	0
 		vnoremap	<leader>j	G
 		vnoremap	<leader>k	gg
-		vnoremap	H			b
-		vnoremap	L			w
-		vnoremap	J			4j
-		vnoremap	K			4k
+		vnoremap	H   		b
+		vnoremap	L   		w
+		vnoremap	J   		4j
+		vnoremap	K   		4k
 
-		vnoremap	<tab>		>gv							"Indent blocks of text
-		vnoremap	<s-tab>		<Left><gv					"De-indent blocks of text
+		vnoremap	<tab>		>gv 	"Indent blocks of text
+		vnoremap	<s-tab>		<Left><gv	"De-indent blocks of text
 		vnoremap	"			:<bs><bs><bs><bs><bs>call BlockEnquote()<cr>
 		vnoremap	<c-c>		"+y
 

@@ -63,7 +63,8 @@
 	alias g="git"
 	alias gs="git status"
 	alias gc="g commit"
-	alias gpu="git pull"
+	alias gp="git pull"
+	alias gpu="git push"
 
 # variables
 	marge="severyn.kozak@marge.stuy.edu"
