@@ -32,8 +32,8 @@
 	filetype indent on
 	filetype plugin on
 
-	set showcmd							" show (partial) command in status line.
-	set autowrite						" automatically save before commands like :next and :make
+	set showcmd
+	set autowrite
 
 	" file backup
 		" backup to ~/.tmp; get rid of .swp files
@@ -43,17 +43,17 @@
 		set directory=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
 		set writebackup
 
-	set number							" Line numbers
+	set number
 	set nowrap
 	set linebreak 
 
 	set timeoutlen=300
-	set scrolloff=25					" Scrolls further down when cursor is within 25 rows of bottom"
+	set scrolloff=25
 	set sidescrolloff=40
 	set noshowmatch
 	set wildmode=longest,list,full
 	set wildmenu
-	set backspace=indent,eol,start		" allow deletion of tab-spaces
+	set backspace=indent,eol,start	" allow deletion of tab-spaces
 
 	" indentation
 		set autoindent
@@ -97,7 +97,7 @@
 		\}
 	\}
 
-	" =============== NERDTree ===============	
+	" NERDTree
 
 		" key-maps
 		let NERDTreeMapOpenSplit="s"
@@ -110,25 +110,15 @@
 		let NERDTreeMapJumpLastChild="<leader>j"
 
 		let NERDTreeWinSize=22
-
-	" =============== Comment Strings =============== 
-
-		" comment_Strings dictionary maps open files to their respective comment-string
-		" (by matching file-extensions )
-		let comment_Line_Strings = {"py" : ["#"]}
-		let comment_Line_Strings.c = ["//"] 
-		let comment_Line_Strings.java = ["//"]
-		let comment_Line_Strings.html = ["<!--", "-->"]
-		let comment_Line_Strings.bashrc = ["#"] 
-		let comment_Line_Strings.css = ["/*", "*/"]
-		let comment_Line_Strings.makefile = ["#"] 
-		let comment_Line_Strings.js = ["//"]
-		let comment_Line_Strings.vimrc = ["\""]
-		let comment_Line_Strings.bashrc = ["#"]
-
+	
 	" smart pasting
 		let &t_SI .= "\<Esc>[?2004h"
 		let &t_EI .= "\<Esc>[?2004l"
+
+	" tmux/vim pane navigation"
+		let previous_title = substitute(system("tmux display-message -p '#{pane_title}'"), '\n', '', '')
+		let &t_ti = "\<Esc>]2;vim\<Esc>\\" . &t_ti
+		let &t_te = "\<Esc>]2;". previous_title . "\<Esc>\\" . &t_te
 
 " =============== Highlightinng =============== 
 
@@ -159,58 +149,57 @@
 
 	augroup new_buffer
 		autocmd!
-		autocmd bufnewfile					*.java				:0r ~/.vim/templates/java.txt | exe "normal gg2e2li" . expand("%:t:r") . " \<Esc> 2ji" .  expand("%:t:r") . "() \<Esc>oa\<BS>\<tab>"
-		autocmd bufnewfile					*.html				:0r~/.vim/templates/html.txt | exe "normal 4j"
-		autocmd bufnewfile					*.c					:0r ~/.vim/templates/c.txt
+		autocmd bufnewfile			*.java	:0r ~/.vim/templates/java.txt | exe "normal gg2e2li" . expand("%:t:r") . " \<Esc> 2ji" .  expand("%:t:r") . "() \<Esc>oa\<BS>\<tab>"
+		autocmd bufnewfile			*.html	:0r~/.vim/templates/html.txt | exe "normal 4j"
+		autocmd bufnewfile			*.c		:0r ~/.vim/templates/c.txt
 
-		autocmd bufnewfile					*					exe "normal Gddk"
-		autocmd bufnewfile					*					startinsert
+		autocmd bufnewfile			*		exe "normal Gddk"
+		autocmd bufnewfile			*		startinsert
 
-		autocmd BufRead,BufNewFile			*					syn match parens /[()\[\]{}]/ | hi parens ctermfg=green 
-		autocmd BufRead,BufNewFile			*					hi MatchParen ctermfg=DarkRed ctermbg=none
+		autocmd BufRead,BufNewFile	*		syn match parens /[()\[\]{}]/ | hi parens ctermfg=green 
+		autocmd BufRead,BufNewFile	*		hi MatchParen ctermfg=DarkRed ctermbg=none
 	augroup END
 
 	augroup file_specific
 		autocmd!
-		autocmd BufRead			~/.vimrc									exe "normal! zM"
-		autocmd BufWrite		~/.vimrc									source ~/.vimrc
-		autocmd BufRead			~/.vimrc inoremap	<buffer>	func		func!<space><cr>endfunc<Esc><Up>$a
-		autocmd BufRead			~/.vimrc inoremap	<buffer>	if			if<cr>endif<Esc>k$a<space>
-		autocmd BufRead			~/.vimrc inoremap	<buffer>	while		while<cr>endwhile<Esc>k$a<space>
-		autocmd BufRead			~/.vimrc inoremap	<buffer>	augroup		augroup<cr>autocmd!<cr>augroup END<Esc>2k$a<space>
+		autocmd BufRead 	~/.vimrc								exe "normal! zM"
+		autocmd BufWrite	~/.vimrc								source ~/.vimrc
+		autocmd BufRead 	~/.vimrc inoremap	<buffer>	func	func!<space><cr>endfunc<Esc><Up>$a
+		autocmd BufRead 	~/.vimrc inoremap	<buffer>	if		if<cr>endif<Esc>k$a<space>
+		autocmd BufRead 	~/.vimrc inoremap	<buffer>	while	while<cr>endwhile<Esc>k$a<space>
+		autocmd BufRead 	~/.vimrc inoremap	<buffer>	augroup	augroup<cr>autocmd!<cr>augroup END<Esc>2k$a<space>
 
-		autocmd BufRead			~/.bashrc inoremap	<buffer>	if			if<cr>then<cr>fi<Esc>2k$a<space>
-		autocmd BufRead			~/.bashrc inoremap	<buffer>	for			for<cr>do<cr>done<Esc>2k$a<space>
-		autocmd BufRead			~/.bashrc inoremap	<buffer>	while		while<cr>do<cr>done<Esc>2k$a<space>
+		autocmd BufRead 	~/.bashrc inoremap	<buffer>	if		if<cr>then<cr>fi<Esc>2k$a<space>
+		autocmd BufRead 	~/.bashrc inoremap	<buffer>	for		for<cr>do<cr>done<Esc>2k$a<space>
+		autocmd BufRead 	~/.bashrc inoremap	<buffer>	while	while<cr>do<cr>done<Esc>2k$a<space>
 	augroup END
 
 	augroup universal
-		autocmd FileType		*					call <SID>def_base_syntax()
-		"au BufWritePre			*					:set binary | set noeol
-		"au BufWritePost		*					:set nobinary | set eol
+		autocmd FileType	*	call <SID>def_base_syntax()
+		"au BufWritePre		*	:set binary | set noeol
+		"au BufWritePost	*	:set nobinary | set eol
 	augroup END
 
 	augroup filetype_html
 		autocmd!
-		autocmd FileType html,htmldjango	inoremap <buffer>	<			<><Left>
-		autocmd FileType html,htmldjango	inoremap <buffer>	%			%<Space><Space>%<Left><Left>
-		autocmd FileType html,htmldjango	inoremap <buffer>	%%			%
+		autocmd FileType html,htmldjango	inoremap <buffer>	<	<><Left>
+		autocmd FileType html,htmldjango	inoremap <buffer>	%	%<Space><Space>%<Left><Left>
+		autocmd FileType html,htmldjango	inoremap <buffer>	%%	%
 	augroup END
 
 	augroup filetype_java 
 		autocmd!
-		autocmd FileType java	inoremap <buffer>	psvm		public static void main(String[] args){<cr>}<Esc>O
-		autocmd FileType java	inoremap <buffer>	if			if()<Left>
-		autocmd FileType java	inoremap <buffer>	for			for(;;)<Left><Left><Left>
-		autocmd FileType java	inoremap <buffer>	while		while()<Left>
-		"autocmd FileType java	inoremap			{<cr>		
+		autocmd FileType java	inoremap <buffer>	psvm	public static void main(String[] args){<cr>}<Esc>O
+		autocmd FileType java	inoremap <buffer>	if		if()<Left>
+		autocmd FileType java	inoremap <buffer>	for 	for(;;)<Left><Left><Left>
+		autocmd FileType java	inoremap <buffer>	while	while()<Left>
 	augroup END
 
 	augroup filetype_c
 		autocmd!
-		autocmd FileType c		inoremap <buffer>	if			if()<Left>
-		autocmd FileType c		inoremap <buffer>	for			for(;;)<Left><Left><Left>
-		autocmd FileType c		inoremap <buffer>	while		while()<Left>
+		autocmd FileType c	inoremap <buffer>	if		if()<Left>
+		autocmd FileType c	inoremap <buffer>	for 	for(;;)<Left><Left><Left>
+		autocmd FileType c	inoremap <buffer>	while	while()<Left>
 	augroup END
 
 	augroup filetype_text
@@ -221,15 +210,15 @@
 
 	augroup filetype_sh
 		autocmd!
-		autocmd FileType sh 	inoremap <buffer> 	if  		if<space>[  ]<cr>then<cr>fi<Esc>2<Up>4<Right>i
+		autocmd FileType sh 	inoremap <buffer> 	if 	if<space>[  ]<cr>then<cr>fi<Esc>2<Up>4<Right>i
 	augroup END
 
 	augroup relativeLnNum	
 		autocmd! 
-		autocmd InsertEnter					*					:set number	
-		autocmd InsertLeave					*					:set relativenumber
-		autocmd FocusLost					*					:set number
-		autocmd FocusGained					*					:set relativenumber
+		autocmd InsertEnter 	*	:set number	
+		autocmd InsertLeave 	*	:set relativenumber
+		autocmd FocusLost		*	:set number
+		autocmd FocusGained 	*	:set relativenumber
 	augroup END
 
 " =============== Key Mappings =============== 
@@ -239,115 +228,127 @@
 	" =============== GLOBAL ===============  
 		
 		" Split Resize functions
-		noremap		<up>				<esc>:call ResizeUp()<cr>
-		noremap		<down>				<esc>:call ResizeDown()<cr>
-		noremap		<left>				<esc>:call ResizeLeft()<cr>
-		noremap		<right>				<esc>:call ResizeRight()<cr>
+		noremap		<up>		<esc>:call ResizeUp()<cr>
+		noremap		<down>		<esc>:call ResizeDown()<cr>
+		noremap		<left>		<esc>:call ResizeLeft()<cr>
+		noremap		<right>		<esc>:call ResizeRight()<cr>
 
-		map			<S-up>				<up><up><Up>
-		map			<S-down>			<down><down><down>
-		map			<S-left>			<left><left><left>
-		map			<S-right>			<right><right><right>
+		map			<S-up>		<up><up><Up>
+		map			<S-down>	<down><down><down>
+		map			<S-left>	<left><left><left>
+		map			<S-right>	<right><right><right>
 
-		noremap		<F1>				:NERDTreeToggle<cr>
+		noremap		<F1>		:NERDTreeToggle<cr>
 
-		map		<leader>c				<plug>NERDCommenterToggle
-		map		<leader>cz				<plug>NerdComComment
+		map		<leader>c		<plug>NERDCommenterToggle
+		map		<leader>cz		<plug>NerdComComment
 
 	" =============== Normal ===============   
 
-		noremap		<leader>ev			:vsplit $MYVIMRC<cr>
-		nnoremap	<leader>w			<esc>:w<cr> 
-		nnoremap	<leader>q			<esc>:q<cr>
-		nnoremap	<leader>wq			<esc>:wq<cr>
-		nnoremap	<leader>fq			<esc>:q!<cr>
-		nnoremap	<leader>wa			<esc>:wa<cr>
+		noremap		<leader>ev	:vsplit $MYVIMRC<cr>
+		nnoremap	<leader>w	<esc>:w<cr> 
+		nnoremap	<leader>q	<esc>:q<cr>
+		nnoremap	<leader>wq	<esc>:wq<cr>
+		nnoremap	<leader>fq	<esc>:q!<cr>
+		nnoremap	<leader>wa	<esc>:wa<cr>
 
 		" Faster navigation
-		nnoremap	H					b
-		nnoremap	L					w
-		nnoremap	J					4j
-		nnoremap	K					4k
-		nnoremap	<leader>l			$
-		nnoremap	<leader>h			^
-		nnoremap	<leader>j			G
-		nnoremap	<leader>k			gg
+		nnoremap	H			b
+		nnoremap	L			w
+		nnoremap	J			4j
+		nnoremap	K			4k
+		nnoremap	<leader>l	$
+		nnoremap	<leader>h	^
+		nnoremap	<leader>j	G
+		nnoremap	<leader>k	gg
 
-		nnoremap	<leader>n			:call NumberToggle()<cr>
-		nnoremap	<Tab>				.
-		nnoremap	=					=<cr>
-		nnoremap	f					za
-		nnoremap	F					zi
-		nnoremap	<leader>t			:tabnext<CR>
+		nnoremap	<leader>n	:call NumberToggle()<cr>
+		nnoremap	<Tab>		.
+		nnoremap	=			=<cr>
+		nnoremap	f			za
+		nnoremap	F			zi
+		nnoremap	<leader>t	:tabnext<CR>
 
-		nnoremap	<leader>r			:wincmd r<CR>
+		nnoremap	<leader>r	:wincmd r<CR>
 
-		nnoremap	<c-a>				ggvG$
-		nnoremap	"					:call Enquote()<cr>
-		nnoremap	b					<c-v>
-		nnoremap	rt					:retab!<cr>
-		nnoremap	tt					:tabf 
-		nmap		gs					ysiw
- 
+		nnoremap	<c-a>		ggvG$
+		nnoremap	"			:call Enquote()<cr>
+		nnoremap	b			<c-v>
+		nnoremap	rt			:retab!<cr>
+		nnoremap	tt			:tabf 
+		nmap		gs			ysiw
+
+		" tmux/vim pane navigation
+		if exists('$TMUX')
+			nnoremap <silent> <C-h> :call TmuxOrSplitSwitch('h', 'L')<cr>
+			nnoremap <silent> <C-j> :call TmuxOrSplitSwitch('j', 'D')<cr>
+			nnoremap <silent> <C-k> :call TmuxOrSplitSwitch('k', 'U')<cr>
+			nnoremap <silent> <C-l> :call TmuxOrSplitSwitch('l', 'R')<cr>
+		else
+			map <C-h> <C-w>h
+			map <C-j> <C-w>j
+			map <C-k> <C-w>k
+			map <C-l> <C-w>l
+		endif
 	" =============== Operator-Pending =============== 
 
 		" Faster navigation
-		onoremap	H					b
-		onoremap	L					w
-		onoremap	J					4j
-		onoremap	K					4k
-		onoremap	<leader>l			$
-		onoremap	<leader>h			^
-		onoremap	<leader>j			G
-		onoremap	<leader>k			gg
+		onoremap	H			b
+		onoremap	L			w
+		onoremap	J			4j
+		onoremap	K			4k
+		onoremap	<leader>l	$
+		onoremap	<leader>h	^
+		onoremap	<leader>j	G
+		onoremap	<leader>k	gg
 	
 	" =============== Insert ===============  
 
 		inoremap	<special><expr>		<Esc>[200~ SmartPaste()
-		inoremap	<c-u>				<esc>lwbveUe 
-		inoremap	<expr> j			((pumvisible())?("\<C-n>"):("j"))	"Scroll down auto-complete menu with j
-		inoremap	<expr> k			((pumvisible())?("\<C-p>"):("k"))	"Scroll up auto-complete menu with k
-		inoremap	<Tab>				<C-R>=Tab_Or_Complete()<CR>
-		inoremap	jk					<esc>
+		inoremap	<c-u>		<esc>lwbveUe 
+		inoremap	<expr> j	((pumvisible())?("\<C-n>"):("j"))	"Scroll down auto-complete menu with j
+		inoremap	<expr> k	((pumvisible())?("\<C-p>"):("k"))	"Scroll up auto-complete menu with k
+		inoremap	<Tab>		<C-R>=Tab_Or_Complete()<CR>
+		inoremap	jk			<esc>
 
-		inoremap	"					""<Left>
-		inoremap	'					''<Left>
-		inoremap	(					()<Left>
-		inoremap	((					()
-		inoremap	[					[]<Left>
-		inoremap	{{					{}<Left>
-		inoremap	{					{<CR>}<Esc>O
+		inoremap	"			""<Left>
+		inoremap	'			''<Left>
+		inoremap	(			()<Left>
+		inoremap	((			()
+		inoremap	[			[]<Left>
+		inoremap	{{			{}<Left>
+		inoremap	{			{<CR>}<Esc>O
 
-		inoremap	<up>				<esc>:call ResizeUp()<cr>
-		inoremap	<down>				<esc>:call ResizeDown()<cr>
-		inoremap	<left>				<esc>:call ResizeLeft()<cr>
-		inoremap	<right>				<esc>:call ResizeRight()<cr>
+		inoremap	<up>		<esc>:call ResizeUp()<cr>
+		inoremap	<down>		<esc>:call ResizeDown()<cr>
+		inoremap	<left>		<esc>:call ResizeLeft()<cr>
+		inoremap	<right>		<esc>:call ResizeRight()<cr>
 
-		imap		<S-up>				<up><up>
-		imap		<S-down>			<down><down>
-		imap		<S-left>			<left><left>
-		imap		<S-right>			<right><right>
+		imap		<S-up>		<up><up>
+		imap		<S-down>	<down><down>
+		imap		<S-left>	<left><left>
+		imap		<S-right>	<right><right>
 	
-		imap		<c-c>				<plug>NERDCommenterInsert
+		imap		<c-c>		<plug>NERDCommenterInsert
 
 	" =============== Visual ===============  
 
-		vnoremap jk						<esc>	
+		vnoremap jk				<esc>	
 
 		" Faster navigation"
-		vnoremap	<leader>l			$
-		vnoremap	<leader>h			0
-		vnoremap	<leader>j			G
-		vnoremap	<leader>k			gg
-		vnoremap	H					b
-		vnoremap	L					w
-		vnoremap	J					4j
-		vnoremap	K					4k
+		vnoremap	<leader>l	$
+		vnoremap	<leader>h	0
+		vnoremap	<leader>j	G
+		vnoremap	<leader>k	gg
+		vnoremap	H			b
+		vnoremap	L			w
+		vnoremap	J			4j
+		vnoremap	K			4k
 
-		vnoremap	<tab>				>gv							"Indent blocks of text
-		vnoremap	<s-tab>				<Left><gv					"De-indent blocks of text
-		vnoremap	"					:<bs><bs><bs><bs><bs>call BlockEnquote()<cr>
-		vnoremap	<c-c>				"+y
+		vnoremap	<tab>		>gv							"Indent blocks of text
+		vnoremap	<s-tab>		<Left><gv					"De-indent blocks of text
+		vnoremap	"			:<bs><bs><bs><bs><bs>call BlockEnquote()<cr>
+		vnoremap	<c-c>		"+y
 
 " =============== Functions =============== 
 
@@ -559,27 +560,11 @@
 		endif
 	endfunction
 
-	if exists('$TMUX')
-		function! TmuxOrSplitSwitch(wincmd, tmuxdir)
-			let previous_winnr = winnr()
-			silent! execute "wincmd " . a:wincmd
-			if previous_winnr == winnr()
-				call system("tmux select-pane -" . a:tmuxdir)
-			redraw!
-			endif
-		endfunction
-
-		let previous_title = substitute(system("tmux display-message -p '#{pane_title}'"), '\n', '', '')
-		let &t_ti = "\<Esc>]2;vim\<Esc>\\" . &t_ti
-		let &t_te = "\<Esc>]2;". previous_title . "\<Esc>\\" . &t_te
-
-		nnoremap <silent> <C-h> :call TmuxOrSplitSwitch('h', 'L')<cr>
-		nnoremap <silent> <C-j> :call TmuxOrSplitSwitch('j', 'D')<cr>
-		nnoremap <silent> <C-k> :call TmuxOrSplitSwitch('k', 'U')<cr>
-		nnoremap <silent> <C-l> :call TmuxOrSplitSwitch('l', 'R')<cr>
-	else
-		map <C-h> <C-w>h
-		map <C-j> <C-w>j
-		map <C-k> <C-w>k
-		map <C-l> <C-w>l
-	endif
+	function! TmuxOrSplitSwitch(wincmd, tmuxdir)
+		let previous_winnr = winnr()
+		silent! execute "wincmd " . a:wincmd
+		if previous_winnr == winnr()
+			call system("tmux select-pane -" . a:tmuxdir)
+		redraw!
+		endif
+	endfunction
