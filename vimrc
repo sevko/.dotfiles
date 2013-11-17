@@ -48,28 +48,21 @@
 	set linebreak 
 
 	set timeoutlen=300
-	set scrolloff=25
-	set sidescrolloff=40
+	set scrolloff=25 sidescrolloff=40
 	set noshowmatch
-	set wildmode=longest,list,full
-	set wildmenu
+	set wildmenu wildmode=longest,list,full
 	set backspace=indent,eol,start	" allow deletion of tab-spaces
 
 	" indentation
 		set autoindent
-		set noexpandtab
-		set tabstop=4
-		set shiftwidth=4
+		set noexpandtab tabstop=4 shiftwidth=4
 
 	" code folding settings
 		set foldmethod=indent	
 		set foldnestmax=10 
-		set nofoldenable
-		set foldlevel=1 
+		set nofoldenable foldlevel=1 
 
-	" split position
-		set splitbelow
-		set splitright
+	set splitbelow splitright
 
 	set laststatus=2
 	set incsearch
@@ -80,7 +73,6 @@
 	set list lcs=tab:\·\  
 
 	" colorscheme
-		set t_CO=256
 		syntax enable
 		set background=dark
 		colorscheme solarized
@@ -98,7 +90,6 @@
 	\}
 
 	" NERDTree
-
 		" key-maps
 		let NERDTreeMapOpenSplit="s"
 		let NERDTreeMapOpenVSplit="v"
@@ -109,7 +100,7 @@
 		let NERDTreeMapJumpFirstChild="<leader>k"
 		let NERDTreeMapJumpLastChild="<leader>j"
 
-		let NERDTreeWinSize=22
+		let NERDTreeWinSize=26
 	
 	" smart pasting
 		let &t_SI .= "\<Esc>[?2004h"
@@ -231,17 +222,6 @@
  
 	" =============== GLOBAL ===============  
 		
-		" Split Resize functions
-		noremap 	<up>    	<esc>:call ResizeUp()<cr>
-		noremap 	<down>  	<esc>:call ResizeDown()<cr>
-		noremap 	<left>  	<esc>:call ResizeLeft()<cr>
-		noremap 	<right> 	<esc>:call ResizeRight()<cr>
-
-		map 		<S-up>   	<up><up><Up>
-		map 		<S-down> 	<down><down><down>
-		map 		<S-left> 	<left><left><left>
-		map 		<S-right>	<right><right><right>
-
 		noremap 	<F1>     	:NERDTreeToggle<cr>
 
 		map 		<leader>c   	<plug>NERDCommenterToggle
@@ -294,6 +274,7 @@
 			map <C-k> <C-w>k
 			map <C-l> <C-w>l
 		endif
+
 	" =============== Operator-Pending =============== 
 
 		" Faster navigation
@@ -403,7 +384,7 @@
 		endif 
 	endfunction
 
-	" =============== Quote Control Functions ===============  
+	" quote in/out
 		func! BlockEnquote()
 			let start = getline("'<")[col("'<") - 1]
 			let end = getline("'>")[col("'>") - 1]
@@ -459,88 +440,6 @@
 			let numer = (48 <= char2nr(a:char) && char2nr(a:char) <= 57)
 			echo lower || upper || numer
 		endfunc
-
-	" =============== Split Resizing ===============  
-
-		" @breuckelen's split resize func tions
-
-		" check split positions
-		function! IsRightMost()
-			let oldw = winnr()
-			silent! exec "normal! \<c-w>l"	
-			let neww = winnr()
-			silent! exec oldw.'wincmd w'
-			return oldw == neww
-		endfunction
-
-		function! IsBottomMost()
-			let oldw = winnr()
-			silent! exec "normal! \<c-w>j"	
-			let neww = winnr()
-			silent! exec oldw.'wincmd w'
-			return oldw == neww
-		endfunction
-
-		function! IsTopMost()
-			let oldw = winnr()
-			silent! exec "normal! \<c-w>k"	
-			let neww = winnr()
-			silent! exec oldw.'wincmd w'
-			return oldw == neww
-		endfunction
-
-		function! IsLeftMost()
-			let oldw = winnr()
-			silent! exec "normal! \<c-w>h"	
-			let neww = winnr()
-			silent! exec oldw.'wincmd w'
-			return oldw == neww
-		endfunction
-
-		" Resize split
-		function! ResizeUp()
-			if IsBottomMost()
-				if IsTopMost()
-					silent! exec "normal \<c-w>-"
-				else
-					silent! exec "normal \<c-w>+"
-				endif
-			else
-				silent! exec "normal \<c-w>-"
-			endif
-		endfunction
-
-		function! ResizeDown()
-			if IsBottomMost()
-				if IsTopMost()
-					silent! exec "normal \<c-w>+"
-				else
-					silent! exec "normal \<c-w>-"
-				endif
-			else
-				silent! exec "normal \<c-w>+"
-			endif
-		endfunction
-
-		function! ResizeLeft()
-			if IsRightMost()
-				if !IsLeftMost()
-					silent! exec "normal \<c-w>>"
-				endif
-			else
-				silent! exec "normal \<c-w><"
-			endif
-		endfunction
-
-		function! ResizeRight()
-			if IsRightMost()
-				if !IsLeftMost()
-					silent! exec "normal \<c-w><"
-				endif
-			else
-				silent! exec "normal \<c-w>>"
-			endif
-		endfunction
 
 	function! NERDTreeQuit()
 		redir => buffersoutput
