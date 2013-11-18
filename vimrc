@@ -157,22 +157,30 @@
 
 	augroup file_specific
 		autocmd!
-		autocmd BufRead   ~/.vimrc	exe "normal! zM"
-		autocmd BufWrite  ~/.vimrc	source ~/.vimrc
-		autocmd BufRead   ~/.vimrc inoremap  <buffer>  func	func!<space><cr>endfunc<Esc><Up>$a
-		autocmd BufRead   ~/.vimrc inoremap  <buffer>  if		if<cr>endif<Esc>k$a<space>
-		autocmd BufRead   ~/.vimrc inoremap  <buffer>  while	while<cr>endwhile<Esc>k$a<space>
-		autocmd BufRead   ~/.vimrc inoremap  <buffer>  augroup	augroup<cr>autocmd!<cr>augroup END<Esc>2k$a<space>
-
-		autocmd BufRead   ~/.bashrc inoremap	<buffer>  if		if<cr>then<cr>fi<Esc>2k$a<space>
-		autocmd BufRead   ~/.bashrc inoremap	<buffer>  for		for<cr>do<cr>done<Esc>2k$a<space>
-		autocmd BufRead   ~/.bashrc inoremap	<buffer>  while	while<cr>do<cr>done<Esc>2k$a<space>
+		autocmd BufRead   ~/.vimrc  	exe "normal! zM"
+		autocmd BufWrite  ~/.vimrc  	source ~/.vimrc
+		autocmd BufWrite  ~/.bashrc 	!source ~/.zshrc
 	augroup END
 
 	augroup universal
 		autocmd FileType  *	call <SID>def_base_syntax()
 		"au BufWritePre   *	:set binary | set noeol
 		"au BufWritePost  *	:set nobinary | set eol
+	augroup END
+
+	augroup filetype_vim
+		autocmd!
+		autocmd FileType vim    inoremap  <buffer>  func    	func!<space><cr>endfunc<Esc><Up>$a
+		autocmd FileType vim    inoremap  <buffer>  if      	if<cr>endif<Esc>k$a<space>
+		autocmd FileType vim    inoremap  <buffer>  while   	while<cr>endwhile<Esc>k$a<space>
+		autocmd FileType vim    inoremap  <buffer>  augroup 	augroup<cr>autocmd!<cr>augroup END<Esc>2k$a<space>
+	augroup END
+
+	augroup filetype_sh
+		autocmd!
+		autocmd FileType sh     inoremap	<buffer>  if        if<cr>then<cr>fi<Esc>2k$a<space>
+		autocmd FileType sh     inoremap	<buffer>  for       for<cr>do<cr>done<Esc>2k$a<space>
+		autocmd FileType sh     inoremap	<buffer>  while     while<cr>do<cr>done<Esc>2k$a<space>
 	augroup END
 
 	augroup filetype_html
@@ -184,9 +192,9 @@
 
 	augroup filetype_java 
 		autocmd!
-		autocmd FileType java	inoremap <buffer>	psvm	public static void main(String[] args){<cr>}<Esc>O
-		autocmd FileType java	inoremap <buffer>	if		if()<Left>
-		autocmd FileType java	inoremap <buffer>	for 	for(;;)<Left><Left><Left>
+		autocmd FileType java	inoremap <buffer>	psvm 	public static void main(String[] args){<cr>}<Esc>O
+		autocmd FileType java	inoremap <buffer>	if   	if()<Left>
+		autocmd FileType java	inoremap <buffer>	for  	for(;;)<Left><Left><Left>
 		autocmd FileType java	inoremap <buffer>	while	while()<Left>
 	augroup END
 
@@ -256,7 +264,6 @@
 		nnoremap	<leader>r	:wincmd r<CR>
 
 		nnoremap	<c-a>		ggvG$
-		nnoremap	"   		:call Enquote()<cr>
 		nnoremap	b   		<c-v>
 		nnoremap	rt  		:retab!<cr>
 		nnoremap	tt  		:tabf 
@@ -295,9 +302,10 @@
 		inoremap	<expr> k	((pumvisible())?("\<C-p>"):("k"))	"Scroll up auto-complete menu w/ k
 		inoremap	<Tab>   	<C-R>=Tab_Or_Complete()<CR>
 		inoremap	jk      	<esc>
-
 		inoremap	"   		""<Left>
 		inoremap	'   		''<Left>
+		inoremap    ""          "
+		inoremap    ''          '
 		inoremap	(   		()<Left>
 		inoremap	((  		()
 		inoremap	[   		[]<Left>
@@ -348,10 +356,19 @@
 
 	"tab-key completion
 	function! Tab_Or_Complete()
-		if col('.')>1 && strpart( getline('.'), col('.')-2, 3 ) =~ '^\w'
+		let curX = col('.')
+		if curX>1 && strpart( getline('.'), curX-2, 3 ) =~ '^\w'
 			return "\<C-N>"
 		else
+			return SmartTab(curX)
+		endif
+	endfunc
+
+	func! SmartTab(colPos)
+		if getline('.')[:a:colPos - 2] =~ "^[\t]*$" || a:colPos == 1
 			return "\<Tab>"
+		else
+			return repeat(" ", &tabstop - 3)
 		endif
 	endfunc
 
@@ -383,63 +400,6 @@
 			hi baseDelimiter ctermfg = DarkGrey
 		endif 
 	endfunction
-
-	" quote in/out
-		func! BlockEnquote()
-			let start = getline("'<")[col("'<") - 1]
-			let end = getline("'>")[col("'>") - 1]
-
-			if start == "\"" && end == "\""
-				cal cursor(line("'<"), col("'<"))
-				exec "normal! x"
-				cal cursor(line("'>"), col("'>") - 1)
-				exec normal! x
-			else
-				cal cursor(line("'<"), col("'<"))
-				exec "normal! i\""
-				cal cursor(line("'>"), col("'>") + 1)
-				exec "normal! a\""
-			endif
-		endfunc
-
-		func! Enquote()
-			let startCol = col('.')
-			if Quoted()
-				exec "normal! ?\"\<cr>x/\"\<cr>x"
-			else
-				exec "normal! bi\"\<Esc>ea\""
-			endif
-			cal cursor('.', startCol)
-		endfunc
-
-		func! Quoted()
-			let occur = 0
-			let startLn = line('.')
-			let startCol = col('.')
-			let currLn = getline('.')
-			let index = 0
-			let occur = 0
-
-			while index < startCol
-				if currLn[index] == "\""
-					let occur = occur + 1
-				endif	
-				let index = index + 1
-			endwhile
-
-			if occur % 2 == 0
-				return 0
-			else
-				return 1
-			endif
-		endfunc
-
-		func! AlphaNum(char)
-			let lower = (97 <= char2nr(a:char) && char2nr(a:char) <= 122) 
-			let upper = (65 <= char2nr(a:char) && char2nr(a:char) <= 90)
-			let numer = (48 <= char2nr(a:char) && char2nr(a:char) <= 57)
-			echo lower || upper || numer
-		endfunc
 
 	function! NERDTreeQuit()
 		redir => buffersoutput
