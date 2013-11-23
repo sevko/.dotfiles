@@ -115,7 +115,8 @@
 
 	hi CursorLineNR ctermfg=red ctermbg=0
 	hi Folded ctermbg=2 ctermfg=black
-	hi StatusLine ctermfg=red ctermbg=none
+	hi StatusLine cterm=none ctermfg=245 ctermbg=235
+	hi WildMenu cterm=none ctermfg=232 ctermbg=2
 	hi SpecialKey cterm=none ctermfg=DarkGrey ctermbg=none
 	hi NonText ctermfg=red 
 	hi VertSplit ctermfg=black ctermbg=2
@@ -159,7 +160,8 @@
 		autocmd!
 		autocmd BufRead   ~/.vimrc  	exe "normal! zM"
 		autocmd BufWrite  ~/.vimrc  	source ~/.vimrc
-		autocmd BufWrite  ~/.bashrc 	!source ~/.zshrc
+		autocmd BufWrite  ~/.bashrc 	!source ~/.bashrc
+		autocmd BufWritePost  ~/.zshrc      !source ~/.zshrc
 	augroup END
 
 	augroup universal
@@ -368,7 +370,7 @@
 		if getline('.')[:a:colPos - 2] =~ "^[\t]*$" || a:colPos == 1
 			return "\<Tab>"
 		else
-			return repeat(" ", &tabstop - 3)
+			return repeat(" ", &tabstop - 1)
 		endif
 	endfunc
 

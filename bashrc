@@ -56,9 +56,4 @@
 	# Misc
 		NC="\e[m"	# Color Reset
 
-	if [ -f ~/.local/lib/python2.7/site-packages/powerline/bindings/bash/powerline.sh ]
-	then
-	  source ~/.local/lib/python2.7/site-packages/powerline/bindings/bash/powerline.sh
-	fi
-
 	if [ "$TMUX" = "" ]; then tmux; fi

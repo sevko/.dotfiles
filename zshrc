@@ -6,7 +6,7 @@
 	# Look in ~/.oh-my-zsh/themes/
 	# Optionally, if you set this to "random", it'll load a random theme each
 	# time that oh-my-zsh is loaded.
-	#ZSH_THEME="norm"
+	# ZSH_THEME="norm"
 
 	# Example aliases
 	# alias zshconfig="mate ~/.zshrc"
@@ -53,18 +53,29 @@
 
 #aliases
 	alias v=vim
+	alias bpy='bpython'
+	alias ev=evince
+	alias so=source
 	alias ka=killall
 	alias clip="xclip -select clipboard"
-	alias ls="ls --color -h --group-directories-first"	# user variables
+	alias l="command ls --color -h --group-directories-first"
 	alias ccat="pygmentize -O style=monokai -f terminal -g"
 	alias hp-scan="hp-scan --area=0,0,216,279"
 	alias tmux="TERM=screen-256color-bce tmux"
 
+
+	alias c=cd
+	alias lal="l -al"
+	alias wg=wget
+	alias mkd=mkdir
 	alias g="git"
-	alias gs="git status"
+	alias gl="g log"
+	alias grh="git reset --hard HEAD"
+	alias gau="g add -u"
+	alias gs="g status"
 	alias gc="g commit"
-	alias gp="git pull"
-	alias gpu="git push"
+	alias gp="g pull"
+	alias gpu="g push"
 
 # variables
 	marge="severyn.kozak@marge.stuy.edu"
@@ -80,6 +91,7 @@
 	if [[ -s '/etc/zsh_command_not_found' ]]; then
 		source '/etc/zsh_command_not_found'
 	fi
+
 	# zsh-powerline-prompt
 		fpath+=( ~/.local/lib/zsh-prompt-powerline )
 		autoload promptinit ; promptinit
