@@ -12,12 +12,6 @@
 	alias hp-scan="hp-scan --area=0,0,216,279"
 	alias tmux="TERM=screen-256color-bce tmux"
 	alias ka="killall"
-	 
-	 #SSH  
-		marge="severyn.kozak@marge.stuy.edu"
-		orca="sevko@orca.elee.me"
-		droplet="root@162.243.33.238"
-		stuybooks="root@162.243.33.238:/var/www/FlaskApp/FlaskApp"
 
 # bash variables
 	export EDITOR=vim

@@ -28,8 +28,8 @@
 [color "diff"]
   meta = cyan
   frag = magenta bold
-  old = red bold
-  new = green
+  old = red
+  new = blue
   whitespace = white reverse
 
 [color "status"]
