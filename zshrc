@@ -1,3 +1,5 @@
+bindkey "^R" history-incremental-search-backward
+
 # oh-my-zsh
 
 	ZSH=$HOME/.oh-my-zsh  # Path to your oh-my-zsh configuration.
@@ -8,7 +10,8 @@
 	# Uncomment following line if you want to disable command autocorrection
 	# DISABLE_CORRECTION="true"
 
-	# Uncomment following line if you want red dots to be displayed while waiting for completion
+	# Uncomment following line if you want red dots to be displayed while 
+	# waiting for completion
 	COMPLETION_WAITING_DOTS="true"
 
 	DISABLE_UNTRACKED_FILES_DIRTY="true"
@@ -18,41 +21,45 @@
 	source $ZSH/oh-my-zsh.sh
 
 	# Customize to your needs...
-	export PATH=$PATH:/home/sevko/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games
+	export PATH=$PATH:/home/sevko/.local/bin:/usr/local/sbin:/usr/local/bin
+	export PATH=$PATH:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games
 
-#bash hotkeys
+#zsh hotkeys
 	stty intr \^x
 
 #aliases
-	alias v=vim
-	alias m=man
-	alias bpy='bpython'
-	alias ev=evince
-	alias so=source
-	alias ka=killall
-	#alias ev=evince
-	alias clip="xclip -select clipboard"
-	alias l="command ls --color -h --group-directories-first"
+	alias bpy="bpython"
 	alias ccat="pygmentize -O style=monokai -f terminal -g"
+	alias clip="xclip -select clipboard"
+	alias ev=evince
+	alias gth=gthumb
 	alias hp-scan="hp-scan --area=0,0,216,279"
+	alias ka=killall
+	alias so=source
 	alias tmux="TERM=screen-256color-bce tmux"
+	alias v=vim
 
 	# core utils
 	alias c=cd
-	alias wg=wget
+	alias l="command ls --color -h --group-directories-first"
+	alias ll="ls -al"
+	alias m=man
 	alias mk=make
 	alias mkd=mkdir
+	alias wg=wget
 
 	# git
 	alias g="git"
 	alias gau="g add -u"
 	alias gc="g commit"
 	alias gco="g checkout"
+	alias gf="g fetch"
 	alias gl="g log"
 	alias gp="g pull"
 	alias gpu="g push"
 	alias grh="git reset --hard HEAD"
 	alias gs="g status"
+	alias gu="g up"
 
 # variables
 	export EDITOR=vim
