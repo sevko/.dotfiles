@@ -179,24 +179,24 @@
 							\. " \<Esc> 2ji" .	expand("%:t:r")
 							\. "() \<Esc>oa\<BS>"
 
-		au bufnewfile		*.html	:0r~/.vim/templates/html.txt
-		au bufnewfile		*.c		:0r ~/.vim/templates/c.txt
+		au bufnewfile       *.html  :0r~/.vim/templates/html.txt
+		au bufnewfile       *.c     :0r ~/.vim/templates/c.txt
 
-		au bufnewfile		*		exe "normal Gddk"
-		au bufnewfile		*		startinsert
+		au bufnewfile       *       exe "normal Gddk"
+		au bufnewfile       *       startinsert
 
 		au BufRead,BufNewFile *   syn match parens /[()\[\]{}]/
 										\| hi parens ctermfg=green
 		au BufRead,BufNewFile *   hi MatchParen ctermfg=DarkRed ctermbg=none
 
-		au bufnewfile		*.java	exe "normal! k$"
+		au bufnewfile       *.java  exe "normal! k$"
 	augroup END
 
 	augroup file_specific
 		au!
-		au BufRead		  ~/.vimrc		exe "normal! zM"
-		au BufWritePost  ~/.vimrc		source ~/.vimrc
-		au BufWritePost  ~/.zshrc		!source ~/.zshrc
+		au BufRead          ~/.vimrc        exe "normal! zM"
+		au BufWritePost     ~/.vimrc        source ~/.vimrc
+		au BufWritePost     ~/.zshrc        !source ~/.zshrc
 	augroup END
 
 	augroup universal
@@ -232,17 +232,17 @@
 
 	augroup filetype_html
 		au!
-		au FileType html,htmldjango inoremap <buffer>   <   <><Left>
-		"au FileType html,htmldjango	inoremap <buffer>   %
+		au FileType html,htmldjango     inoremap <buffer>   <   <><Left>
+		"au FileType html,htmldjango    inoremap <buffer>   %
 			"\%<Space><Space>%<Left><Left>
-		au FileType html,htmldjango	inoremap <buffer>   %%  %
+		au FileType html,htmldjango     inoremap <buffer>   %%  %
 	augroup END
 
 	augroup filetype_java
 		au!
 		au FileType java    inoremap <buffer>   psvm
 			\ public static void main(String[] args){<cr>}<Esc>O
-		"au FileType java    iabbrev <buffer>   psvm 
+		"au FileType java    iabbrev <buffer>   psvm
 		"   \public static void main(String[] args){<cr>}<Esc>O
 		au FileType java    inoremap <buffer>   if      if()<Left>
 		au FileType java    inoremap <buffer>   for     for(;;)<Left><Left><Left>
@@ -293,38 +293,38 @@
 
 	" =============== Normal ===============
 
-		noremap    <leader>ev	 :vsplit $MYVIMRC<cr>
-		nnoremap   <leader>w	 <esc>:w<cr>
-		nnoremap   <leader>q	 <esc>:q<cr>
-		nnoremap   <leader>wq	 <esc>:wq<cr>
-		nnoremap   <leader>fq	 <esc>:q!<cr>
-		nnoremap   <leader>wa	 <esc>:wa<cr>
+		noremap    <leader>ev   :vsplit $MYVIMRC<cr>
+		nnoremap   <leader>w    <esc>:w<cr>
+		nnoremap   <leader>q    <esc>:q<cr>
+		nnoremap   <leader>wq   <esc>:wq<cr>
+		nnoremap   <leader>fq   <esc>:q!<cr>
+		nnoremap   <leader>wa   <esc>:wa<cr>
 
 		" Faster navigation
-		nnoremap	H			 b
-		nnoremap	L			 w
-		nnoremap	J			 4j
-		nnoremap	K			 4k
-		nnoremap	<leader>l	 $
-		nnoremap	<leader>h	 ^
-		nnoremap	<leader>j	 G
-		nnoremap	<leader>k	 gg
+		nnoremap    H           b
+		nnoremap    L           w
+		nnoremap    J           4j
+		nnoremap    K           4k
+		nnoremap    <leader>l   $
+		nnoremap    <leader>h   ^
+		nnoremap    <leader>j   G
+		nnoremap    <leader>k   gg
 
-		nnoremap	<leader>n	 :call NumberToggle()<cr>
-		nnoremap	<Tab>		 .
-		nnoremap	=			 =<cr>
-		nnoremap	f			 za
-		nnoremap	F			 zi
-		nnoremap	<leader>t	 :tabnext<CR>
-		nnoremap	<leader>st	  :tabprev<CR>
+		nnoremap    <leader>n   :call NumberToggle()<cr>
+		nnoremap    <Tab>       .
+		nnoremap    =           =<cr>
+		nnoremap    f           za
+		nnoremap    F           zi
+		nnoremap    <leader>t   :tabnext<CR>
+		nnoremap    <leader>st  :tabprev<CR>
 
-		nnoremap	<leader>r	 :wincmd r<CR>
+		nnoremap    <leader>r   :wincmd r<CR>
 
-		nnoremap	<c-a>        ggvG$
-		nnoremap	b            <c-v>
-		nnoremap    <leader>rt   :retab!<cr>
-		nnoremap	tt			 :tabf
-		nmap		gs			 ysiw
+		nnoremap    <c-a>       ggvG$
+		nnoremap    b           <c-v>
+		nnoremap    <leader>rt  :retab!<cr>
+		nnoremap    tt          :tabf
+		nmap        gs          ysiw
 
 		" tmux/vim pane navigation
 		if exists('$TMUX')
@@ -398,7 +398,6 @@
 		vnoremap    J           4j
 		vnoremap    K           4k
 
-		vnoremap    <tab>       >gv
 		vnoremap    <s-tab>     <Left><gv
 		vnoremap    <c-c>       "+y
 
@@ -423,9 +422,10 @@
 		endif
 	endfunction
 
-	func! SmartTab(colPos)
+	func! SmartTab()
+		let colPos = col('.')
 		let currLn = getline('.')
-		if a:colPos == 1 || currLn[:a:colPos - 2] =~ "^[\t]*$"
+		if colPos == 1 || currLn[:colPos - 2] =~ "^[\t]*$"
 			return "\<Tab>"
 		else
 			return repeat(" ", &tabstop - (virtcol('.') - 1) % &tabstop)
@@ -502,5 +502,5 @@
 	endfunction
 
 	func! SplitHeader()
-		exec "normal! :vsplit " . expand("%:t:r") . ".h\<cr>"
+		exec "normal! :vsplit " . expand("%:p:r") . ".h\<cr>"
 	endfunc
