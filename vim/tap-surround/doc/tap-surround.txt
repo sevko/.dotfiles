@@ -1,0 +1,81 @@
+*tap-surround*          A plugin for manipulating surrounding elements.
+
+           ______  ______   ______   ______   __       ______
+          /\__  _\/\  __ \ /\  ___\ /\  ___\ /\ \     /\  ___\
+          \/_/\ \/\ \ \/\ \\ \ \__ \\ \ \__ \\ \ \____\ \  __\
+             \ \_\ \ \_____\\ \_____\\ \_____\\ \_____\\ \_____\
+              \/_/  \/_____/ \/_____/ \/_____/ \/_____/ \/_____/
+
+   ______   __  __   ______   ______   ______   __  __   __   __   _____
+  /\  ___\ /\ \/\ \ /\  == \ /\  == \ /\  __ \ /\ \/\ \ /\ "-.\ \ /\  __-.
+  \ \___  \\ \ \_\ \\ \  __< \ \  __< \ \ \/\ \\ \ \_\ \\ \ \-.  \\ \ \/\ \
+   \/\_____\\ \_____\\ \_\ \_\\ \_\ \_\\ \_____\\ \_____\\ \_\\"\_\\ \____-
+    \/_____/ \/_____/ \/_/ /_/ \/_/ /_/ \/_____/ \/_____/ \/_/ \/_/ \/____/
+
+==============================================================================
+CONTENTS                                            *tap-surround-contents*
+
+	1.Intro
+	2.Functionality
+	3.Options
+
+==============================================================================
+INTRO                                                  *tap-surround-intro*
+
+		tap-surround is a plugin for intuitive manipulation of surrounding
+	elements- parentheses, quotes, brackets, and so on. The Normal-mode keymaps
+	for inserting and deleting characters are the characters themselves: tap
+	once to insert, and twice to delete a pair of surrounding elements. Faster
+	editing, little overhead.
+
+==============================================================================
+FUNCTIONALITY                                  *tap-surround-functionality*
+
+		tap-surround's primary feature are intuitive keymaps. To surround a
+	word under the cursor with double-quotes (in Normal mode), for instance,
+	just tap ". To delete a pair of surroundig quotes, double-tap ".
+
+	An example, where * is the user's cursor:
+
+		("dead*beef")        Tap ", and
+		(dead*beef)          tap ((, and
+		dead*beef            tap [, and
+		[dead*beef]          you're finished.
+
+		The Visual-mode keymap is simpler: tap any character once to toggle
+	that surround element around a visual selection. For instance (the visual
+	selection is denoted by **, excluding the asterisks themselves):
+
+		[*here be code*]     Tap ", and
+		*["here be code"]*   tap [, and
+		"here be code"       you're finished.
+
+		Alternatively, tap-surround may be configured so that a single
+	keystroke toggles the surround element.
+
+		[here be 'c*ode']     Tap [, and
+		here be 'c*ode'       tap [, and
+		here be ['c*ode']     tap ', and
+		here be c*ode         you're finished.
+
+==============================================================================
+OPTIONS                                              *tap-surround-options*
+
+		tap-surround supports any single-character elements in the
+	surround_close_char dictionary. The following is the default dictionary;
+	the user can redefine it, removing default elements and adding their own.
+
+		let surround_close_char = {
+			\"<" : ">",
+			\"{" : "}",
+			\"(" : ")",
+			\'"' : '"',
+			\"'" : "'",
+			\"[" : "]"
+		\}
+
+	If you prefer the alternative, single-keystroke toggle behavior:
+		let g:toggle_surround = 1
+
+	You must restart Vim for any setting changes to take effect.
+
