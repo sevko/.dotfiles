@@ -196,14 +196,13 @@
 		au!
 		au BufRead          ~/.vimrc        exe "normal! zM"
 		au BufWritePost     ~/.vimrc        source ~/.vimrc
-		au BufWritePost     ~/.zshrc        !source ~/.zshrc
 	augroup END
 
 	augroup universal
 		au FileType         *      call <SID>def_base_syntax()
 		autocmd InsertEnter *      hi clear extraWhiteSpace
 		autocmd InsertLeave *      hi extraWhiteSpace cterm=none ctermbg=88
-								   \ | match extraWhiteSpace /\s\+$/
+			\ | match extraWhiteSpace /\s\+$/
 	augroup END
 
 	augroup filetype_vim
@@ -315,12 +314,12 @@
 		nnoremap    <Tab>       .
 		nnoremap    =           =<cr>
 		nnoremap    f           za
-		nnoremap    F           zm
+		nnoremap    F           :call ToggleUniversalFold()<cr>
 		nnoremap    <leader>t   :tabnext<CR>
 		nnoremap    <leader>st  :tabprev<CR>
 
 		nnoremap    <leader>r   :wincmd r<CR>
-		nnoremap    sev         :source ~/.vimrc<cr>
+		nnoremap    sv         :source ~/.vimrc<cr>
 
 		nnoremap    <c-a>       ggvG$
 		nnoremap    b           <c-v>
@@ -358,9 +357,8 @@
 		inoremap    <expr> j    ((pumvisible())?("\<C-n>"):("j"))   "Scroll down auto-complete menu w/ j
 		inoremap    <expr> k    ((pumvisible())?("\<C-p>"):("k"))   "Scroll up auto-complete menu w/ k
 		inoremap    <Tab>       <C-R>=Tab_Or_Complete()<CR>
-		inoremap    <BS>        <C-R>=SmartBackspace()<CR>
+		inoremap    <BS>        <C-R>=SmartBackspace(col("."), virtcol("."))<CR>
 		inoremap    jk          <esc>
-
 
 		inoremap    "           ""<Left>
 		inoremap    '           ''<Left>
@@ -399,8 +397,8 @@
 		vnoremap    J           4j
 		vnoremap    K           4k
 
-		vnoremap    <s-tab>     <Left><gv
-		vnoremap    <tab>       >gv
+		vnoremap    <s-tab>         :call BlockSmartBackspace()<cr>gv
+		vnoremap    <tab>           :call BlockSmartTab()<cr>gv
 		vnoremap    <c-c>       "+y
 
 " =============== Functions ===============
@@ -416,31 +414,57 @@
 
 	"tab-key completion
 	function! Tab_Or_Complete()
-		let curX = col('.')
-		if curX>1 && strpart( getline('.'), curX-2, 3 ) =~ '^\w'
+		let colPos = col('.')
+		if colPos > 1 && strpart(getline('.'), colPos - 2, 3) =~ '^\w'
 			return "\<C-N>"
 		else
-			return SmartTab()
+			return SmartTab(colPos)
 		endif
 	endfunction
 
-	func! SmartTab()
-		let colPos = col('.')
-		let currLn = getline('.')
-		if colPos == 1 || currLn[:colPos - 2] =~ "^[\t]*$"
+	func! SmartTab(colPos)
+		let currLn = getline(".")
+		if a:colPos == 1 || currLn[:a:colPos - 2] =~ "^[\t]*$"
 			return "\<Tab>"
 		else
-			return repeat(" ", &tabstop - (virtcol('.') - 1) % &tabstop)
+			return repeat(" ", &tabstop - (virtcol(".") - 1) % &tabstop)
 		endif
 	endfunc
 
-	func! SmartBackspace()
-		let colPos = col('.')
-		if colPos > &tabstop && virtcol('.') % &tabstop == 1 &&
-			\ getline('.')[colPos - &tabstop - 1: colPos - 2] =~ "^[ ]*$"
-			return repeat("\<BS>", &tabstop)
+	func! SmartBackspace(colPos, virtColPos)
+		let distFromStart = (a:virtColPos - 1) % &tabstop
+		if distFromStart == 0
+			let distFromStart = &tabstop
+		endif
+
+		let virtColPos = a:virtColPos - distFromStart
+		let startRealIndent = a:colPos - distFromStart
+
+		if startRealIndent >= 1 &&
+			\ getline('.')[startRealIndent - 1: a:colPos - 2] =~ "^[ ]*$"
+			return repeat("\<BS>", (a:colPos - startRealIndent))
 		else
 			return "\<BS>"
+		endif
+	endfunc
+
+	func! BlockSmartTab()
+		let lineNr = line(".")
+		let colPos = col("'<")
+
+		if len(getline(lineNr)) > 0
+			call cursor(lineNr, colPos)
+			exec "normal! i" . SmartTab(colPos)
+		endif
+	endfunc
+
+	func! BlockSmartBackspace()
+		let lineNr = line(".")
+		let colPos = col("'<")
+
+		if len(getline(lineNr)) > 0
+			call cursor(lineNr, colPos)
+			exec "normal! i" . SmartBackspace(colPos, virtcol("'<"))
 		endif
 	endfunc
 
@@ -466,7 +490,8 @@
 		endfor
 
 		if toHighlight
-			syntax match commonOperator "+\|\~\|\.\|,\|=\|%\|>\|<\|!\|&\||\|-\|\^\|\*"
+			syntax match commonOperator "+\|\~
+				\\|\.\|,\|=\|%\|>\|<\|!\|&\||\|-\|\^\|\*"
 			hi commonOperator ctermfg = red
 			hi baseDelimiter ctermfg = DarkGrey
 		endif
@@ -505,4 +530,12 @@
 
 	func! SplitHeader()
 		exec "normal! :vsplit " . expand("%:p:r") . ".h\<cr>"
+	endfunc
+
+	func! ToggleUniversalFold()
+		if &foldlevel != 0
+			exec "normal! zM"
+		else
+			exec "normal! zR"
+		endif
 	endfunc
