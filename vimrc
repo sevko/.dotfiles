@@ -251,12 +251,13 @@
 
 	augroup filetype_c
 		au!
-		au FileType c   inoremap <buffer>   if      if()<Left>
-		au FileType c   inoremap <buffer>   for     for(;;)<Left><Left><Left>
-		au FileType c   inoremap <buffer>   while   while()<Left>
-		au Filetype c   inoremap <buffer>   #i      #include
-		au Filetype c   inoremap <buffer>   #d      #define
-		au Filetype c   nnoremap <buffer>   <leader>h   :call SplitHeader()<cr>
+		au FileType c,cpp inoremap <buffer>  if      if()<Left>
+		au FileType c,cpp inoremap <buffer>  for     for(;;)<Left><Left><Left>
+		au FileType c,cpp inoremap <buffer>  while   while()<Left>
+		au Filetype c,cpp iabbrev  <buffer>  #i      #include
+		au Filetype c,cpp iabbrev  <buffer>  #d      #define
+		au Filetype c,cpp nnoremap <buffer>  <leader>oh  :call SplitHeader()<cr>
+		au Filetype c,cpp nnoremap <buffer>  <leader>oc  :call SplitSource()<cr>
 	augroup END
 
 	augroup filetype_text
@@ -269,7 +270,7 @@
 	augroup filetype_sh
 		au!
 		au FileType sh      inoremap <buffer>	if
-			\if<space>[	]<cr>then<cr>fi<Esc>2<Up>4<Right>i
+			\if<space>[ ]<cr>then<cr>fi<Esc>2<Up>4<Right>i
 	augroup END
 
 	augroup relativeLnNum
@@ -314,17 +315,17 @@
 		nnoremap    <Tab>       .
 		nnoremap    =           =<cr>
 		nnoremap    f           za
-		nnoremap    F           zi
+		nnoremap    F           zm
 		nnoremap    <leader>t   :tabnext<CR>
 		nnoremap    <leader>st  :tabprev<CR>
 
 		nnoremap    <leader>r   :wincmd r<CR>
+		nnoremap    sev         :source ~/.vimrc<cr>
 
 		nnoremap    <c-a>       ggvG$
 		nnoremap    b           <c-v>
 		nnoremap    <leader>rt  :retab!<cr>
 		nnoremap    tt          :tabf
-		nmap        gs          ysiw
 
 		" tmux/vim pane navigation
 		if exists('$TMUX')
@@ -399,6 +400,7 @@
 		vnoremap    K           4k
 
 		vnoremap    <s-tab>     <Left><gv
+		vnoremap    <tab>       >gv
 		vnoremap    <c-c>       "+y
 
 " =============== Functions ===============
@@ -418,7 +420,7 @@
 		if curX>1 && strpart( getline('.'), curX-2, 3 ) =~ '^\w'
 			return "\<C-N>"
 		else
-			return SmartTab(curX)
+			return SmartTab()
 		endif
 	endfunction
 

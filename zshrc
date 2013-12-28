@@ -10,7 +10,7 @@ bindkey "^R" history-incremental-search-backward
 	# Uncomment following line if you want to disable command autocorrection
 	# DISABLE_CORRECTION="true"
 
-	# Uncomment following line if you want red dots to be displayed while 
+	# Uncomment following line if you want red dots to be displayed while
 	# waiting for completion
 	COMPLETION_WAITING_DOTS="true"
 
@@ -33,8 +33,10 @@ bindkey "^R" history-incremental-search-backward
 	alias clip="xclip -select clipboard"
 	alias ev=evince
 	alias gth=gthumb
-	alias hp-scan="hp-scan --area=0,0,216,279"
 	alias ka=killall
+	alias memcheck="valgrind --leak-check=yes --show-reachable=yes\
+		--num-callers=20 --track-fds=yes"
+	alias scan="hp-scan --area=0,0,216,279"
 	alias so=source
 	alias tmux="TERM=screen-256color-bce tmux"
 	alias v=vim
@@ -50,16 +52,17 @@ bindkey "^R" history-incremental-search-backward
 
 	# git
 	alias g="git"
-	alias gau="g add -u"
-	alias gc="g commit"
+	alias gau="git add -u"
+	alias gc="git commit"
+	alias gcl="git clone"
 	alias gco="g checkout"
-	alias gf="g fetch"
-	alias gl="g log"
-	alias gp="g pull"
-	alias gpu="g push"
+	alias gf="git fetch"
+	alias gl="git log"
+	alias gp="git pull"
+	alias gpu="git push"
 	alias grh="git reset --hard HEAD"
-	alias gs="g status"
-	alias gu="g up"
+	alias gs="git status"
+	alias gu="git up"
 
 # variables
 	export EDITOR=vim
