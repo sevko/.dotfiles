@@ -231,9 +231,10 @@
 
 	augroup filetype_html
 		au!
+		au FileType html,htmldjango     setlocal tabstop=2 shiftwidth=2
 		au FileType html,htmldjango     inoremap <buffer>   <   <><Left>
-		"au FileType html,htmldjango    inoremap <buffer>   %
-			"\%<Space><Space>%<Left><Left>
+		au FileType html,htmldjango     inoremap <buffer>   %
+			\ %<Space><Space>%<Left><Left>
 		au FileType html,htmldjango     inoremap <buffer>   %%  %
 	augroup END
 
@@ -243,20 +244,26 @@
 			\ public static void main(String[] args){<cr>}<Esc>O
 		"au FileType java    iabbrev <buffer>   psvm
 		"   \public static void main(String[] args){<cr>}<Esc>O
-		au FileType java    inoremap <buffer>   if      if()<Left>
-		au FileType java    inoremap <buffer>   for     for(;;)<Left><Left><Left>
-		au FileType java    inoremap <buffer>   while   while()<Left>
+		au FileType java    nnoremap <buffer>   <leader>;   $a;<esc>o
+		au FileType java    inoremap <buffer>   if          if()<Left>
+		au FileType java    inoremap <buffer>   for         for(;;)<Left><Left><Left>
+		au FileType java    inoremap <buffer>   while       while()<Left>
 	augroup END
 
 	augroup filetype_c
 		au!
-		au FileType c,cpp inoremap <buffer>  if      if()<Left>
-		au FileType c,cpp inoremap <buffer>  for     for(;;)<Left><Left><Left>
-		au FileType c,cpp inoremap <buffer>  while   while()<Left>
-		au Filetype c,cpp iabbrev  <buffer>  #i      #include
-		au Filetype c,cpp iabbrev  <buffer>  #d      #define
-		au Filetype c,cpp nnoremap <buffer>  <leader>oh  :call SplitHeader()<cr>
-		au Filetype c,cpp nnoremap <buffer>  <leader>oc  :call SplitSource()<cr>
+		au FileType c,cpp inoremap <buffer> if      if()<Left>
+		au FileType c,cpp inoremap <buffer> for     for(;;)<Left><Left><Left>
+		au FileType c,cpp inoremap <buffer> while   while()<Left>
+		au Filetype c,cpp iabbrev  <buffer> #i      #include
+		au Filetype c,cpp iabbrev  <buffer> #d      #define
+		au Filetype c,cpp nnoremap <buffer> <leader>oh  :call SplitHeader()<cr>
+		au Filetype c,cpp nnoremap <buffer> <leader>oc  :call SplitSource()<cr>
+	augroup END
+
+	augroup sass
+		au!
+		au Filetype sass nnoremap <buffer> <leader>cs   :call CompileSass()<cr>
 	augroup END
 
 	augroup filetype_text
@@ -530,6 +537,12 @@
 
 	func! SplitHeader()
 		exec "normal! :vsplit " . expand("%:p:r") . ".h\<cr>"
+	endfunc
+
+	func! CompileSass()
+		"silent
+		exec "!sass ". expand("%:p:") . " " . expand("%:p:r") . ".css"
+		"redraw!
 	endfunc
 
 	func! ToggleUniversalFold()
