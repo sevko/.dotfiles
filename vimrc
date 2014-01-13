@@ -240,25 +240,29 @@
 
 	augroup filetype_java
 		au!
-		au FileType java    inoremap <buffer>   psvm
+		au FileType java    inoreabbrev  <buffer>   psvm
 			\ public static void main(String[] args){<cr>}<Esc>O
-		"au FileType java    iabbrev <buffer>   psvm
-		"   \public static void main(String[] args){<cr>}<Esc>O
 		au FileType java    nnoremap <buffer>   <leader>;   $a;<esc>o
-		au FileType java    inoremap <buffer>   if          if()<Left>
-		au FileType java    inoremap <buffer>   for         for(;;)<Left><Left><Left>
-		au FileType java    inoremap <buffer>   while       while()<Left>
+		au FileType java    inoreabbrev <buffer>   if          if()<Left>
+		au FileType java    inoreabbrev <buffer>   for         for(;;)<Left><Left><Left>
+		au FileType java    inoreabbrev <buffer>   while       while()<Left>
 	augroup END
 
 	augroup filetype_c
 		au!
-		au FileType c,cpp inoremap <buffer> if      if()<Left>
-		au FileType c,cpp inoremap <buffer> for     for(;;)<Left><Left><Left>
-		au FileType c,cpp inoremap <buffer> while   while()<Left>
-		au Filetype c,cpp iabbrev  <buffer> #i      #include
-		au Filetype c,cpp iabbrev  <buffer> #d      #define
+		au FileType c,cpp inoremap <buffer> if          if()<Left>
+		au FileType c,cpp inoremap <buffer> for         for(;;)<Left><Left><Left>
+		au FileType c,cpp inoremap <buffer> while       while()<Left>
+		au Filetype c,cpp iabbrev  <buffer> #i          #include
+		au Filetype c,cpp iabbrev  <buffer> #d          #define
+		au FileType c,cpp nnoremap <buffer> <leader>;   $a;<esc>o
 		au Filetype c,cpp nnoremap <buffer> <leader>oh  :call SplitHeader()<cr>
 		au Filetype c,cpp nnoremap <buffer> <leader>oc  :call SplitSource()<cr>
+	augroup END
+
+	augroup filetype_js
+		au!
+		au FileType javascript nnoremap <buffer> <leader>;   $a;<esc>o
 	augroup END
 
 	augroup sass
@@ -275,8 +279,8 @@
 
 	augroup filetype_sh
 		au!
-		au FileType sh      inoremap <buffer>	if
-			\if<space>[ ]<cr>then<cr>fi<Esc>2<Up>4<Right>i
+		au FileType sh      inoreabbrev <buffer>    if
+			\ if<space>[ ]<cr>then<cr>fi<Esc>2<Up>3<Right>i
 	augroup END
 
 	augroup relativeLnNum
