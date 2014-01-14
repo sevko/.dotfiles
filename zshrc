@@ -28,7 +28,7 @@ bindkey "^R" history-incremental-search-backward
 	stty intr \^x
 
 #aliases
-	alias bpy="bpython"
+	alias bpy=bpython
 	alias ccat="pygmentize -O style=monokai -f terminal -g"
 	alias clip="xclip -select clipboard"
 	alias ev=evince
@@ -36,9 +36,11 @@ bindkey "^R" history-incremental-search-backward
 	alias ka=killall
 	alias memcheck="valgrind --leak-check=yes --show-reachable=yes\
 		--num-callers=20 --track-fds=yes"
-	alias scan="hp-scan --area=0,0,216,279"
+	alias scan="command hp-scan --area=0,0,216,279"
+	alias hp-scan="echo 'nope nope nope'"
 	alias so=source
-	alias tmux="TERM=screen-256color-bce tmux"
+	alias soz="source ~/.zshrc"
+	alias t=tmux
 	alias v=vim
 
 	# core utils
@@ -51,17 +53,19 @@ bindkey "^R" history-incremental-search-backward
 	alias wg=wget
 
 	# git
-	alias g="git"
+	alias g=git
 	alias gau="git add -u"
 	alias gc="git commit"
 	alias gcl="git clone"
-	alias gco="g checkout"
+	alias gco="git checkout"
 	alias gf="git fetch"
 	alias gl="git log"
+	alias gm="git merge"
 	alias gp="git pull"
 	alias gpu="git push"
 	alias grh="git reset --hard HEAD"
 	alias gs="git status"
+	alias gst="git stash"
 	alias gu="git up"
 
 # variables
