@@ -34,11 +34,12 @@ bindkey "^R" history-incremental-search-backward
 	alias ev=evince
 	alias gth=gthumb
 	alias ka=killall
-	alias memcheck="valgrind --leak-check=yes --show-reachable=yes\
-		--num-callers=20 --track-fds=yes"
+	alias memcheck="valgrind --leak-check=yes --show-reachable=yes
+		--num-callers=20 --track-fds=yes --track-origins=yes"
 	alias scan="command hp-scan --area=0,0,216,279"
 	alias hp-scan="echo 'nope nope nope'"
 	alias so=source
+	alias sasw="sass --watch"
 	alias soz="source ~/.zshrc"
 	alias t=tmux
 	alias v=vim

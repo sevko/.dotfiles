@@ -255,9 +255,11 @@
 		au FileType c,cpp inoremap <buffer> while       while()<Left>
 		au Filetype c,cpp iabbrev  <buffer> #i          #include
 		au Filetype c,cpp iabbrev  <buffer> #d          #define
-		au FileType c,cpp nnoremap <buffer> <leader>;   $a;<esc>o
-		au Filetype c,cpp nnoremap <buffer> <leader>oh  :call SplitHeader()<cr>
-		au Filetype c,cpp nnoremap <buffer> <leader>oc  :call SplitSource()<cr>
+		au FileType c,cpp nnoremap <buffer> <leader>;   $a;<esc>
+		au Filetype c,cpp nnoremap <buffer> <leader>oh  :call SplitHeader("vsplit")<cr>
+		au Filetype c,cpp nnoremap <buffer> <leader>oc  :call SplitSource("vsplit")<cr>
+		au Filetype c,cpp nnoremap <buffer> <leader>ohs  :call SplitHeader("split")<cr>
+		au Filetype c,cpp nnoremap <buffer> <leader>ocs  :call SplitSource("split")<cr>
 	augroup END
 
 	augroup filetype_js
@@ -330,7 +332,8 @@
 		nnoremap    <leader>st  :tabprev<CR>
 
 		nnoremap    <leader>r   :wincmd r<CR>
-		nnoremap    sv         :source ~/.vimrc<cr>
+		nnoremap    sv          :source ~/.vimrc<cr>
+		nnoremap    s           :set 
 
 		nnoremap    <c-a>       ggvG$
 		nnoremap    b           <c-v>
@@ -343,6 +346,8 @@
 			nnoremap <silent> <C-j> :call TmuxOrSplitSwitch('j', 'D')<cr>
 			nnoremap <silent> <C-k> :call TmuxOrSplitSwitch('k', 'U')<cr>
 			nnoremap <silent> <C-l> :call TmuxOrSplitSwitch('l', 'R')<cr>
+
+			nnoremap <C-m-j>        :echo "thirty"
 		else
 			map <C-h> <C-w>h
 			map <C-j> <C-w>j
@@ -539,14 +544,16 @@
 		endif
 	endfunction
 
-	func! SplitHeader()
-		exec "normal! :vsplit " . expand("%:p:r") . ".h\<cr>"
+	func! SplitSource(typeOfSplit)
+		exec "normal! :" . a:typeOfSplit . " " . expand("%:p:r") . ".c\<cr>"
+	endfunc
+
+	func! SplitHeader(typeOfSplit)
+		exec "normal! :" . a:typeOfSplit . " " . expand("%:p:r") . ".h\<cr>"
 	endfunc
 
 	func! CompileSass()
-		"silent
 		exec "!sass ". expand("%:p:") . " " . expand("%:p:r") . ".css"
-		"redraw!
 	endfunc
 
 	func! ToggleUniversalFold()
