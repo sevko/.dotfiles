@@ -1,4 +1,4 @@
-bindkey "^R" history-incremental-search-backward
+source ~/.dotfiles/zsh/prompt.zsh
 
 # settings
 	zstyle ':completion:*' menu select list-colors ''
@@ -9,8 +9,10 @@ bindkey "^R" history-incremental-search-backward
 	export PATH=$PATH:/home/sevko/.local/bin:/usr/local/sbin:/usr/local/bin
 	export PATH=$PATH:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games
 
-#zsh hotkeys
+#(zsh) hotkeys
 	stty intr \^x
+	bindkey "^R" history-incremental-search-backward
+
 
 #aliases
 	alias bpy=bpython
@@ -68,64 +70,6 @@ bindkey "^R" history-incremental-search-backward
 	if [[ -s '/etc/zsh_command_not_found' ]]; then
 		source '/etc/zsh_command_not_found'
 	fi
-
-	# prompt
-		typeset -Ag font
-		font=(
-			reset       "%{[00m%}"
-			bold        "%{[01m%}" no-bold        "%{[22m%}"
-			italic      "%{[03m%}" no-italic      "%{[23m%}"
-			underline   "%{[04m%}" no-underline   "%{[24m%}"
-			blink       "%{[05m%}" no-blink       "%{[25m%}"
-			reverse     "%{[07m%}" no-reverse     "%{[27m%}"
-		)
-
-		fg(){
-			echo "%{[38;5;$1m%}"
-		}
-
-		bg(){
-			echo "%{[48;5;$1m%}"
-		}
-
-		prompt_git(){
-			if [ -d .git ]
-			then
-				branchName=$(git symbolic-ref --short HEAD)
-				git diff --quiet --ignore-submodules HEAD &>/dev/null
-				branchStatus=$([ "$?" = 1 ] && echo "$(fg 196)±")
-				echo "$(fg 40) $branchStatus $(fg 73)$branchName$font[reset]"
-			fi
-		}
-
-		dir_permissions(){
-			[[ ! -w $PWD ]] && echo "$(fg 196) "
-		}
-
-		setopt PROMPT_SUBST
-
-		dir_path(){
-			workingDir=$PWD
-			[[ "$workingDir" =~ ^"$HOME"(/|$) ]] && workingDir="$(fg 43)~${workingDir#$HOME}"
-
-			if [ -d .git ]
-			then
-				gitRootDir=${$(git rev-parse --show-toplevel)##*/}
-				gitRootPre=${workingDir%$gitRootDir*}
-				gitRootPost=${gitRootDir##*/}${workingDir#*$gitRootDir}
-
-				echo "$(fg 38)$gitRootPre$(fg 43)$font[bold]$gitRootPost"
-			else
-				echo "$(fg 38)$workingDir"
-			fi
-		}
-
-		#prompt_dir_path="$(fg 39)%~"
-		prompt_head="$(fg 202) λ $font[reset]"
-		exit_status=" %(?..$(fg 160)$font[bold]✘ %?)"
-
-		PROMPT='$(dir_path)$(dir_permissions)$prompt_head'
-		RPROMPT='$(prompt_git)$exit_status$font[reset]'
 
 # The following lines were added by zsh-newuser-install
 	HISTFILE=~/.histfile
