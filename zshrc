@@ -40,11 +40,13 @@ bindkey "^R" history-incremental-search-backward
 
 	# git
 		alias g=git
+		alias ga="git add"
 		alias gau="git add -u"
 		alias gb="git branch"
 		alias gc="git commit"
 		alias gcl="git clone"
 		alias gco="git checkout"
+		alias gd="git diff"
 		alias gf="git fetch"
 		alias gl="git log"
 		alias gm="git merge"
@@ -53,6 +55,8 @@ bindkey "^R" history-incremental-search-backward
 		alias grh="git reset --hard HEAD"
 		alias gs="git status"
 		alias gst="git stash"
+		alias gsta="git stash apply"
+		alias gstl="git stash list"
 		alias gu="git up"
 
 # variables
@@ -65,41 +69,63 @@ bindkey "^R" history-incremental-search-backward
 		source '/etc/zsh_command_not_found'
 	fi
 
-	typeset -Ag font
-	font=(
-		reset       "%{[00m%}"
-		bold        "%{[01m%}" no-bold        "%{[22m%}"
-		italic      "%{[03m%}" no-italic      "%{[23m%}"
-		underline   "%{[04m%}" no-underline   "%{[24m%}"
-		blink       "%{[05m%}" no-blink       "%{[25m%}"
-		reverse     "%{[07m%}" no-reverse     "%{[27m%}"
-	)
+	# prompt
+		typeset -Ag font
+		font=(
+			reset       "%{[00m%}"
+			bold        "%{[01m%}" no-bold        "%{[22m%}"
+			italic      "%{[03m%}" no-italic      "%{[23m%}"
+			underline   "%{[04m%}" no-underline   "%{[24m%}"
+			blink       "%{[05m%}" no-blink       "%{[25m%}"
+			reverse     "%{[07m%}" no-reverse     "%{[27m%}"
+		)
 
-	fg(){
-		echo "%{[38;5;$1m%}"
-	}
+		fg(){
+			echo "%{[38;5;$1m%}"
+		}
 
-	bg(){
-		echo "%{[48;5;$1m%}"
-	}
+		bg(){
+			echo "%{[48;5;$1m%}"
+		}
 
-	prompt_git(){
-		if [ -d .git ]
-		then
-			echo " • $(fg 73)$font[bold] $(git symbolic-ref --short HEAD)"
-		fi
-	}
+		prompt_git(){
+			if [ -d .git ]
+			then
+				branchName=$(git symbolic-ref --short HEAD)
+				git diff --quiet --ignore-submodules HEAD &>/dev/null
+				branchStatus=$([ "$?" = 1 ] && echo "$(fg 196)±")
+				echo "$(fg 40) $branchStatus $(fg 73)$branchName$font[reset]"
+			fi
+		}
 
-	dir_permissions(){
-		if [[ ! -w $PWD ]]
-		then
-			echo "$(fg 196) "
-		fi
-	}
+		dir_permissions(){
+			[[ ! -w $PWD ]] && echo "$(fg 196) "
+		}
 
-	setopt PROMPT_SUBST
-	PROMPT='$(fg 202)λ$(prompt_git)$font[reset] '
-	RPROMPT='$(fg 39) %~$(dir_permissions)$font[reset]'
+		setopt PROMPT_SUBST
+
+		dir_path(){
+			workingDir=$PWD
+			[[ "$workingDir" =~ ^"$HOME"(/|$) ]] && workingDir="$(fg 43)~${workingDir#$HOME}"
+
+			if [ -d .git ]
+			then
+				gitRootDir=${$(git rev-parse --show-toplevel)##*/}
+				gitRootPre=${workingDir%$gitRootDir*}
+				gitRootPost=${gitRootDir##*/}${workingDir#*$gitRootDir}
+
+				echo "$(fg 38)$gitRootPre$(fg 43)$font[bold]$gitRootPost"
+			else
+				echo "$(fg 38)$workingDir"
+			fi
+		}
+
+		#prompt_dir_path="$(fg 39)%~"
+		prompt_head="$(fg 202) λ $font[reset]"
+		exit_status=" %(?..$(fg 160)$font[bold]✘ %?)"
+
+		PROMPT='$(dir_path)$(dir_permissions)$prompt_head'
+		RPROMPT='$(prompt_git)$exit_status$font[reset]'
 
 # The following lines were added by zsh-newuser-install
 	HISTFILE=~/.histfile
