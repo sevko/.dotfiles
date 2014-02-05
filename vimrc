@@ -1,4 +1,4 @@
-" =============== default ===============
+" default
 
 	" This line should not be removed as it ensures that various options are
 	" properly set to work with the Vim-related packages available in Debian.
@@ -28,7 +28,7 @@
 		execute "set <S-Left>=\e[1;2D"
 	endif
 
-" =============== Settings ===============
+" settings
 
 	filetype indent on
 	filetype plugin on
@@ -125,7 +125,7 @@
 		let &t_SI .= "\<Esc>[?2004h"
 		let &t_EI .= "\<Esc>[?2004l"
 
-	" tmux/vim pane navigation"
+	" tmux/vim pane navigation
 		let previous_title = substitute
 			\(system("tmux display-message -p '#{pane_title}'"), '\n', '', '')
 		let &t_ti = "\<Esc>]2;vim\<Esc>\\" . &t_ti
@@ -142,9 +142,7 @@
 			\"[" : "]"
 		\}
 
-		"let toggle_surround = 1
-
-" =============== Highlightinng ===============
+" highlighting
 
 	hi cursorlinenr ctermfg=red ctermbg=0
 	hi folded ctermbg=2 ctermfg=black
@@ -155,6 +153,7 @@
 	hi vertsplit ctermfg=black ctermbg=2
 	hi statuslinenc cterm=none ctermfg=black ctermbg=2
 
+	hi extraWhiteSpace cterm=none ctermbg=88 | match extraWhiteSpace /\s\+$/
 	" autocomplete menu
 		hi pmenu cterm=none ctermbg=2 ctermfg=233
 		hi pmenusel ctermbg=233 ctermfg=red
@@ -165,11 +164,11 @@
 		hi tabline ctermbg=green ctermfg=black
 		hi tablinesel ctermbg=none ctermfg=red
 
-" =============== AutoCommands ===============
+" autocommands
 
 	augroup window
 		au!
-		au WinEnter *       call NERDTreeQuit()
+		au WinEnter         *       call NERDTreeQuit()
 	augroup END
 
 	augroup new_buffer
@@ -194,14 +193,14 @@
 
 	augroup file_specific
 		au!
-		au BufRead          ~/.vimrc        exe "normal! zM"
+		au BufEnter         ~/.vimrc        exe "normal! zM"
 		au BufWritePost     ~/.vimrc        source ~/.vimrc
 	augroup END
 
 	augroup universal
-		au FileType         *      call <SID>def_base_syntax()
-		autocmd InsertEnter *      hi clear extraWhiteSpace
-		autocmd InsertLeave *      hi extraWhiteSpace cterm=none ctermbg=88
+		"au FileType         *      call <SID>def_base_syntax()
+		autocmd InsertEnter *       hi clear extraWhiteSpace 
+		autocmd InsertLeave *       hi extraWhiteSpace cterm=none ctermbg=88
 			\ | match extraWhiteSpace /\s\+$/
 	augroup END
 
@@ -293,18 +292,18 @@
 		au FocusGained      *   :set relativenumber
 	augroup END
 
-" =============== Key Mappings ===============
+" key mappings
 
 	let mapleader = " "
 
-	" =============== GLOBAL ===============
+	" global
 
 		noremap     <F1>        :NERDTreeToggle<cr>
 
 		map         <leader>c   <plug>NERDCommenterToggle
 		map         <leader>cz  <plug>NerdComComment
 
-	" =============== Normal ===============
+	" normal
 
 		noremap    <leader>ev   :vsplit $MYVIMRC<cr>
 		nnoremap   <leader>w    <esc>:w<cr>
@@ -355,7 +354,7 @@
 			map <C-l> <C-w>l
 		endif
 
-	" =============== Operator-Pending ===============
+	" operator-pending
 
 		" Faster navigation
 		onoremap    H           b
@@ -367,7 +366,7 @@
 		onoremap    <leader>j   G
 		onoremap    <leader>k   gg
 
-	" =============== Insert ===============
+	" insert
 
 		inoremap    <special><expr>         <Esc>[200~ SmartPaste()
 		inoremap    <expr> j    ((pumvisible())?("\<C-n>"):("j"))   "Scroll down auto-complete menu w/ j
@@ -399,7 +398,7 @@
 
 		imap        <c-c>       <plug>NERDCommenterInsert
 
-	" =============== Visual ===============
+	" visual
 
 		vnoremap jk             <esc>
 
@@ -417,9 +416,9 @@
 		vnoremap    <tab>           :call BlockSmartTab()<cr>gv
 		vnoremap    <c-c>       "+y
 
-" =============== Functions ===============
+" functions
 
-	" toggles between relative-ln and real-ln
+	" toggles between relative and absolute line numbering
 	function! NumberToggle()
 		if(&relativenumber == 1)
 			set nornu
@@ -428,7 +427,7 @@
 		endif
 	endfunc
 
-	"tab-key completion
+	" tab-key insert-mode auto-completion
 	function! Tab_Or_Complete()
 		let colPos = col('.')
 		if colPos > 1 && strpart(getline('.'), colPos - 2, 3) =~ '^\w'
@@ -438,6 +437,8 @@
 		endif
 	endfunction
 
+	" if any preceding characters are only spaces or tabs, insert a hard tab
+	" otherwise, insert a soft tab
 	func! SmartTab(colPos)
 		let currLn = getline(".")
 		if a:colPos == 1 || currLn[:a:colPos - 2] =~ "^[\t]*$"
@@ -447,6 +448,8 @@
 		endif
 	endfunc
 
+	" if cursor position is preceded by multiple spaces, delete all spaces
+	" until the last tab-stop column
 	func! SmartBackspace(colPos, virtColPos)
 		let distFromStart = (a:virtColPos - 1) % &tabstop
 		if distFromStart == 0
@@ -484,6 +487,7 @@
 		endif
 	endfunc
 
+	" toggles paste setting when pasting from the terminal
 	function! SmartPaste()
 		set pastetoggle=<Esc>[201~
 		set paste
@@ -491,28 +495,29 @@
 	endfunction
 
 	"common operator highlighting
-	function! s:def_base_syntax()
-		let currExt = expand("%:e")
+	"function! s:def_base_syntax()
+		"let currExt = expand("%:e")
 
-		"the following filetypes will be ignored
-		let badFiletypes = ["html"]
-		let toHighlight = 1
+		""the following filetypes will be ignored
+		"let badFiletypes = ["html"]
+		"let toHighlight = 1
 
-		for fileExt in badFiletypes
-			if fileExt == currExt
-				let toHighlight = 0
-				break
-			endif
-		endfor
+		"for fileExt in badFiletypes
+			"if fileExt == currExt
+				"let toHighlight = 0
+				"break
+			"endif
+		"endfor
 
-		if toHighlight
-			syntax match commonOperator "+\|\~
-				\\|\.\|,\|=\|%\|>\|<\|!\|&\||\|-\|\^\|\*"
-			hi commonOperator ctermfg = red
-			hi baseDelimiter ctermfg = DarkGrey
-		endif
-	endfunction
+		"if toHighlight
+			"syntax match commonOperator "+\|\~
+				"\\|\.\|,\|=\|%\|>\|<\|!\|&\||\|-\|\^\|\*"
+			"hi commonOperator ctermfg = red
+			"hi baseDelimiter ctermfg = DarkGrey
+		"endif
+	"endfunction
 
+	" closes any open NERDTree buffers
 	function! NERDTreeQuit()
 		redir => buffersoutput
 		silent buffers
@@ -544,18 +549,24 @@
 		endif
 	endfunction
 
+	" open the open C header file's accompanying source file in a split of
+	" type typeOfSplit
 	func! SplitSource(typeOfSplit)
 		exec "normal! :" . a:typeOfSplit . " " . expand("%:p:r") . ".c\<cr>"
 	endfunc
 
+	" open the open C source file's accompanying header file in a split of
+	" type typeOfSplit
 	func! SplitHeader(typeOfSplit)
 		exec "normal! :" . a:typeOfSplit . " " . expand("%:p:r") . ".h\<cr>"
 	endfunc
 
+	" compile open Sass file
 	func! CompileSass()
 		exec "!sass ". expand("%:p:") . " " . expand("%:p:r") . ".css"
 	endfunc
 
+	" toggle all folding levels (ie fold everything, unfold everything)
 	func! ToggleUniversalFold()
 		if &foldlevel != 0
 			exec "normal! zM"
