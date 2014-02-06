@@ -1,7 +1,8 @@
+source ~/.dotfiles/zsh/oh-my-zsh.zsh
 source ~/.dotfiles/zsh/prompt.zsh
 
 # settings
-	zstyle ':completion:*' menu select list-colors ''
+	zstyle ':completion:*' menu select
 	CASE_SENSITIVE="true"
 	COMPLETION_WAITING_DOTS="true"
 	DISABLE_UNTRACKED_FILES_DIRTY="true"
@@ -11,8 +12,7 @@ source ~/.dotfiles/zsh/prompt.zsh
 
 #(zsh) hotkeys
 	stty intr \^x
-	bindkey "^R" history-incremental-search-backward
-
+	bindkey -v "^r" history-incremental-search-backward
 
 #aliases
 	alias bpy=bpython
@@ -34,7 +34,7 @@ source ~/.dotfiles/zsh/prompt.zsh
 	# core utils
 		alias c=cd
 		alias l="command ls --color -h --group-directories-first"
-		alias ll="ls -al"
+		alias ll="l -al"
 		alias m=man
 		alias mk=make
 		alias mkd=mkdir

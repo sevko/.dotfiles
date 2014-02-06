@@ -2,3 +2,20 @@ set autoindent
 set noexpandtab
 set tabstop=4
 set shiftwidth=4
+
+"syn match arithmetic_operator "+\|-\|*\|/\|%\|<\|>\|="
+"syn match logic_operator "&\||\|\^"
+"syn match surrounding_element "(\|)\|\[\|\]"
+"syn match brackets "{\|}"
+"syn match delimiters "\.\|,\|:"
+"syn match end_of_line ";"
+
+"hi arithmetic_operator ctermfg=1
+"hi logic_operator ctermfg=2
+"hi surrounding_element ctermfg=red
+"hi brackets ctermfg=2
+"hi delimiters ctermfg=45
+"hi end_of_line ctermfg=241
+"
+
+syn match _constant "\([a-zA-Z0-9]\)\@<![A-Z][A-Z0-9_]*\([A-Za-z0-9_]\)\@!" | hi _constant cterm=italic ctermfg=70

@@ -7,10 +7,6 @@
 	call pathogen#incubate()
 	call pathogen#helptags()
 
-	if has("syntax")
-	  syntax on
-	endif
-
 	if filereadable("/etc/vim/vimrc.local")
 	  source /etc/vim/vimrc.local
 	endif
@@ -77,6 +73,11 @@
 		syntax enable
 		set background=dark
 		colorscheme solarized
+
+	" italic comments
+		highlight Comment cterm=italic
+		set t_ZH=[3m
+		set t_ZR=[23m
 
 	" lightline
 		let g:lightline = {
@@ -152,8 +153,8 @@
 	hi nontext ctermfg=red
 	hi vertsplit ctermfg=black ctermbg=2
 	hi statuslinenc cterm=none ctermfg=black ctermbg=2
-
 	hi extraWhiteSpace cterm=none ctermbg=88 | match extraWhiteSpace /\s\+$/
+
 	" autocomplete menu
 		hi pmenu cterm=none ctermbg=2 ctermfg=233
 		hi pmenusel ctermbg=233 ctermfg=red
@@ -164,6 +165,8 @@
 		hi tabline ctermbg=green ctermfg=black
 		hi tablinesel ctermbg=none ctermfg=red
 
+	hi MatchParen cterm=bold ctermfg=45 ctermbg=none
+
 " autocommands
 
 	augroup window
@@ -173,33 +176,29 @@
 
 	augroup new_buffer
 		au!
-		au bufnewfile       *.java  :0r ~/.vim/templates/java.txt
+		au bufnewfile       *.java  :0r ~/.dotfiles/vim/templates/java.txt
 							\| exe "normal! gg2e2li" . expand("%:t:r")
 							\. " \<Esc> 2ji" .	expand("%:t:r")
 							\. "() \<Esc>oa\<BS>"
 
-		au bufnewfile       *.html  :0r~/.vim/templates/html.txt
-		au bufnewfile       *.c     :0r ~/.vim/templates/c.txt
+		au bufnewfile       *.html  :0r~/.dotfiles/vim/templates/html.txt
+		au bufnewfile       *.c     :0r ~/.dotfiles/vim/templates/c.txt
 
 		au bufnewfile       *       exe "normal Gddk"
 		au bufnewfile       *       startinsert
-
-		au BufRead,BufNewFile *   syn match parens /[()\[\]{}]/
-										\| hi parens ctermfg=green
-		au BufRead,BufNewFile *   hi MatchParen ctermfg=DarkRed ctermbg=none
 
 		au bufnewfile       *.java  exe "normal! k$"
 	augroup END
 
 	augroup file_specific
 		au!
-		au BufEnter         ~/.vimrc        exe "normal! zM"
-		au BufWritePost     ~/.vimrc        source ~/.vimrc
+		au BufReadPost         ~/.vimrc         exe "normal! zM"
+		au BufWritePost     ~/.vimrc            source ~/.vimrc
 	augroup END
 
 	augroup universal
 		"au FileType         *      call <SID>def_base_syntax()
-		autocmd InsertEnter *       hi clear extraWhiteSpace 
+		autocmd InsertEnter *       hi clear extraWhiteSpace
 		autocmd InsertLeave *       hi extraWhiteSpace cterm=none ctermbg=88
 			\ | match extraWhiteSpace /\s\+$/
 	augroup END
@@ -498,10 +497,10 @@
 	"function! s:def_base_syntax()
 		"let currExt = expand("%:e")
 
-		""the following filetypes will be ignored
+		"" don't apply highlighting for badFiletypes
 		"let badFiletypes = ["html"]
-		"let toHighlight = 1
 
+		"let toHighlight = 1
 		"for fileExt in badFiletypes
 			"if fileExt == currExt
 				"let toHighlight = 0
@@ -510,8 +509,7 @@
 		"endfor
 
 		"if toHighlight
-			"syntax match commonOperator "+\|\~
-				"\\|\.\|,\|=\|%\|>\|<\|!\|&\||\|-\|\^\|\*"
+			"syntax match operator "()"
 			"hi commonOperator ctermfg = red
 			"hi baseDelimiter ctermfg = DarkGrey
 		"endif

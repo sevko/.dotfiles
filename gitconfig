@@ -21,19 +21,19 @@
 	template = /home/sevko/.dotfiles/git/commitMessage.txt
 
 [color "branch"]
-  current = yellow
-  local = yellow
-  remote = magenta
+	current = yellow
+	local = yellow
+	remote = magenta
 
 [color "diff"]
-  meta = cyan
-  frag = magenta bold
-  old = red
-  new = blue
-  whitespace = white reverse
+	meta = cyan
+	frag = magenta bold
+	old = red
+	new = blue
+	whitespace = white reverse
 
 [color "status"]
-  added = green
-  changed = red bold
-  untracked = cyan
-  branch = red bold
+	added = green
+	changed = red bold
+	untracked = cyan
+	branch = red bold
