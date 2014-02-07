@@ -1,5 +1,3 @@
-syn match _cStruct "\([a-zA-Z0-9]\)[a-zA-Z0-9]\+_t\([a-zA-Z0-9]\)\@!" | hi _cStruct ctermfg=6
-
 syn match _arithmetic_operator "+\|-\|\*\|%\|<\|>\|="
 syn match _arithmetic_operator "\(/\|*\)\@<!/\(/\|*\)\@!"
 
@@ -23,4 +21,4 @@ hi _delimiters ctermfg=166
 hi _end_of_line ctermfg=244
 hi _constant cterm=italic ctermfg=70
 
-source ~/.dotfiles/vimrc-after
+so ~/.vimrc-after
