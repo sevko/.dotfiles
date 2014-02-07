@@ -1,3 +1,4 @@
+# dictionary of special font escape codes
 typeset -Ag font
 font=(
 	reset       "%{[00m%}"
@@ -44,7 +45,8 @@ dir_path(){
 		workingDir="$(fg 38)$PWD"
 	fi
 
-	# if current directory is part of a git archive, highlight
+	# if current directory is part of a git archive, highlight any directories
+	# that are part of the archive in a color different from the path
 	if $(inside_git_archive); then
 		gitRootDir=${$(git rev-parse --show-toplevel)##*/}
 		gitRootPre=${workingDir%$gitRootDir*}
@@ -57,9 +59,15 @@ dir_path(){
 	echo -n $workingDir
 }
 
+ssh_info(){
+	if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
+		echo "$USERNAME@$HOST"
+	fi
+}
+
 prompt_head="$(fg 202) λ $font[reset]"
 exit_status=" %(?..$(fg 160)$font[bold]✘ %?)"
 
 setopt PROMPT_SUBST
-PROMPT='$(dir_path)$prompt_head'
+PROMPT='$(ssh_info)$(dir_path)$prompt_head'
 RPROMPT='$(git_branch_status)$exit_status$font[reset]'

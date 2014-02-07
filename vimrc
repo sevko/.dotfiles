@@ -7,6 +7,10 @@
 	call pathogen#incubate()
 	call pathogen#helptags()
 
+	if has("syntax")
+		syntax enable
+	endif
+
 	if filereadable("/etc/vim/vimrc.local")
 	  source /etc/vim/vimrc.local
 	endif
@@ -70,7 +74,6 @@
 	set list lcs=tab:\·\ 
 
 	" colorscheme
-		syntax enable
 		set background=dark
 		colorscheme solarized
 
