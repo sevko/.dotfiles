@@ -79,26 +79,6 @@
 
 	" statusline
 
-		" statusline for current window split
-		func! StatusLine()
-			setl statusline=%1*\ %t\                        " filename
-			setl stl+=%2*%{&readonly?'\ ':''}              " readonly
-			setl stl+=%3*%{GitBranchName()}                 " branch name
-			setl stl+=%4*%{&modified?' +\ ':''}             " modified (note unicode space)
-			setl stl+=%5*%=                                 " right justify
-			setl stl+=%6*\ %{strlen(&ft)?&ft:'none'}\       " filetype
-			setl stl+=%7*\ %p%%\                            " percent of file
-		endfunc
-
-		call StatusLine()
-
-		" statusline for other window splits
-		func! StatusLineNC()
-			setl statusline=%1*\ %t\                        " filename
-			setl stl+=%4*%{&modified?'\ +\ ':''}            " modified
-			setl stl+=%5*%=                                 " right justify
-		endfunc
-
 		" highlighting for status line components
 		hi User1 cterm=bold ctermfg=231 ctermbg=31
 		hi User2 ctermfg=160 ctermbg=31
@@ -598,3 +578,28 @@
 			return ""
 		endif
 	endfunc
+
+	" statusline for current window split
+	func! StatusLine()
+		setl statusline=%1*\ %t\                        " filename
+		setl stl+=%2*%{&readonly?'\ ':''}              " readonly
+
+		if !exists("b:gitBranchName")
+			let b:gitBranchName = GitBranchName()
+		endif
+
+		setl stl+=%3*%{b:gitBranchName}                 " branch name
+		setl stl+=%4*%{&modified?' +\ ':''}             " modified (note unicode space)
+		setl stl+=%5*%=                                 " right justify
+		setl stl+=%6*\ %{strlen(&ft)?&ft:'none'}\       " filetype
+		setl stl+=%7*\ %p%%\                            " percent of file
+	endfunc
+
+	" statusline for other window splits
+	func! StatusLineNC()
+		setl statusline=%1*\ %t\                        " filename
+		setl stl+=%4*%{&modified?'\ +\ ':''}            " modified
+		setl stl+=%5*%=                                 " right justify
+	endfunc
+
+	call StatusLine()
