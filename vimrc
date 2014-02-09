@@ -170,7 +170,7 @@
 
 	" tab-bar
 		hi TabLineFill cterm=none ctermfg=23 ctermbg=7
-		hi TabLineSel cterm=none ctermfg=231 ctermbg=31
+		hi TabLineSel cterm=none ctermfg=231 ctermbg=32
 		hi TabLine cterm=none ctermfg=0 ctermbg=7
 
 	hi MatchParen cterm=bold ctermfg=45 ctermbg=none
@@ -585,11 +585,13 @@
 		endif
 	endfunc
 
-	" if inside a git tree, return the name of the current branch;
+	" if current file inside a git tree, return the name of the current branch;
 	" else, return an empty string
 	func! GitBranchName()
-		let branchName = system("[ -d .git ] || git rev-parse
-			\ --is-inside-work-tree > /dev/null 2>&1 && git symbolic-ref --short HEAD")
+		let gitCommand = "cd " . expand("%:p:h") . " && [ -d .git ] ||
+			\ git rev-parse --is-inside-work-tree > /dev/null 2>&1 &&
+			\ git symbolic-ref --short HEAD"
+		let branchName = system(gitCommand)
 		if len(branchName) > 0
 			return " " . branchName[:len(branchName) - 2] . "  "
 		else
