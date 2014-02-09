@@ -33,6 +33,10 @@
 	filetype indent on
 	filetype plugin on
 
+	" colorscheme
+		set background=dark
+		colorscheme solarized
+
 	set showcmd
 	set autowrite
 
@@ -73,44 +77,42 @@
 
 	set list lcs=tab:\·\ 
 
-	" colorscheme
-		set background=dark
-		colorscheme solarized
+	" statusline
+
+		" statusline for current window split
+		func! StatusLine()
+			setl statusline=%1*\ %t\                        " filename
+			setl stl+=%2*%{&readonly?'\ ':''}              " readonly
+			setl stl+=%3*%{GitBranchName()}                 " branch name
+			setl stl+=%4*%{&modified?' +\ ':''}             " modified (note unicode space)
+			setl stl+=%5*%=                                 " right justify
+			setl stl+=%6*\ %{strlen(&ft)?&ft:'none'}\       " filetype
+			setl stl+=%7*\ %p%%\                            " percent of file
+		endfunc
+
+		call StatusLine()
+
+		" statusline for other window splits
+		func! StatusLineNC()
+			setl statusline=%1*\ %t\                        " filename
+			setl stl+=%4*%{&modified?'\ +\ ':''}            " modified
+			setl stl+=%5*%=                                 " right justify
+		endfunc
+
+		" highlighting for status line components
+		hi User1 cterm=bold ctermfg=231 ctermbg=31
+		hi User2 ctermfg=160 ctermbg=31
+		hi User3 ctermfg=22  ctermbg=118
+
+		hi User4 ctermfg=231 ctermbg=1
+		hi User5 cterm=none ctermbg=235
+		hi User6 ctermfg=231 ctermbg=31
+		hi User7 cterm=bold ctermfg=234 ctermbg=253
 
 	" italic comments
 		highlight Comment cterm=italic
 		set t_ZH=[3m
 		set t_ZR=[23m
-
-	" lightline
-		let g:lightline = {
-			\ "colorscheme": "solarized",
-			\ "component": {
-			\	 "readonly": '%{&readonly?"":""}',
-			\},
-			\
-			\ "active": {
-			\	 "left": [ [ "mode" ], ["fugitive", "filename"], ["modified"] ],
-			\	 "right": [ [ "lineinfo" ], [ "percent" ], [ "filetype" ] ]
-			\},
-			\
-			\ "component_function": {
-			\	 "fugitive": "MyFugitive"
-			\},
-			\
-			\ "inactive": {
-			\	 "left": [ ["filename"], ["modified"] ],
-			\	 "right": []
-			\}
-		\}
-
-		function! MyFugitive()
-			if exists("*fugitive#head")
-				let _ = fugitive#head()
-				return strlen(_) ? '⭠ '._ : ''
-			endif
-			return ''
-		endfunction
 
 	" NERDTree
 		" key-maps
@@ -150,13 +152,15 @@
 
 	hi cursorlinenr ctermfg=red ctermbg=0
 	hi folded ctermbg=2 ctermfg=black
-	hi statusline cterm=none ctermfg=245 ctermbg=235
 	hi wildmenu cterm=none ctermfg=232 ctermbg=2
 	hi specialkey cterm=none ctermfg=darkgrey ctermbg=none
 	hi nontext ctermfg=red
 	hi vertsplit ctermfg=black ctermbg=2
 	hi statuslinenc cterm=none ctermfg=black ctermbg=2
 	hi extraWhiteSpace cterm=none ctermbg=88 | match extraWhiteSpace /\s\+$/
+
+	hi statusline cterm=none ctermbg=235
+	hi statuslinenc ctermfg=none ctermbg=235
 
 	" autocomplete menu
 		hi pmenu cterm=none ctermbg=2 ctermfg=233
@@ -165,8 +169,9 @@
 		hi pmenuthumb cterm=none ctermbg=red
 
 	" tab-bar
-		hi tabline ctermbg=green ctermfg=black
-		hi tablinesel ctermbg=none ctermfg=red
+		hi TabLineFill cterm=none ctermfg=23 ctermbg=7
+		hi TabLineSel cterm=none ctermfg=231 ctermbg=31
+		hi TabLine cterm=none ctermfg=0 ctermbg=7
 
 	hi MatchParen cterm=bold ctermfg=45 ctermbg=none
 
@@ -174,7 +179,9 @@
 
 	augroup window
 		au!
-		au WinEnter         *       call NERDTreeQuit()
+		au WinEnter                             *       call NERDTreeQuit()
+		au WinEnter,BufRead         * call StatusLine()
+		au WinLeave         *       call StatusLineNC()
 	augroup END
 
 	augroup new_buffer
@@ -195,7 +202,7 @@
 
 	augroup file_specific
 		au!
-		au BufReadPost         ~/.vimrc         exe "normal! zM"
+		au BufReadPost      ~/.vimrc         exe "normal! zM"
 		au BufWritePost     ~/.vimrc            source ~/.vimrc
 	augroup END
 
@@ -371,8 +378,10 @@
 	" insert
 
 		inoremap    <special><expr>         <Esc>[200~ SmartPaste()
-		inoremap    <expr> j    ((pumvisible())?("\<C-n>"):("j"))   "Scroll down auto-complete menu w/ j
-		inoremap    <expr> k    ((pumvisible())?("\<C-p>"):("k"))   "Scroll up auto-complete menu w/ k
+
+		"Scroll up/down auto-complete menu with j/k
+		inoremap    <expr> j    ((pumvisible())?("\<C-n>"):("j"))
+		inoremap    <expr> k    ((pumvisible())?("\<C-p>"):("k"))
 		inoremap    <Tab>       <C-R>=Tab_Or_Complete()<CR>
 		inoremap    <BS>        <C-R>=SmartBackspace(col("."), virtcol("."))<CR>
 		inoremap    jk          <esc>
@@ -414,9 +423,9 @@
 		vnoremap    J           4j
 		vnoremap    K           4k
 
-		vnoremap    <s-tab>         :call BlockSmartBackspace()<cr>gv
-		vnoremap    <tab>           :call BlockSmartTab()<cr>gv
-		vnoremap    <c-c>       "+y
+		vnoremap    <s-tab>     :call BlockSmartBackspace()<cr>gv
+		vnoremap    <tab>       :call BlockSmartTab()<cr>gv
+		vnoremap    <leader>c   "+y
 
 " functions
 
@@ -573,5 +582,17 @@
 			exec "normal! zM"
 		else
 			exec "normal! zR"
+		endif
+	endfunc
+
+	" if inside a git tree, return the name of the current branch;
+	" else, return an empty string
+	func! GitBranchName()
+		let branchName = system("[ -d .git ] || git rev-parse
+			\ --is-inside-work-tree > /dev/null 2>&1 && git symbolic-ref --short HEAD")
+		if len(branchName) > 0
+			return " " . branchName[:len(branchName) - 2] . "  "
+		else
+			return ""
 		endif
 	endfunc
