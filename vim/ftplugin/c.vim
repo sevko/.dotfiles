@@ -13,7 +13,9 @@ syn match _surrounding_element "(\|)\|\[\|\]\|{\|}"
 syn match _delimiters "\.\|,\|:"
 syn match _end_of_line ";"
 
-syn match _constant "\([a-zA-Z0-9]\)\@<!\u[A-Z0-9_]*\([a-z0-9_]\)\@!"
+syn match _constant "\([a-zA-Z0-9]\)\@<!\u[A-Z0-9_]*[A-Z0-9]\([a-z0-9A-Z_]\)\@!"
+
+syn match _global "\([a-zA-Z0-9]\)\@<!g_[a-zA-Z0-9]\+\([a-zA-Z0-9]\)\@!"
 
 hi _arithmetic_operator ctermfg=3
 hi _logic_operator ctermfg=2
@@ -22,5 +24,6 @@ hi _surrounding_element ctermfg=2
 hi _delimiters ctermfg=166
 hi _end_of_line ctermfg=244
 hi _constant cterm=italic ctermfg=70
+hi _global ctermfg=4
 
 source ~/.dotfiles/vimrc-after

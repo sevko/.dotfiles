@@ -52,7 +52,7 @@ dir_path(){
 		gitRootPre=${workingDir%$gitRootDir*}
 		gitRootPost=${gitRootDir##*/}${workingDir#*$gitRootDir}
 
-		workingDir="$gitRootPre$(fg 43)$font[bold]$gitRootPost"
+		workingDir="$gitRootPre$(fg 43)$font[bold]$gitRootPost$font[reset]"
 	fi
 
 	[[ ! -w $PWD ]] && workingDir="$workingDir$(fg 196) "
@@ -61,7 +61,7 @@ dir_path(){
 
 ssh_info(){
 	if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
-		echo "$USERNAME@$HOST"
+		echo "$font[bold]$(fg 43)$USERNAME$font[reset]$(fg 202)@$HOST "
 	fi
 }
 
