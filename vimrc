@@ -54,7 +54,7 @@
 
 	set timeoutlen=280
 	set colorcolumn=81
-	set scrolloff=25 sidescrolloff=40
+	set scrolloff=25 sidescrolloff=24
 	set noshowmatch
 	set wildmenu wildmode=longest,list,full
 	set backspace=indent,eol,start
@@ -77,18 +77,6 @@
 
 	set list lcs=tab:\·\ 
 
-	" statusline
-
-		" highlighting for status line components
-		hi User1 cterm=bold ctermfg=231 ctermbg=31
-		hi User2 ctermfg=160 ctermbg=31
-		hi User3 ctermfg=22  ctermbg=118
-
-		hi User4 ctermfg=231 ctermbg=1
-		hi User5 cterm=none ctermbg=235
-		hi User6 ctermfg=231 ctermbg=31
-		hi User7 cterm=bold ctermfg=234 ctermbg=253
-
 	" italic comments
 		highlight Comment cterm=italic
 		set t_ZH=[3m
@@ -106,6 +94,12 @@
 		let NERDTreeMapJumpLastChild="<leader>j"
 
 		let NERDTreeWinSize=26
+
+	" NERDCommenter
+		let NERDSpaceDelims = 1
+		let g:NERDCustomDelimiters = {
+			\ 'c': {  'left': '//', 'right': '', 'leftAlt': '/*','rightAlt': '*/' },
+		\}
 
 	" smart pasting
 		let &t_SI .= "\<Esc>[?2004h"
@@ -153,132 +147,131 @@
 		hi TabLineSel cterm=none ctermfg=231 ctermbg=32
 		hi TabLine cterm=none ctermfg=0 ctermbg=7
 
+	" statusline
+		" highlighting for status line components
+		hi User1 ctermfg=231 ctermbg=31
+		hi User2 ctermfg=160 ctermbg=31
+		hi User3 ctermfg=22  ctermbg=118
+
+		hi User4 ctermfg=231 ctermbg=1
+		hi User5 cterm=none ctermbg=235
+		hi User6 ctermfg=231 ctermbg=31
+		hi User7 cterm=bold ctermfg=234 ctermbg=253
+
 	hi MatchParen cterm=bold ctermfg=45 ctermbg=none
 
 " autocommands
 
 	augroup window
 		au!
-		au WinEnter                             *       call NERDTreeQuit()
-		au WinEnter,BufRead         * call StatusLine()
-		au WinLeave         *       call StatusLineNC()
+		au WinEnter                     *        call NERDTreeQuit()
+		au WinEnter,BufRead,BufNewFile      *        call StatusLine()
+		au WinLeave                     *        call StatusLineNC()
 	augroup END
 
-	augroup new_buffer
+	augroup new_buffer_templates
 		au!
-		au bufnewfile       *.java  :0r ~/.dotfiles/vim/templates/java.txt
-							\| exe "normal! gg2e2li" . expand("%:t:r")
-							\. " \<Esc> 2ji" .	expand("%:t:r")
-							\. "() \<Esc>oa\<BS>"
-
-		au bufnewfile       *.html  :0r~/.dotfiles/vim/templates/html.txt
-		au bufnewfile       *.c     :0r ~/.dotfiles/vim/templates/c.txt
-
-		au bufnewfile       *       exe "normal Gddk"
-		au bufnewfile       *       startinsert
-
-		au bufnewfile       *.java  exe "normal! k$"
+		au bufnewfile        *        call LoadTemplate()
 	augroup END
 
 	augroup file_specific
 		au!
-		au BufReadPost      ~/.vimrc         exe "normal! zM"
-		au BufWritePost     ~/.vimrc            source ~/.vimrc
+		au BufReadPost          ~/.vimrc            exe "normal! zM"
+		au BufWritePost         ~/.vimrc            source ~/.vimrc
 	augroup END
 
 	augroup universal
-		"au FileType         *      call <SID>def_base_syntax()
-		autocmd InsertEnter *       hi clear extraWhiteSpace
-		autocmd InsertLeave *       hi extraWhiteSpace cterm=none ctermbg=88
+		autocmd InsertEnter *        hi clear extraWhiteSpace
+		autocmd InsertLeave *        hi extraWhiteSpace cterm=none ctermbg=88
 			\ | match extraWhiteSpace /\s\+$/
 	augroup END
 
 	augroup filetype_vim
 		au!
-		au FileType vim    inoremap  <buffer>  func
+		au FileType vim    inoremap  <buffer>   func
 			\ func!<space><cr>endfunc<Esc><Up>$a
-		au FileType vim    inoremap  <buffer>  if
+		au FileType vim    inoremap  <buffer>   if
 			\ if<cr>endif<Esc>k$a<space>
-		au FileType vim    inoremap  <buffer>  while
+		au FileType vim    inoremap  <buffer>   while
 			\ while<cr>endwhile<Esc>k$a<space>
-		au FileType vim    inoremap  <buffer>  augroup
+		au FileType vim    inoremap  <buffer>   augroup
 			\ augroup<cr>au!<cr>augroup END<Esc>2k$a<space>
-		au FileType vim    iabbrev    <buffer> func
+		au FileType vim    iabbrev      <buffer> func
 			\ func!<space><cr>endfunc<Esc><Up><Up>$a
 	augroup END
 
 	augroup filetype_sh
 		au!
-		au FileType sh      inoremap    <buffer>  if
+		au FileType sh        inoremap    <buffer>  if
 			\if<cr>then<cr>fi<Esc>2k$a<space>
-		au FileType sh      inoremap    <buffer>  for
+		au FileType sh        inoremap    <buffer>  for
 			\for<cr>do<cr>done<Esc>2k$a<space>
-		au FileType sh      inoremap    <buffer>  while
+		au FileType sh        inoremap    <buffer>  while
 			\while<cr>do<cr>done<Esc>2k$a<space>
 	augroup END
 
 	augroup filetype_html
 		au!
-		au FileType html,htmldjango     setlocal tabstop=2 shiftwidth=2
-		au FileType html,htmldjango     inoremap <buffer>   <   <><Left>
-		au FileType html,htmldjango     inoremap <buffer>   %
+		au FileType html,htmldjango        setlocal tabstop=2 shiftwidth=2
+		au FileType html,htmldjango        inoremap <buffer>    <    <><Left>
+		au FileType html,htmldjango        inoremap <buffer>    %
 			\ %<Space><Space>%<Left><Left>
-		au FileType html,htmldjango     inoremap <buffer>   %%  %
+		au FileType html,htmldjango        inoremap <buffer>    %%    %
 	augroup END
 
 	augroup filetype_java
 		au!
-		au FileType java    inoreabbrev  <buffer>   psvm
+		au FileType java    inoreabbrev  <buffer>    psvm
 			\ public static void main(String[] args){<cr>}<Esc>O
-		au FileType java    nnoremap <buffer>   <leader>;   $a;<esc>o
-		au FileType java    inoreabbrev <buffer>   if          if()<Left>
-		au FileType java    inoreabbrev <buffer>   for         for(;;)<Left><Left><Left>
-		au FileType java    inoreabbrev <buffer>   while       while()<Left>
+		au FileType java    nnoremap <buffer>    <leader>;      $a;<esc>o
+		au FileType java    inoreabbrev <buffer>   if           if()<Left>
+		au FileType java    inoreabbrev <buffer>   for          for(;;)<Left><Left><Left>
+		au FileType java    inoreabbrev <buffer>   while        while()<Left>
 	augroup END
 
 	augroup filetype_c
 		au!
-		au FileType c,cpp inoremap <buffer> if          if()<Left>
-		au FileType c,cpp inoremap <buffer> for         for(;;)<Left><Left><Left>
-		au FileType c,cpp inoremap <buffer> while       while()<Left>
-		au Filetype c,cpp iabbrev  <buffer> #i          #include
-		au Filetype c,cpp iabbrev  <buffer> #d          #define
-		au FileType c,cpp nnoremap <buffer> <leader>;   $a;<esc>
-		au Filetype c,cpp nnoremap <buffer> <leader>oh  :call SplitHeader("vsplit")<cr>
-		au Filetype c,cpp nnoremap <buffer> <leader>oc  :call SplitSource("vsplit")<cr>
-		au Filetype c,cpp nnoremap <buffer> <leader>ohs  :call SplitHeader("split")<cr>
-		au Filetype c,cpp nnoremap <buffer> <leader>ocs  :call SplitSource("split")<cr>
+		au FileType c,cpp inoremap <buffer> if              if()<Left>
+		au FileType c,cpp inoremap <buffer> for             for(;;)<Left><Left><Left>
+		au FileType c,cpp inoremap <buffer> while           while()<Left>
+		au Filetype c,cpp iabbrev  <buffer> #i              #include
+		au Filetype c,cpp iabbrev  <buffer> #d              #define
+		au FileType c,cpp nnoremap <buffer> <leader>;       $a;<esc>
+		au Filetype c,cpp nnoremap <buffer> <leader>oh      :call SplitHeader("vsplit")<cr>
+		au Filetype c,cpp nnoremap <buffer> <leader>oc      :call SplitSource("vsplit")<cr>
+		au Filetype c,cpp nnoremap <buffer> <leader>ohs     :call SplitHeader("split")<cr>
+		au Filetype c,cpp nnoremap <buffer> <leader>ocs     :call SplitSource("split")<cr>
 	augroup END
 
 	augroup filetype_js
 		au!
-		au FileType javascript nnoremap <buffer> <leader>;   $a;<esc>o
+		au FileType javascript nnoremap <buffer> <leader>;     $a;<esc>o
 	augroup END
 
 	augroup sass
 		au!
-		au Filetype sass nnoremap <buffer> <leader>cs   :call CompileSass()<cr>
+		au Filetype sass nnoremap <buffer> <leader>cs    :call CompileSass()<cr>
 	augroup END
 
 	augroup filetype_text
 		au!
-		au Filetype gitcommit   setlocal spell textwidth=80
-		au Filetype markdown    setlocal spell textwidth=80
-		au FileType text        setlocal spell textwidth=80
+		au Filetype gitcommit       setlocal spell textwidth=80
+		au Filetype markdown        setlocal spell textwidth=80
+		au FileType text            setlocal spell textwidth=80
 	augroup END
 
 	augroup filetype_sh
 		au!
-		au FileType sh      inoreabbrev <buffer>    if
+		au FileType sh        inoreabbrev <buffer>    if
 			\ if<space>[ ]<cr>then<cr>fi<Esc>2<Up>3<Right>i
 	augroup END
 
 	augroup relativeLnNum
 		au!
-		au InsertEnter      *   :set number
-		au InsertLeave      *   :set relativenumber
-		au FocusLost        *   :set number
-		au FocusGained      *   :set relativenumber
+		au InsertEnter        *     :set number
+		au InsertLeave        *     :set relativenumber
+		au FocusLost        *       :set number
+		au FocusGained        *     :set relativenumber
 	augroup END
 
 " key mappings
@@ -287,46 +280,46 @@
 
 	" global
 
-		noremap     <F1>        :NERDTreeToggle<cr>
+		noremap        <F1>             :NERDTreeToggle<cr>
 
-		map         <leader>c   <plug>NERDCommenterToggle
-		map         <leader>cz  <plug>NerdComComment
+		map            <leader>c        <plug>NERDCommenterToggle
+		map            <leader>cz       <plug>NerdComComment
 
 	" normal
 
-		noremap    <leader>ev   :vsplit $MYVIMRC<cr>
-		nnoremap   <leader>w    <esc>:w<cr>
-		nnoremap   <leader>q    <esc>:q<cr>
-		nnoremap   <leader>wq   <esc>:wq<cr>
-		nnoremap   <leader>fq   <esc>:q!<cr>
-		nnoremap   <leader>wa   <esc>:wa<cr>
+		noremap    <leader>ev       :vsplit $MYVIMRC<cr>
+		nnoremap   <leader>w        <esc>:w<cr>
+		nnoremap   <leader>q        <esc>:q<cr>
+		nnoremap   <leader>wq       <esc>:wq<cr>
+		nnoremap   <leader>fq       <esc>:q!<cr>
+		nnoremap   <leader>wa       <esc>:wa<cr>
 
 		" Faster navigation
-		nnoremap    H           b
-		nnoremap    L           w
-		nnoremap    J           4j
-		nnoremap    K           4k
-		nnoremap    <leader>l   $
-		nnoremap    <leader>h   ^
-		nnoremap    <leader>j   G
-		nnoremap    <leader>k   gg
+		nnoremap    H               b
+		nnoremap    L               w
+		nnoremap    J               4j
+		nnoremap    K               4k
+		nnoremap    <leader>l       $
+		nnoremap    <leader>h       ^
+		nnoremap    <leader>j       G
+		nnoremap    <leader>k       gg
 
-		nnoremap    <leader>n   :call NumberToggle()<cr>
-		nnoremap    <Tab>       .
-		nnoremap    =           =<cr>
-		nnoremap    f           za
-		nnoremap    F           :call ToggleUniversalFold()<cr>
-		nnoremap    <leader>t   :tabnext<CR>
-		nnoremap    <leader>st  :tabprev<CR>
+		nnoremap    <leader>n       :call NumberToggle()<cr>
+		nnoremap    <Tab>           .
+		nnoremap    =               =<cr>
+		nnoremap    f               za
+		nnoremap    F               :call ToggleUniversalFold()<cr>
+		nnoremap    <leader>t       :tabnext<CR>
+		nnoremap    <leader>st      :tabprev<CR>
 
-		nnoremap    <leader>r   :wincmd r<CR>
-		nnoremap    sv          :source ~/.vimrc<cr>
-		nnoremap    s           :set 
+		nnoremap    <leader>r       :wincmd r<CR>
+		nnoremap    sv              :source ~/.vimrc<cr>
+		nnoremap    s               :set 
 
-		nnoremap    <c-a>       ggvG$
-		nnoremap    b           <c-v>
-		nnoremap    <leader>rt  :retab!<cr>
-		nnoremap    tt          :tabf
+		nnoremap    <c-a>           ggvG$
+		nnoremap    b               <c-v>
+		nnoremap    <leader>rt      :retab!<cr>
+		nnoremap    tt              :tabf
 
 		" tmux/vim pane navigation
 		if exists('$TMUX')
@@ -334,8 +327,6 @@
 			nnoremap <silent> <C-j> :call TmuxOrSplitSwitch('j', 'D')<cr>
 			nnoremap <silent> <C-k> :call TmuxOrSplitSwitch('k', 'U')<cr>
 			nnoremap <silent> <C-l> :call TmuxOrSplitSwitch('l', 'R')<cr>
-
-			nnoremap <C-m-j>        :echo "thirty"
 		else
 			map <C-h> <C-w>h
 			map <C-j> <C-w>j
@@ -346,66 +337,66 @@
 	" operator-pending
 
 		" Faster navigation
-		onoremap    H           b
-		onoremap    L           w
-		onoremap    J           4j
-		onoremap    K           4k
-		onoremap    <leader>l   $
-		onoremap    <leader>h   ^
-		onoremap    <leader>j   G
-		onoremap    <leader>k   gg
+		onoremap    H            b
+		onoremap    L            w
+		onoremap    J            4j
+		onoremap    K            4k
+		onoremap    <leader>l    $
+		onoremap    <leader>h    ^
+		onoremap    <leader>j    G
+		onoremap    <leader>k    gg
 
 	" insert
 
-		inoremap    <special><expr>         <Esc>[200~ SmartPaste()
+		inoremap    <special><expr>            <Esc>[200~ SmartPaste()
 
 		"Scroll up/down auto-complete menu with j/k
-		inoremap    <expr> j    ((pumvisible())?("\<C-n>"):("j"))
-		inoremap    <expr> k    ((pumvisible())?("\<C-p>"):("k"))
-		inoremap    <Tab>       <C-R>=Tab_Or_Complete()<CR>
-		inoremap    <BS>        <C-R>=SmartBackspace(col("."), virtcol("."))<CR>
-		inoremap    jk          <esc>
+		inoremap    <expr> j        ((pumvisible())?("\<C-n>"):("j"))
+		inoremap    <expr> k        ((pumvisible())?("\<C-p>"):("k"))
+		inoremap    <Tab>           <C-R>=Tab_Or_Complete()<CR>
+		inoremap    <BS>            <C-R>=SmartBackspace(col("."), virtcol("."))<CR>
+		inoremap    jk              <esc>
 
-		inoremap    "           ""<Left>
-		inoremap    '           ''<Left>
-		inoremap    ""          "
-		inoremap    ''          '
-		inoremap    (           ()<Left>
-		inoremap    ((          ()
-		inoremap    [           []<Left>
-		inoremap    [[          []
-		inoremap    {{          {}<Left>
-		inoremap    {           {<CR>}<Esc>O
+		inoremap    "               ""<Left>
+		inoremap    '               ''<Left>
+		inoremap    ""              "
+		inoremap    ''              '
+		inoremap    (               ()<Left>
+		inoremap    ((              ()
+		inoremap    [               []<Left>
+		inoremap    [[              []
+		inoremap    {{              {}<Left>
+		inoremap    {               {<CR>}<Esc>O
 
-		inoremap    <up>        <esc>:call ResizeUp()<cr>
-		inoremap    <down>      <esc>:call ResizeDown()<cr>
-		inoremap    <left>      <esc>:call ResizeLeft()<cr>
-		inoremap    <right>     <esc>:call ResizeRight()<cr>
+		inoremap    <up>            <esc>:call ResizeUp()<cr>
+		inoremap    <down>          <esc>:call ResizeDown()<cr>
+		inoremap    <left>          <esc>:call ResizeLeft()<cr>
+		inoremap    <right>         <esc>:call ResizeRight()<cr>
 
-		imap        <S-up>      <up><up>
-		imap        <S-down>    <down><down>
-		imap        <S-left>    <left><left>
-		imap        <S-right>   <right><right>
+		imap        <S-up>          <up><up>
+		imap        <S-down>        <down><down>
+		imap        <S-left>        <left><left>
+		imap        <S-right>       <right><right>
 
-		imap        <c-c>       <plug>NERDCommenterInsert
+		imap        \c              <plug>NERDCommenterInsert
 
 	" visual
 
-		vnoremap jk             <esc>
+		vnoremap jk                 <esc>
 
 		" Faster navigation"
-		vnoremap    <leader>l   $
-		vnoremap    <leader>h   0
-		vnoremap    <leader>j   G
-		vnoremap    <leader>k   gg
-		vnoremap    H           b
-		vnoremap    L           w
-		vnoremap    J           4j
-		vnoremap    K           4k
+		vnoremap    <leader>l       $
+		vnoremap    <leader>h       0
+		vnoremap    <leader>j       G
+		vnoremap    <leader>k       gg
+		vnoremap    H               b
+		vnoremap    L               w
+		vnoremap    J               4j
+		vnoremap    K               4k
 
-		vnoremap    <s-tab>     :call BlockSmartBackspace()<cr>gv
-		vnoremap    <tab>       :call BlockSmartTab()<cr>gv
-		vnoremap    <leader>c   "+y
+		vnoremap    <s-tab>         :call BlockSmartBackspace()<cr>gv
+		vnoremap    <tab>           :call BlockSmartTab()<cr>gv
+		vnoremap    <leader>c       "+y
 
 " functions
 
@@ -485,28 +476,6 @@
 		return ""
 	endfunction
 
-	"common operator highlighting
-	"function! s:def_base_syntax()
-		"let currExt = expand("%:e")
-
-		"" don't apply highlighting for badFiletypes
-		"let badFiletypes = ["html"]
-
-		"let toHighlight = 1
-		"for fileExt in badFiletypes
-			"if fileExt == currExt
-				"let toHighlight = 0
-				"break
-			"endif
-		"endfor
-
-		"if toHighlight
-			"syntax match operator "()"
-			"hi commonOperator ctermfg = red
-			"hi baseDelimiter ctermfg = DarkGrey
-		"endif
-	"endfunction
-
 	" closes any open NERDTree buffers
 	function! NERDTreeQuit()
 		redir => buffersoutput
@@ -579,27 +548,60 @@
 		endif
 	endfunc
 
+	" load filetype specific template and perform any necessary template flag
+	" substitutions
+	func! LoadTemplate()
+		let templateFileName = glob("~/.dotfiles/vim/templates/" . &filetype . ".tmp")
+		if filereadable(templateFileName)
+			exe "normal! :read " . templateFileName . "\<cr>"
+		else
+			return
+		endif
+
+		let templateFlags = {
+			\"fileBaseName" : "__FILEBASE__",
+			\"cursorStart" : "__START__"
+		\}
+
+		if search(templateFlags["fileBaseName"]) > 0
+			exe "normal! :%s/" . templateFlags["fileBaseName"] .
+				\ "/" . expand("%:t:r") . "/g\<cr>"
+		endif
+
+		exe "normal! ggdd"
+		exe "normal! /__START__\<cr>de"
+		startinsert!
+	endfunc
+
+	" Show syntax highlighting groups for word under cursor
+	func! SynStack()
+		if !exists("*synstack")
+			return
+		endif
+		echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
+	endfunc
+
 	" statusline for current window split
 	func! StatusLine()
-		setl statusline=%1*\ %t\                        " filename
-		setl stl+=%2*%{&readonly?'\ ':''}              " readonly
+		setl statusline=%1*\ %t\                            " filename
+		setl stl+=%2*%{&readonly?'\ ':''}                  " readonly
 
 		if !exists("b:gitBranchName")
 			let b:gitBranchName = GitBranchName()
 		endif
 
-		setl stl+=%3*%{b:gitBranchName}                 " branch name
-		setl stl+=%4*%{&modified?' +\ ':''}             " modified (note unicode space)
-		setl stl+=%5*%=                                 " right justify
-		setl stl+=%6*\ %{strlen(&ft)?&ft:'none'}\       " filetype
-		setl stl+=%7*\ %p%%\                            " percent of file
+		setl stl+=%3*%{b:gitBranchName}                     " branch name
+		setl stl+=%4*%{&modified?' +\ ':''}                 " modified (note unicode space)
+		setl stl+=%5*%=                                     " right justify
+		setl stl+=%6*\ %{strlen(&ft)?&ft:'none'}\           " filetype
+		setl stl+=%7*\ %p%%\                                " percent of file
 	endfunc
 
 	" statusline for other window splits
 	func! StatusLineNC()
-		setl statusline=%1*\ %t\                        " filename
-		setl stl+=%4*%{&modified?'\ +\ ':''}            " modified
-		setl stl+=%5*%=                                 " right justify
+		setl statusline=%1*\ %t\                            " filename
+		setl stl+=%4*%{&modified?'\ +\ ':''}                " modified
+		setl stl+=%5*%=                                     " right justify
 	endfunc
 
 	call StatusLine()

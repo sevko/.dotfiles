@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void main(){
-	
+int main(){
+	__START__
 	return EXIT_SUCCESS;
 }

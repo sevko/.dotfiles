@@ -1,0 +1,14 @@
+FLAGS = -Wall -Wextra
+CC = gcc $(FLAGS)
+
+all: bin bin/__START__
+
+run: all
+
+bin/:
+
+bin:
+	mkdir bin
+
+clean:
+	if [ -d bin ]; then rm -rf bin; fi
