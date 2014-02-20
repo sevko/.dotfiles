@@ -18,7 +18,7 @@
 	ui = always
 
 [commit]
-	template = /home/sevko/.dotfiles/git/commitMessage.txt
+	template = /home/sevko/.dotfiles/git/gitcommit.tmp
 
 [color "branch"]
 	current = yellow

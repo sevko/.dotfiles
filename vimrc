@@ -48,7 +48,7 @@
 		set directory=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
 		set writebackup
 
-	set number
+	set nu rnu
 	set nowrap
 	set linebreak
 
@@ -266,12 +266,15 @@
 			\ if<space>[ ]<cr>then<cr>fi<Esc>2<Up>3<Right>i
 	augroup END
 
+	augroup filetype_tmp
+		au!
+		au BufRead  *.tmp           set filetype=template
+	augroup END
+
 	augroup relativeLnNum
 		au!
-		au InsertEnter        *     :set number
-		au InsertLeave        *     :set relativenumber
-		au FocusLost        *       :set number
-		au FocusGained        *     :set relativenumber
+		au InsertEnter,WinLeave      *       set nornu
+		au InsertLeave,WinEnter      *       set rnu
 	augroup END
 
 " key mappings
