@@ -34,8 +34,10 @@
 	filetype plugin on
 
 	" colorscheme
+	if isdirectory(glob("~/.vim/bundle/vim-colors-solarized"))
 		set background=dark
 		colorscheme solarized
+	endif
 
 	set showcmd
 	set autowrite
@@ -132,6 +134,7 @@
 	hi vertsplit ctermfg=black ctermbg=2
 	hi statuslinenc cterm=none ctermfg=black ctermbg=2
 	hi extraWhiteSpace cterm=none ctermbg=88 | match extraWhiteSpace /\s\+$/
+	hi NonText ctermbg=15
 
 	hi statusline cterm=none ctermbg=235
 	hi statuslinenc ctermfg=none ctermbg=235
