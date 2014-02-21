@@ -1,39 +1,39 @@
 <?xml version="1.0"?>
 <gconf>
-	<entry name="default_size_columns" mtime="1392944736" type="int" value="500"/>
-	<entry name="use_custom_default_size" mtime="1392944736" type="bool" value="true"/>
+	<entry name="default_size_columns" mtime="1392951998" type="int" value="500"/>
+	<entry name="use_custom_default_size" mtime="1392951998" type="bool" value="true"/>
 	<entry name="allow_bold" mtime="1391465948" type="bool" value="true"/>
-	<entry name="background_darkness" mtime="1392944736" type="float" value="0.9556959867477417"/>
-	<entry name="background_type" mtime="1392944736" type="string">
+	<entry name="background_darkness" mtime="1392951998" type="float" value="0.9556959867477417"/>
+	<entry name="background_type" mtime="1392951998" type="string">
 		<stringvalue>transparent</stringvalue>
 	</entry>
-	<entry name="font" mtime="1392944736" type="string">
+	<entry name="font" mtime="1392951998" type="string">
 		<stringvalue>DejaVu Sans Mono 9</stringvalue>
 	</entry>
-	<entry name="use_system_font" mtime="1392944736" type="bool" value="false"/>
-	<entry name="scrollbar_position" mtime="1392944736" type="string">
+	<entry name="use_system_font" mtime="1392951998" type="bool" value="false"/>
+	<entry name="scrollbar_position" mtime="1392951998" type="string">
 		<stringvalue>hidden</stringvalue>
 	</entry>
-	<entry name="default_show_menubar" mtime="1392944736" type="bool" value="false"/>
-	<entry name="use_theme_colors" mtime="1392944736" type="bool" value="false"/>
-	<entry name="background_color" mtime="1392944736" type="string">
+	<entry name="default_show_menubar" mtime="1392951998" type="bool" value="false"/>
+	<entry name="use_theme_colors" mtime="1392951998" type="bool" value="false"/>
+	<entry name="background_color" mtime="1392951998" type="string">
 		<stringvalue>#000000000000</stringvalue>
 	</entry>
 	<entry name="use_theme_background" mtime="1384402759" type="bool" value="false"/>
-	<entry name="bold_color" mtime="1392944736" type="string">
+	<entry name="bold_color" mtime="1392951998" type="string">
 		<stringvalue>#88888A8A8585</stringvalue>
 	</entry>
-	<entry name="visible_name" mtime="1392944736" type="string">
+	<entry name="visible_name" mtime="1392951998" type="string">
 		<stringvalue>Solarized Dark</stringvalue>
 	</entry>
-	<entry name="foreground_color" mtime="1392944736" type="string">
+	<entry name="foreground_color" mtime="1392951998" type="string">
 		<stringvalue>#7373D2D21616</stringvalue>
 	</entry>
 	<entry name="solarized_scheme" mtime="1384402759" type="string">
 		<stringvalue>dark</stringvalue>
 	</entry>
-	<entry name="bold_color_same_as_fg" mtime="1392944736" type="bool" value="false"/>
-	<entry name="palette" mtime="1392944736" type="string">
-		<stringvalue>#070736364242:#DCDC32322F2F:#858599990000:#B5B589890000:#72729F9FCFCF:#D3D336368282:#2A2AA1A19898:#61267AC18CCC:#0054277A317E:#CBCB4B4B1616:#58586E6E7575:#65657B7B8383:#838394949696:#6C6C7171C4C4:#88888A8A8585:#6E37DA732F54</stringvalue>
+	<entry name="bold_color_same_as_fg" mtime="1392951998" type="bool" value="false"/>
+	<entry name="palette" mtime="1392951998" type="string">
+		<stringvalue>#070736354242:#DCDC32322F2F:#858599990000:#B5B589890000:#72729F9FCFCF:#D3D336368282:#2A2AA1A19898:#61267AC18CCC:#0054277A317E:#CBCB4B4B1616:#58586E6E7575:#65657B7B8383:#838394949696:#6C6C7171C4C4:#88888A8A8585:#02551C5822FC</stringvalue>
 	</entry>
 </gconf>

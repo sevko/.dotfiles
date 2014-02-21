@@ -1,10 +1,15 @@
 #! /bin/bash
 
 #   Description:
-#       Removes files in $files from ~/, and creates a symlink with identical
-#       names to their counterparts in ~/.dotfiles/.
+#       Removes ~/$files and creates symlinks with identical names to their
+#       counterparts in ~/.dotfiles/.
 
-files=(".tmux.conf" ".bashrc" ".zshrc" ".vimrc")
+source termColorsFonts.sh
+
+files=(".tmux.conf" ".bashrc" ".zshrc" ".vimrc" ".gitconfig")
+
+errorString="$font[bold]$(fg 196)x$font[reset]"
+successString="$font[bold]$(fg 46)+$font[reset]"
 
 for file in "${files[@]}"
 do
@@ -16,9 +21,11 @@ do
 	    newFile=$file
 	fi
 
-	printf "Removed ~/$file. "
-	printf "Create symlink ~/$file to ~/.dotfiles/$newFile.\n"
+	printf "Remove $file: "
+	(rm ~/$file &> /dev/null && printf successString) || printf errorString
 
-	rm ~/$file
-	ln -s ~/.dotfiles/$newFile ~/$file
+	printf "\tCreate symlink $file to ~/.dotfiles/$newFile: "
+	(ln -s ~/.dotfiles/$newFile ~/$file &> /dev/null && printf successString) || printf errorString
+
+	printf "\n"
 done
