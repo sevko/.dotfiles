@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<gconf>
+	<entry name="help" mtime="1392088562" type="string">
+		<stringvalue>disabled</stringvalue>
+	</entry>
+	<entry name="paste" mtime="1391619458" type="string">
+		<stringvalue>&lt;Primary&gt;v</stringvalue>
+	</entry>
+	<entry name="copy" mtime="1391467985" type="string">
+		<stringvalue>&lt;Primary&gt;c</stringvalue>
+	</entry>
+	<entry name="new_tab" mtime="1384401786" type="string">
+		<stringvalue>&lt;Primary&gt;&lt;Shift&gt;&lt;Alt&gt;t</stringvalue>
+	</entry>
+	<entry name="new_window" mtime="1375214725" type="string">
+		<stringvalue>&lt;Primary&gt;&lt;Shift&gt;n</stringvalue>
+	</entry>
+	<entry name="close_tab" mtime="1384401802" type="string">
+		<stringvalue>&lt;Primary&gt;w</stringvalue>
+	</entry>
+	<entry name="close_window" mtime="1391469115" type="string">
+		<stringvalue>&lt;Primary&gt;q</stringvalue>
+	</entry>
+	<entry name="toggle_menubar" mtime="1375239062" type="string">
+		<stringvalue>&lt;Primary&gt;&lt;Shift&gt;m</stringvalue>
+	</entry>
+</gconf>
