@@ -22,10 +22,10 @@
 	endif
 
 	if &term =~ '^screen'
-		execute "set <S-Up>=\e[1;2A"
-		execute "set <S-Down>=\e[1;2B"
-		execute "set <S-Right>=\e[1;2C"
-		execute "set <S-Left>=\e[1;2D"
+		execute "set <s-up>=\e[1;2A"
+		execute "set <s-down>=\e[1;2B"
+		execute "set <s-right>=\e[1;2C"
+		execute "set <s-left>=\e[1;2D"
 	endif
 
 " settings
@@ -104,14 +104,14 @@
 		\}
 
 	" smart pasting
-		let &t_SI .= "\<Esc>[?2004h"
-		let &t_EI .= "\<Esc>[?2004l"
+		let &t_SI .= "\<esc>[?2004h"
+		let &t_EI .= "\<esc>[?2004l"
 
 	" tmux/vim pane navigation
 		let previous_title = substitute
 			\(system("tmux display-message -p '#{pane_title}'"), '\n', '', '')
-		let &t_ti = "\<Esc>]2;vim\<Esc>\\" . &t_ti
-		let &t_te = "\<Esc>]2;". previous_title . "\<Esc>\\" . &t_te
+		let &t_ti = "\<esc>]2;vim\<Esc>\\" . &t_ti
+		let &t_te = "\<esc>]2;". previous_title . "\<Esc>\\" . &t_te
 
 	" toggle-surround
 		let surround_close_char = {
@@ -184,66 +184,63 @@
 	augroup END
 
 	augroup universal
-		autocmd InsertEnter *        hi clear extraWhiteSpace
-		autocmd InsertLeave *        hi extraWhiteSpace cterm=none ctermbg=88
-			\ | match extraWhiteSpace /\s\+$/
+		autocmd InsertEnter * hi clear extraWhiteSpace
+		autocmd InsertLeave * hi extraWhiteSpace cterm=none ctermbg=88 
 	augroup END
 
 	augroup filetype_vim
 		au!
-		au FileType vim    inoremap  <buffer>   func
-			\ func!<space><cr>endfunc<Esc><Up>$a
-		au FileType vim    inoremap  <buffer>   if
-			\ if<cr>endif<Esc>k$a<space>
-		au FileType vim    inoremap  <buffer>   while
-			\ while<cr>endwhile<Esc>k$a<space>
-		au FileType vim    inoremap  <buffer>   augroup
-			\ augroup<cr>au!<cr>augroup END<Esc>2k$a<space>
-		au FileType vim    iabbrev      <buffer> func
-			\ func!<space><cr>endfunc<Esc><Up><Up>$a
+		au FileType vim inoreab  <buffer>  if if<cr>endif<esc>k$a
+		au FileType vim inoreab  <buffer>  while while<cr>endwhile<esc>k$a
+		au FileType vim inoreab  <buffer>  for for in<cr>endfor<esc>k03la
+		au FileType vim inoreab  <buffer>  func func!<cr>endfunc<esc><Up>$a
+		au FileType vim inoreab  <buffer>  aug aug<cr>au!<cr>aug END<esc>2k$a
 	augroup END
 
 	augroup filetype_sh
 		au!
-		au FileType sh        inoremap    <buffer>  if
-			\if<cr>then<cr>fi<Esc>2k$a<space>
-		au FileType sh        inoremap    <buffer>  for
-			\for<cr>do<cr>done<Esc>2k$a<space>
-		au FileType sh        inoremap    <buffer>  while
-			\while<cr>do<cr>done<Esc>2k$a<space>
+		au FileType sh inoreab <buffer>  for for in<cr>do<cr>done<esc>2k03li
+		au FileType sh inoreab <buffer>  while while<cr>do<cr>done<esc>2k$a
+		au FileType sh inoreab <buffer>  if if [ ]; then<cr>fi<esc><Up>3<right>i
 	augroup END
 
 	augroup filetype_html
 		au!
-		au FileType html,htmldjango        setlocal tabstop=2 shiftwidth=2
-		au FileType html,htmldjango        inoremap <buffer>    <    <><Left>
-		au FileType html,htmldjango        inoremap <buffer>    %
-			\ %<Space><Space>%<Left><Left>
-		au FileType html,htmldjango        inoremap <buffer>    %%    %
+		au FileType html,htmldjango setlocal tabstop=2 shiftwidth=2
+		au FileType html,htmldjango inoremap <buffer>   < <><left>
+		au FileType html,htmldjango inoreab <buffer>    % %<Space>%<left><Left>
 	augroup END
 
 	augroup filetype_java
 		au!
-		au FileType java    inoreabbrev  <buffer>    psvm
-			\ public static void main(String[] args){<cr>}<Esc>O
-		au FileType java    nnoremap <buffer>    <leader>;      $a;<esc>o
-		au FileType java    inoreabbrev <buffer>   if           if()<Left>
-		au FileType java    inoreabbrev <buffer>   for          for(;;)<Left><Left><Left>
-		au FileType java    inoreabbrev <buffer>   while        while()<Left>
+		au FileType java inoreab <buffer>    psvm
+			\ public static void main(String[] args){<cr>}<esc>O<c-r>=EatSpace()<cr>
+		au FileType java inoreab <buffer> if if()<left><c-r>=EatSpace()<cr>
+		au FileType java inoreab <buffer> for for(;;)<left><Left><Left><c-r>=EatSpace()<cr>
+		au FileType java inoreab <buffer> while while()<left><c-r>=EatSpace()<cr>
+		au FileType java inoreab <buffer> sop
+			\ System.out.println("");<left><Left><Left><c-r>=EatSpace()<cr>
+
+		au FileType java nnoremap <buffer>    <leader>;      $a;<esc>o
 	augroup END
 
 	augroup filetype_c
 		au!
-		au FileType c,cpp inoremap <buffer> if              if()<Left>
-		au FileType c,cpp inoremap <buffer> for             for(;;)<Left><Left><Left>
-		au FileType c,cpp inoremap <buffer> while           while()<Left>
-		au Filetype c,cpp iabbrev  <buffer> #i              #include
-		au Filetype c,cpp iabbrev  <buffer> #d              #define
-		au FileType c,cpp nnoremap <buffer> <leader>;       $a;<esc>
-		au Filetype c,cpp nnoremap <buffer> <leader>oh      :call SplitHeader("vsplit")<cr>
-		au Filetype c,cpp nnoremap <buffer> <leader>oc      :call SplitSource("vsplit")<cr>
-		au Filetype c,cpp nnoremap <buffer> <leader>ohs     :call SplitHeader("split")<cr>
-		au Filetype c,cpp nnoremap <buffer> <leader>ocs     :call SplitSource("split")<cr>
+		au FileType c,cpp inoreab <buffer> if if()<left><c-r>=EatSpace()<cr>
+		au FileType c,cpp inoreab <buffer> for for(;;)<left><Left><Left><c-r>=EatSpace()<cr>
+		au FileType c,cpp inoreab <buffer> while while()<left><c-r>=EatSpace()<cr>
+		au Filetype c,cpp inoreab <buffer> pri printf("");<left><left><left><c-r>=EatSpace()<cr>
+		au Filetype c,cpp inoreab <buffer> main
+			\ int main(){<cr><cr>return EXIT_SUCCESS;<cr>}
+			\<up><up><tab><c-r>=EatSpace()<cr>
+		au Filetype c,cpp inoreab <buffer> #i #include
+		au Filetype c,cpp inoreab <buffer> #d #define
+
+		au FileType c,cpp nnoremap <buffer> <leader>;   $a;<esc>
+		au Filetype c,cpp nnoremap <buffer> <leader>oh  :call SplitHeader("vsplit")<cr>
+		au Filetype c,cpp nnoremap <buffer> <leader>oc  :call SplitSource("vsplit")<cr>
+		au Filetype c,cpp nnoremap <buffer> <leader>ohs :call SplitHeader("split")<cr>
+		au Filetype c,cpp nnoremap <buffer> <leader>ocs :call SplitSource("split")<cr>
 	augroup END
 
 	augroup filetype_js
@@ -261,12 +258,6 @@
 		au Filetype gitcommit       setlocal spell textwidth=80
 		au Filetype markdown        setlocal spell textwidth=80
 		au FileType text            setlocal spell textwidth=80
-	augroup END
-
-	augroup filetype_sh
-		au!
-		au FileType sh        inoreabbrev <buffer>    if
-			\ if<space>[ ]<cr>then<cr>fi<Esc>2<Up>3<Right>i
 	augroup END
 
 	augroup filetype_tmp
@@ -311,14 +302,14 @@
 		nnoremap    <leader>k       gg
 
 		nnoremap    <leader>n       :call NumberToggle()<cr>
-		nnoremap    <Tab>           .
+		nnoremap    <tab>           .
 		nnoremap    =               =<cr>
 		nnoremap    f               za
 		nnoremap    F               :call ToggleUniversalFold()<cr>
-		nnoremap    <leader>t       :tabnext<CR>
-		nnoremap    <leader>st      :tabprev<CR>
+		nnoremap    <leader>t       :tabnext<cr>
+		nnoremap    <leader>st      :tabprev<cr>
 
-		nnoremap    <leader>r       :wincmd r<CR>
+		nnoremap    <leader>r       :wincmd r<cr>
 		nnoremap    sv              :source ~/.vimrc<cr>
 		nnoremap    s               :set 
 
@@ -329,15 +320,15 @@
 
 		" tmux/vim pane navigation
 		if exists('$TMUX')
-			nnoremap <silent> <C-h> :call TmuxOrSplitSwitch('h', 'L')<cr>
-			nnoremap <silent> <C-j> :call TmuxOrSplitSwitch('j', 'D')<cr>
-			nnoremap <silent> <C-k> :call TmuxOrSplitSwitch('k', 'U')<cr>
-			nnoremap <silent> <C-l> :call TmuxOrSplitSwitch('l', 'R')<cr>
+			nnoremap <silent> <c-h> :call TmuxOrSplitSwitch('h', 'L')<cr>
+			nnoremap <silent> <c-j> :call TmuxOrSplitSwitch('j', 'D')<cr>
+			nnoremap <silent> <c-k> :call TmuxOrSplitSwitch('k', 'U')<cr>
+			nnoremap <silent> <c-l> :call TmuxOrSplitSwitch('l', 'R')<cr>
 		else
-			map <C-h> <C-w>h
-			map <C-j> <C-w>j
-			map <C-k> <C-w>k
-			map <C-l> <C-w>l
+			map <c-h> <C-w>h
+			map <c-j> <C-w>j
+			map <c-k> <C-w>k
+			map <c-l> <C-w>l
 		endif
 
 	" operator-pending
@@ -354,25 +345,25 @@
 
 	" insert
 
-		inoremap    <special><expr>            <Esc>[200~ SmartPaste()
+		inoremap    <special><expr>            <esc>[200~ SmartPaste()
 
 		"Scroll up/down auto-complete menu with j/k
-		inoremap    <expr> j        ((pumvisible())?("\<C-n>"):("j"))
-		inoremap    <expr> k        ((pumvisible())?("\<C-p>"):("k"))
-		inoremap    <Tab>           <C-R>=Tab_Or_Complete()<CR>
-		inoremap    <BS>            <C-R>=SmartBackspace(col("."), virtcol("."))<CR>
+		inoremap    <expr> j        ((pumvisible())?("\<c-n>"):("j"))
+		inoremap    <expr> k        ((pumvisible())?("\<c-p>"):("k"))
+		inoremap    <tab>           <c-r>=Tab_Or_Complete()<cr>
+		inoremap    <bs>            <c-r>=SmartBackspace(col("."), virtcol("."))<cr>
 		inoremap    jk              <esc>
 
-		inoremap    "               ""<Left>
-		inoremap    '               ''<Left>
+		inoremap    "               ""<left>
+		inoremap    '               ''<left>
 		inoremap    ""              "
 		inoremap    ''              '
-		inoremap    (               ()<Left>
+		inoremap    (               ()<left>
 		inoremap    ((              ()
-		inoremap    [               []<Left>
+		inoremap    [               []<left>
 		inoremap    [[              []
-		inoremap    {{              {}<Left>
-		inoremap    {               {<CR>}<Esc>O
+		inoremap    {{              {}<left>
+		inoremap    {               {<cr>}<esc>O
 
 		inoremap    <up>            <esc>:call ResizeUp()<cr>
 		inoremap    <down>          <esc>:call ResizeDown()<cr>
@@ -419,7 +410,7 @@
 	function! Tab_Or_Complete()
 		let colPos = col('.')
 		if colPos > 1 && strpart(getline('.'), colPos - 2, 3) =~ '^\w'
-			return "\<C-N>"
+			return "\<c-n>"
 		else
 			return SmartTab(colPos)
 		endif
@@ -430,7 +421,7 @@
 	func! SmartTab(colPos)
 		let currLn = getline(".")
 		if a:colPos == 1 || currLn[:a:colPos - 2] =~ "^[\t]*$"
-			return "\<Tab>"
+			return "\<tab>"
 		else
 			return repeat(" ", &tabstop - (virtcol(".") - 1) % &tabstop)
 		endif
@@ -449,9 +440,9 @@
 
 		if startRealIndent >= 1 &&
 			\ getline('.')[startRealIndent - 1: a:colPos - 2] =~ "^[ ]*$"
-			return repeat("\<BS>", (a:colPos - startRealIndent))
+			return repeat("\<bs>", (a:colPos - startRealIndent))
 		else
-			return "\<BS>"
+			return "\<bs>"
 		endif
 	endfunc
 
@@ -477,7 +468,7 @@
 
 	" toggles paste setting when pasting from the terminal
 	function! SmartPaste()
-		set pastetoggle=<Esc>[201~
+		set pastetoggle=<esc>[201~
 		set paste
 		return ""
 	endfunction
@@ -577,6 +568,11 @@
 		exe "normal! ggdd"
 		exe "normal! /__START__\<cr>de"
 		startinsert!
+	endfunc
+
+	func! EatSpace()
+		let c = nr2char(getchar(0))
+		return (c == ' ') ? '' : c
 	endfunc
 
 	" Show syntax highlighting groups for word under cursor
