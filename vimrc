@@ -165,110 +165,24 @@
 
 " autocommands
 
-	augroup window
+	augroup miscellaneous
 		au!
-		au WinEnter                     *        call NERDTreeQuit()
-		au WinEnter,BufRead,BufNewFile      *        call StatusLine()
-		au WinLeave                     *        call StatusLineNC()
-	augroup END
+		au WinEnter * call NERDTreeQuit()
+		au WinEnter,BufRead,BufNewFile * call StatusLine()
+		au WinLeave * call StatusLineNC()
 
-	augroup new_buffer_templates
-		au!
-		au bufnewfile        *        call LoadTemplate()
-	augroup END
+		au bufnewfile * call LoadTemplate()
 
-	augroup file_specific
-		au!
-		au BufReadPost          ~/.vimrc            exe "normal! zM"
-		au BufWritePost         ~/.vimrc            source ~/.vimrc
-	augroup END
+		au BufRead  *.tmp set filetype=template
+		au BufReadPost  ~/.vimrc exe "normal! zM"
+		au BufWritePost ~/.vimrc source ~/.vimrc
 
-	augroup universal
-		autocmd InsertEnter * hi clear extraWhiteSpace
-		autocmd InsertLeave * hi extraWhiteSpace cterm=none ctermbg=88 
-	augroup END
+		au InsertEnter * hi clear extraWhiteSpace
+		au InsertLeave * hi extraWhiteSpace cterm=none ctermbg=88
+		au InsertEnter,WinLeave * set nornu
+		au InsertLeave,WinEnter * set rnu
 
-	augroup filetype_vim
-		au!
-		au FileType vim inoreab  <buffer>  if if<cr>endif<esc>k$a
-		au FileType vim inoreab  <buffer>  while while<cr>endwhile<esc>k$a
-		au FileType vim inoreab  <buffer>  for for in<cr>endfor<esc>k03la
-		au FileType vim inoreab  <buffer>  func func!<cr>endfunc<esc><Up>$a
-		au FileType vim inoreab  <buffer>  aug aug<cr>au!<cr>aug END<esc>2k$a
-	augroup END
-
-	augroup filetype_sh
-		au!
-		au FileType sh inoreab <buffer>  for for in<cr>do<cr>done<esc>2k03li
-		au FileType sh inoreab <buffer>  while while<cr>do<cr>done<esc>2k$a
-		au FileType sh inoreab <buffer>  if if [ ]; then<cr>fi<esc><Up>3<right>i
-	augroup END
-
-	augroup filetype_html
-		au!
-		au FileType html,htmldjango setlocal tabstop=2 shiftwidth=2
-		au FileType html,htmldjango inoremap <buffer>   < <><left>
-		au FileType html,htmldjango inoreab <buffer>    % %<Space>%<left><Left>
-	augroup END
-
-	augroup filetype_java
-		au!
-		au FileType java inoreab <buffer>    psvm
-			\ public static void main(String[] args){<cr>}<esc>O<c-r>=EatSpace()<cr>
-		au FileType java inoreab <buffer> if if()<left><c-r>=EatSpace()<cr>
-		au FileType java inoreab <buffer> for for(;;)<left><Left><Left><c-r>=EatSpace()<cr>
-		au FileType java inoreab <buffer> while while()<left><c-r>=EatSpace()<cr>
-		au FileType java inoreab <buffer> sop
-			\ System.out.println("");<left><Left><Left><c-r>=EatSpace()<cr>
-
-		au FileType java nnoremap <buffer>    <leader>;      $a;<esc>o
-	augroup END
-
-	augroup filetype_c
-		au!
-		au FileType c,cpp inoreab <buffer> if if()<left><c-r>=EatSpace()<cr>
-		au FileType c,cpp inoreab <buffer> for for(;;)<left><Left><Left><c-r>=EatSpace()<cr>
-		au FileType c,cpp inoreab <buffer> while while()<left><c-r>=EatSpace()<cr>
-		au Filetype c,cpp inoreab <buffer> pri printf("");<left><left><left><c-r>=EatSpace()<cr>
-		au Filetype c,cpp inoreab <buffer> main
-			\ int main(){<cr><cr>return EXIT_SUCCESS;<cr>}
-			\<up><up><tab><c-r>=EatSpace()<cr>
-		au Filetype c,cpp inoreab <buffer> #i #include
-		au Filetype c,cpp inoreab <buffer> #d #define
-
-		au FileType c,cpp nnoremap <buffer> <leader>;   $a;<esc>
-		au Filetype c,cpp nnoremap <buffer> <leader>oh  :call SplitHeader("vsplit")<cr>
-		au Filetype c,cpp nnoremap <buffer> <leader>oc  :call SplitSource("vsplit")<cr>
-		au Filetype c,cpp nnoremap <buffer> <leader>ohs :call SplitHeader("split")<cr>
-		au Filetype c,cpp nnoremap <buffer> <leader>ocs :call SplitSource("split")<cr>
-	augroup END
-
-	augroup filetype_js
-		au!
-		au FileType javascript nnoremap <buffer> <leader>;     $a;<esc>o
-	augroup END
-
-	augroup sass
-		au!
-		au Filetype sass nnoremap <buffer> <leader>cs    :call CompileSass()<cr>
-	augroup END
-
-	augroup filetype_text
-		au!
-		au Filetype gitcommit       setlocal spell textwidth=80
-		au Filetype markdown        setlocal spell textwidth=80
-		au FileType text            setlocal spell textwidth=80
-	augroup END
-
-	augroup filetype_tmp
-		au!
-		au BufRead  *.tmp           set filetype=template
-	augroup END
-
-	augroup relativeLnNum
-		au!
-		au InsertEnter,WinLeave      *       set nornu
-		au InsertLeave,WinEnter      *       set rnu
+		au Filetype gitcommit,markdown,text setlocal spell textwidth=80
 	augroup END
 
 " key mappings
@@ -277,53 +191,53 @@
 
 	" global
 
-		noremap        <F1>             :NERDTreeToggle<cr>
+		norem        <F1>             :NERDTreeToggle<cr>
 
 		map            <leader>c        <plug>NERDCommenterToggle
 		map            <leader>cz       <plug>NerdComComment
 
 	" normal
 
-		noremap    <leader>ev       :vsplit $MYVIMRC<cr>
-		nnoremap   <leader>w        <esc>:w<cr>
-		nnoremap   <leader>q        <esc>:q<cr>
-		nnoremap   <leader>wq       <esc>:wq<cr>
-		nnoremap   <leader>fq       <esc>:q!<cr>
-		nnoremap   <leader>wa       <esc>:wa<cr>
+		norem    <leader>ev       :vsplit $MYVIMRC<cr>
+		nnorem   <leader>w        <esc>:w<cr>
+		nnorem   <leader>q        <esc>:q<cr>
+		nnorem   <leader>wq       <esc>:wq<cr>
+		nnorem   <leader>fq       <esc>:q!<cr>
+		nnorem   <leader>wa       <esc>:wa<cr>
 
 		" Faster navigation
-		nnoremap    H               b
-		nnoremap    L               w
-		nnoremap    J               4j
-		nnoremap    K               4k
-		nnoremap    <leader>l       $
-		nnoremap    <leader>h       ^
-		nnoremap    <leader>j       G
-		nnoremap    <leader>k       gg
+		nnorem    H               b
+		nnorem    L               w
+		nnorem    J               4j
+		nnorem    K               4k
+		nnorem    <leader>l       $
+		nnorem    <leader>h       ^
+		nnorem    <leader>j       G
+		nnorem    <leader>k       gg
 
-		nnoremap    <leader>n       :call NumberToggle()<cr>
-		nnoremap    <tab>           .
-		nnoremap    =               =<cr>
-		nnoremap    f               za
-		nnoremap    F               :call ToggleUniversalFold()<cr>
-		nnoremap    <leader>t       :tabnext<cr>
-		nnoremap    <leader>st      :tabprev<cr>
+		nnorem    <leader>n       :call NumberToggle()<cr>
+		nnorem    <tab>           .
+		nnorem    =               =<cr>
+		nnorem    f               za
+		nnorem    F               :call ToggleUniversalFold()<cr>
+		nnorem    <leader>t       :tabnext<cr>
+		nnorem    <leader>st      :tabprev<cr>
 
-		nnoremap    <leader>r       :wincmd r<cr>
-		nnoremap    sv              :source ~/.vimrc<cr>
-		nnoremap    s               :set 
+		nnorem    <leader>r       :wincmd r<cr>
+		nnorem    sv              :source ~/.vimrc<cr>
+		nnorem    s               :set 
 
-		nnoremap    <c-a>           ggvG$
-		nnoremap    b               <c-v>
-		nnoremap    <leader>rt      :retab!<cr>
-		nnoremap    tt              :tabf
+		nnorem    <c-a>           ggvG$
+		nnorem    b               <c-v>
+		nnorem    <leader>rt      :retab!<cr>
+		nnorem    tt              :tabf
 
 		" tmux/vim pane navigation
 		if exists('$TMUX')
-			nnoremap <silent> <c-h> :call TmuxOrSplitSwitch('h', 'L')<cr>
-			nnoremap <silent> <c-j> :call TmuxOrSplitSwitch('j', 'D')<cr>
-			nnoremap <silent> <c-k> :call TmuxOrSplitSwitch('k', 'U')<cr>
-			nnoremap <silent> <c-l> :call TmuxOrSplitSwitch('l', 'R')<cr>
+			nnorem <silent> <c-h> :call TmuxOrSplitSwitch('h', 'L')<cr>
+			nnorem <silent> <c-j> :call TmuxOrSplitSwitch('j', 'D')<cr>
+			nnorem <silent> <c-k> :call TmuxOrSplitSwitch('k', 'U')<cr>
+			nnorem <silent> <c-l> :call TmuxOrSplitSwitch('l', 'R')<cr>
 		else
 			map <c-h> <C-w>h
 			map <c-j> <C-w>j
@@ -334,66 +248,66 @@
 	" operator-pending
 
 		" Faster navigation
-		onoremap    H            b
-		onoremap    L            w
-		onoremap    J            4j
-		onoremap    K            4k
-		onoremap    <leader>l    $
-		onoremap    <leader>h    ^
-		onoremap    <leader>j    G
-		onoremap    <leader>k    gg
+		onorem    H            b
+		onorem    L            w
+		onorem    J            4j
+		onorem    K            4k
+		onorem    <leader>l    $
+		onorem    <leader>h    ^
+		onorem    <leader>j    G
+		onorem    <leader>k    gg
 
 	" insert
 
-		inoremap    <special><expr>            <esc>[200~ SmartPaste()
+		inorem    <special><expr>            <esc>[200~ SmartPaste()
 
 		"Scroll up/down auto-complete menu with j/k
-		inoremap    <expr> j        ((pumvisible())?("\<c-n>"):("j"))
-		inoremap    <expr> k        ((pumvisible())?("\<c-p>"):("k"))
-		inoremap    <tab>           <c-r>=Tab_Or_Complete()<cr>
-		inoremap    <bs>            <c-r>=SmartBackspace(col("."), virtcol("."))<cr>
-		inoremap    jk              <esc>
+		inorem    <expr> j        ((pumvisible())?("\<c-n>"):("j"))
+		inorem    <expr> k        ((pumvisible())?("\<c-p>"):("k"))
+		inorem    <tab>           <c-r>=Tab_Or_Complete()<cr>
+		inorem    <bs>            <c-r>=SmartBackspace(col("."), virtcol("."))<cr>
+		inorem    jk              <esc>
 
-		inoremap    "               ""<left>
-		inoremap    '               ''<left>
-		inoremap    ""              "
-		inoremap    ''              '
-		inoremap    (               ()<left>
-		inoremap    ((              ()
-		inoremap    [               []<left>
-		inoremap    [[              []
-		inoremap    {{              {}<left>
-		inoremap    {               {<cr>}<esc>O
+		inorem    "               ""<left>
+		inorem    '               ''<left>
+		inorem    ""              "
+		inorem    ''              '
+		inorem    (               ()<left>
+		inorem    ((              ()
+		inorem    [               []<left>
+		inorem    [[              []
+		inorem    {{              {}<left>
+		inorem    {               {<cr>}<esc>O
 
-		inoremap    <up>            <esc>:call ResizeUp()<cr>
-		inoremap    <down>          <esc>:call ResizeDown()<cr>
-		inoremap    <left>          <esc>:call ResizeLeft()<cr>
-		inoremap    <right>         <esc>:call ResizeRight()<cr>
+		inorem    <up>            <esc>:call ResizeUp()<cr>
+		inorem    <down>          <esc>:call ResizeDown()<cr>
+		inorem    <left>          <esc>:call ResizeLeft()<cr>
+		inorem    <right>         <esc>:call ResizeRight()<cr>
 
-		imap        <S-up>          <up><up>
-		imap        <S-down>        <down><down>
-		imap        <S-left>        <left><left>
-		imap        <S-right>       <right><right>
+		nm        <S-up>          <up><up>
+		nm        <S-down>        <down><down>
+		nm        <S-left>        <left><left>
+		nm        <S-right>       <right><right>
 
-		imap        \c              <plug>NERDCommenterInsert
+		nm        \c              <plug>NERDCommenterInsert
 
 	" visual
 
-		vnoremap jk                 <esc>
+		vnorem jk                 <esc>
 
 		" Faster navigation"
-		vnoremap    <leader>l       $
-		vnoremap    <leader>h       0
-		vnoremap    <leader>j       G
-		vnoremap    <leader>k       gg
-		vnoremap    H               b
-		vnoremap    L               w
-		vnoremap    J               4j
-		vnoremap    K               4k
+		vnorem    <leader>l       $
+		vnorem    <leader>h       0
+		vnorem    <leader>j       G
+		vnorem    <leader>k       gg
+		vnorem    H               b
+		vnorem    L               w
+		vnorem    J               4j
+		vnorem    K               4k
 
-		vnoremap    <s-tab>         :call BlockSmartBackspace()<cr>gv
-		vnoremap    <tab>           :call BlockSmartTab()<cr>gv
-		vnoremap    <leader>c       "+y
+		vnorem    <s-tab>         :call BlockSmartBackspace()<cr>gv
+		vnorem    <tab>           :call BlockSmartTab()<cr>gv
+		vnorem    <leader>c       "+y
 
 " functions
 

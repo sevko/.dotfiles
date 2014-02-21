@@ -1,7 +1,3 @@
 #include <stdio.h>
-#include <stdlib.h>
 
-int main(){
-	__START__
-	return EXIT_SUCCESS;
-}
+__START__
