@@ -1,4 +1,4 @@
-source ../shell_scripts/termColorsFonts.sh
+source ../shell_scripts/termColorsFonts.zsh
 
 # indicate whether current directory is inside a git archive
 inside_git_archive(){

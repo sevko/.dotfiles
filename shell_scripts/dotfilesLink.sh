@@ -1,10 +1,10 @@
-#! /bin/bash
+#! /bin/zsh
 
 #   Description:
 #       Removes ~/$files and creates symlinks with identical names to their
 #       counterparts in ~/.dotfiles/.
 
-source termColorsFonts.sh
+source termColorsFonts.zsh
 
 files=(".tmux.conf" ".bashrc" ".zshrc" ".vimrc" ".gitconfig")
 
@@ -22,10 +22,10 @@ do
 	fi
 
 	printf "Remove $file: "
-	(rm ~/$file &> /dev/null && printf successString) || printf errorString
+	(rm ~/$file &> /dev/null && printf $successString) || printf $errorString
 
 	printf "\tCreate symlink $file to ~/.dotfiles/$newFile: "
-	(ln -s ~/.dotfiles/$newFile ~/$file &> /dev/null && printf successString) || printf errorString
+	(ln -s ~/.dotfiles/$newFile ~/$file &> /dev/null && printf $successString) || printf $errorString
 
 	printf "\n"
 done
