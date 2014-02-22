@@ -450,7 +450,8 @@
 	func! GitBranchName()
 		let gitCommand = "cd " . expand("%:p:h") . " && [ -d .git ] ||
 			\ git rev-parse --is-inside-work-tree > /dev/null 2>&1 &&
-			\ git symbolic-ref --short HEAD"
+			\ git symbolic-ref --short HEAD 2> /dev/null ||
+			\ git rev-parse HEAD | cut -b-10"
 		let branchName = system(gitCommand)
 		if len(branchName) > 0
 			return " " . branchName[:len(branchName) - 2] . "  "

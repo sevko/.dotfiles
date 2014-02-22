@@ -9,7 +9,8 @@ inside_git_archive(){
 git_branch_status(){
 	if $(inside_git_archive)
 	then
-		branchName=$(git symbolic-ref --short HEAD)             # branch name
+		branchName=$(git symbolic-ref --short HEAD 2> /dev/null \
+			|| git rev-parse HEAD | cut -b-10) # branch name
 		git diff --quiet --ignore-submodules HEAD &>/dev/null   # whether dirty
 		branchStatus=$([ "$?" = 1 ] && echo "$(fg 196)± ")
 		echo "$(fg 40) $branchStatus$(fg 73)$branchName$font[reset]"
