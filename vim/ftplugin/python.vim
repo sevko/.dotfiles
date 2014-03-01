@@ -21,4 +21,5 @@ hi _delimiters ctermfg=166
 hi _end_of_line ctermfg=244
 hi _constant cterm=italic ctermfg=70
 
+inoreab <buffer>    main    if __name__ == "__main__":<cr>
 so ~/.vimrc-after

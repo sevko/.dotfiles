@@ -25,6 +25,8 @@ inoreab <buffer> if if()<left><c-r>=EatSpace()<cr>
 inoreab <buffer> for for(;;)<left><Left><Left><c-r>=EatSpace()<cr>
 inoreab <buffer> while while()<left><c-r>=EatSpace()<cr>
 inoreab <buffer> pri printf("");<left><left><left><c-r>=EatSpace()<cr>
+inoreab <buffer> typd typedef ;<left><c-r>=EatSpace()<cr>
+inoreab <buffer> str struct
 inoreab <buffer> main int main(){<cr><cr>return EXIT_SUCCESS;<cr>}<up><up><tab>
 	\<c-r>=EatSpace()<cr>
 inoreab <buffer> #i #include

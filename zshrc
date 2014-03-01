@@ -3,7 +3,6 @@ source ~/.dotfiles/zsh/prompt.zsh
 
 # settings
 	zstyle ':completion:*' menu select
-	CASE_SENSITIVE="true"
 	COMPLETION_WAITING_DOTS="true"
 	DISABLE_UNTRACKED_FILES_DIRTY="true"
 
@@ -15,20 +14,23 @@ source ~/.dotfiles/zsh/prompt.zsh
 	bindkey -v "^r" history-incremental-search-backward
 
 #aliases
-	alias bpy=bpython
+	alias bpy="bpython"
 	alias ccat="pygmentize -O style=monokai -f terminal -g"
 	alias clip="xclip -select clipboard"
 	alias ev=evince
+	alias gcc="gcc -Wall -Wextra -Wpointer-arith -Wcast-align -Wunreachable-code"
 	alias gth=gthumb
 	alias ka=killall
-	alias memcheck="valgrind --leak-check=yes --show-reachable=yes
+	alias memcheck="valgrind --leak-check=yes --show-reachable=yes\
 		--num-callers=20 --track-fds=yes --track-origins=yes"
+	alias nyan="nc -v nyancat.dakko.us 23"
 	alias scan="command hp-scan --area=0,0,216,279"
 	alias hp-scan="echo 'nope nope nope'"
 	alias so=source
 	alias sasw="sass --watch"
 	alias soz="source ~/.zshrc"
-	alias t=tmux
+	alias t="command tmux"
+	alias tmux="TERM=screen-256color-bce tmux"
 	alias v=vim
 
 	# core utils
@@ -45,20 +47,28 @@ source ~/.dotfiles/zsh/prompt.zsh
 		alias ga="git add"
 		alias gau="git add -u"
 		alias gb="git branch"
+		alias gba="git branch -a"
+		alias gbd="git branch -d"
 		alias gc="git commit"
 		alias gcl="git clone"
 		alias gco="git checkout"
+		alias gcob="git checkout -b"
 		alias gd="git diff"
 		alias gf="git fetch"
+		alias gi="git init"
 		alias gl="git log"
 		alias gm="git merge"
 		alias gp="git pull"
 		alias gpu="git push"
-		alias grh="git reset --hard HEAD"
+		alias gpuo="git push origin"
+		alias grh="git reset HEAD"
+		alias grhh="git reset --hard HEAD"
+		alias grm="git rm"
 		alias gs="git status"
 		alias gst="git stash"
 		alias gsta="git stash apply"
 		alias gstl="git stash list"
+		alias gsu="git submodule"
 		alias gu="git up"
 
 # variables
@@ -70,6 +80,10 @@ source ~/.dotfiles/zsh/prompt.zsh
 	if [[ -s '/etc/zsh_command_not_found' ]]; then
 		source '/etc/zsh_command_not_found'
 	fi
+
+	gpub(){
+		git push --set-upstream origin $(git symbolic-ref --short HEAD)
+	}
 
 # The following lines were added by zsh-newuser-install
 	HISTFILE=~/.histfile

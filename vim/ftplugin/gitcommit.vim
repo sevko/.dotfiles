@@ -1,3 +1,5 @@
+setlocal spell spelllang=en_us
+
 syn match _gitcommitTypeOfChange "\(Add:\)\|\(Mod:\)\|\(Ref:\)\|\(Fix:\)\|\(Rem:\)\|\(Rea:\)\|"
 syn match _gitcommitChangedFile "^\t[^\t].*"
 syn match _gitcommitSubjectLine "\%1l\%<51c."

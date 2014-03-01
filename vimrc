@@ -4,8 +4,7 @@
 	" properly set to work with the Vim-related packages available in Debian.
 	runtime! debian.vim
 
-	call pathogen#incubate()
-	call pathogen#helptags()
+	silent! call pathogen#incubate() | call pathogen#helptags()
 
 	if has("syntax")
 		syntax enable
@@ -34,10 +33,8 @@
 	filetype plugin on
 
 	" colorscheme
-	if isdirectory(glob("~/.vim/bundle/vim-colors-solarized"))
 		set background=dark
-		colorscheme solarized
-	endif
+		silent! colorscheme solarized
 
 	set showcmd
 	set autowrite
@@ -135,6 +132,7 @@
 	hi statuslinenc cterm=none ctermfg=black ctermbg=2
 	hi extraWhiteSpace cterm=none ctermbg=88 | match extraWhiteSpace /\s\+$/
 	hi NonText ctermbg=15
+	hi SpellBad cterm=bold ctermfg=196
 
 	hi statusline cterm=none ctermbg=235
 	hi statuslinenc ctermfg=none ctermbg=235
@@ -179,8 +177,11 @@
 
 		au InsertEnter * hi clear extraWhiteSpace
 		au InsertLeave * hi extraWhiteSpace cterm=none ctermbg=88
-		au InsertEnter,WinLeave * set nornu
-		au InsertLeave,WinEnter * set rnu
+		au InsertEnter,WinLeave * :set nornu
+		au InsertLeave,WinEnter * :call RelativeNumber()
+
+		au InsertEnter * set timeoutlen=150
+		au InsertLeave * set timeoutlen=280
 
 		au Filetype gitcommit,markdown,text setlocal spell textwidth=80
 	augroup END
@@ -198,7 +199,7 @@
 
 	" normal
 
-		norem    <leader>ev       :vsplit $MYVIMRC<cr>
+		nnorem    <leader>ev       :vsplit $MYVIMRC<cr>
 		nnorem   <leader>w        <esc>:w<cr>
 		nnorem   <leader>q        <esc>:q<cr>
 		nnorem   <leader>wq       <esc>:wq<cr>
@@ -232,6 +233,17 @@
 		nnorem    <leader>rt      :retab!<cr>
 		nnorem    tt              :tabf
 
+		nnorem    <up>            <esc>:call ResizeUp()<cr>
+		nnorem    <down>          <esc>:call ResizeDown()<cr>
+		nnorem    <left>          <esc>:call ResizeLeft()<cr>
+		nnorem    <right>         <esc>:call ResizeRight()<cr>
+
+		nmap      <S-up>          <up><up><up>
+		nmap      <S-down>        <down><down><down>
+		nmap      <S-left>        <left><left><left>
+		nmap      <S-right>       <right><right><right>
+
+
 		" tmux/vim pane navigation
 		if exists('$TMUX')
 			nnorem <silent> <c-h> :call TmuxOrSplitSwitch('h', 'L')<cr>
@@ -262,11 +274,16 @@
 		inorem    <special><expr>            <esc>[200~ SmartPaste()
 
 		"Scroll up/down auto-complete menu with j/k
+		im        <F2>            <plug>NERDCommenterInsert
 		inorem    <expr> j        ((pumvisible())?("\<c-n>"):("j"))
 		inorem    <expr> k        ((pumvisible())?("\<c-p>"):("k"))
 		inorem    <tab>           <c-r>=Tab_Or_Complete()<cr>
 		inorem    <bs>            <c-r>=SmartBackspace(col("."), virtcol("."))<cr>
-		inorem    jk              <esc>
+
+		inorem    <up>            <esc>:call ResizeUp()<cr>i
+		inorem    <down>          <esc>:call ResizeDown()<cr>i
+		inorem    <left>          <esc>:call ResizeLeft()<cr>i
+		inorem    <right>         <esc>:call ResizeRight()<cr>i
 
 		inorem    "               ""<left>
 		inorem    '               ''<left>
@@ -279,44 +296,44 @@
 		inorem    {{              {}<left>
 		inorem    {               {<cr>}<esc>O
 
-		inorem    <up>            <esc>:call ResizeUp()<cr>
-		inorem    <down>          <esc>:call ResizeDown()<cr>
-		inorem    <left>          <esc>:call ResizeLeft()<cr>
-		inorem    <right>         <esc>:call ResizeRight()<cr>
-
-		nm        <S-up>          <up><up>
-		nm        <S-down>        <down><down>
-		nm        <S-left>        <left><left>
-		nm        <S-right>       <right><right>
-
-		nm        \c              <plug>NERDCommenterInsert
-
 	" visual
 
 		vnorem jk                 <esc>
 
-		" Faster navigation"
-		vnorem    <leader>l       $
-		vnorem    <leader>h       0
-		vnorem    <leader>j       G
-		vnorem    <leader>k       gg
-		vnorem    H               b
-		vnorem    L               w
-		vnorem    J               4j
-		vnorem    K               4k
+		" Faster navigation
+			vnorem    <leader>l     $
+			vnorem    <leader>h     0
+			vnorem    <leader>j     G
+			vnorem    <leader>k     gg
+			vnorem    H             b
+			vnorem    L             w
+			vnorem    J             4j
+			vnorem    K             4k
 
-		vnorem    <s-tab>         :call BlockSmartBackspace()<cr>gv
-		vnorem    <tab>           :call BlockSmartTab()<cr>gv
-		vnorem    <leader>c       "+y
+		vnorem      <leader>c     "+y
+		vnorem      <tab>         >gv
+		vnorem      <s-tab>       <gv
 
 " functions
 
 	" toggles between relative and absolute line numbering
 	function! NumberToggle()
-		if(&relativenumber == 1)
+		if !&number
+			return
+		endif
+
+		if(&relativenumber)
 			set nornu
 		else
 			set rnu
+		endif
+	endfunc
+
+	" if line-numbering enabled, set relative-line-numbering; used by
+	" window-movement autocommand
+	func! RelativeNumber()
+		if &nu
+			setl rnu
 		endif
 	endfunc
 
@@ -360,26 +377,6 @@
 		endif
 	endfunc
 
-	func! BlockSmartTab()
-		let lineNr = line(".")
-		let colPos = col("'<")
-
-		if len(getline(lineNr)) > 0
-			call cursor(lineNr, colPos)
-			exec "normal! i" . SmartTab(colPos)
-		endif
-	endfunc
-
-	func! BlockSmartBackspace()
-		let lineNr = line(".")
-		let colPos = col("'<")
-
-		if len(getline(lineNr)) > 0
-			call cursor(lineNr, colPos)
-			exec "normal! i" . SmartBackspace(colPos, virtcol("'<"))
-		endif
-	endfunc
-
 	" toggles paste setting when pasting from the terminal
 	function! SmartPaste()
 		set pastetoggle=<esc>[201~
@@ -410,6 +407,8 @@
 		endif
 	endfunction
 
+	" facilitates seamless navigation across tmux/vim splits with a single set
+	" of keymaps
 	function! TmuxOrSplitSwitch(wincmd, tmuxdir)
 		let previous_winnr = winnr()
 		silent! execute "wincmd " . a:wincmd
@@ -448,10 +447,10 @@
 	" if current file inside a git tree, return the name of the current branch;
 	" else, return an empty string
 	func! GitBranchName()
-		let gitCommand = "cd " . expand("%:p:h") . " && [ -d .git ] ||
+		let gitCommand = "cd " . expand("%:p:h") . " &&
 			\ git rev-parse --is-inside-work-tree > /dev/null 2>&1 &&
-			\ git symbolic-ref --short HEAD 2> /dev/null ||
-			\ git rev-parse HEAD | cut -b-10"
+			\ (git symbolic-ref --short HEAD 2> /dev/null ||
+			\ git rev-parse HEAD | cut -b-10)"
 		let branchName = system(gitCommand)
 		if len(branchName) > 0
 			return " " . branchName[:len(branchName) - 2] . "  "
@@ -463,7 +462,8 @@
 	" load filetype specific template and perform any necessary template flag
 	" substitutions
 	func! LoadTemplate()
-		let templateFileName = glob("~/.dotfiles/vim/templates/" . &filetype . ".tmp")
+		let templateFileName = glob("~/.dotfiles/vim/templates/" . &filetype .
+			\ ".tmp")
 		if filereadable(templateFileName)
 			exe "normal! :read " . templateFileName . "\<cr>"
 		else
@@ -485,6 +485,7 @@
 		startinsert!
 	endfunc
 
+	" deletes the preceding space; used by abbreviations
 	func! EatSpace()
 		let c = nr2char(getchar(0))
 		return (c == ' ') ? '' : c
