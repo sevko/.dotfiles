@@ -1,0 +1,16 @@
+FLAGS = -Wall -Wextra
+CC = gcc $(FLAGS)
+
+all: bin bin/__PROJECTNAME__
+
+run: all
+	bin/__PROJECTNAME__
+
+bin/__PROJECTNAME__: src/__PROJECTNAME__.c
+	$(CC) -o $@ $^
+
+bin:
+	mkdir bin
+
+clean:
+	if [ -d bin ]; then rm -rf bin; fi

@@ -1,3 +1,5 @@
+setlocal textwidth=80
+
 iunmap    {
 inorem    {              {}<left>
 
