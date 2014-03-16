@@ -38,4 +38,20 @@ nnorem <buffer> <leader>oc  :call SplitSource("vsplit")<cr>
 nnorem <buffer> <leader>ohs :call SplitHeader("split")<cr>
 nnorem <buffer> <leader>ocs :call SplitSource("split")<cr>
 
+func! PrintTemplate()
+	echo "
+		\\n#include lib
+		\\n#include system
+		\\n#include local
+		\\n
+		\\n#define function-macro
+		\\n#define object-macro
+		\\n
+		\\nextern variables
+		\\n
+		\\nstruct
+		\\ntypedef
+		\\nstatic variables"
+endfunc
+
 source ~/.dotfiles/vimrc-after

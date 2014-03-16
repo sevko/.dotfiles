@@ -1,3 +1,10 @@
+#   Description:
+#       termColorsFonts.zsh contains a dictionary and functions for prettifying
+#       terminal output with colors and styles (eg italic, bold).
+#
+#   Use:
+#       source /path/to/termColorsFonts.zsh  # source from any shell script
+
 # dictionary of special font escape codes
 typeset -Ag font
 font=(
