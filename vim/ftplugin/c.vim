@@ -37,7 +37,9 @@ nnorem <buffer> <leader>oh  :call SplitHeader("vsplit")<cr>
 nnorem <buffer> <leader>oc  :call SplitSource("vsplit")<cr>
 nnorem <buffer> <leader>ohs :call SplitHeader("split")<cr>
 nnorem <buffer> <leader>ocs :call SplitSource("split")<cr>
+nnorem <buffer> <leader>gc  :call GetHeaders()<cr>
 
+" print my preferred order of declaration statement
 func! PrintTemplate()
 	echo "
 		\\n#include lib
@@ -52,6 +54,11 @@ func! PrintTemplate()
 		\\nstruct
 		\\ntypedef
 		\\nstatic variables"
+endfunc
+
+func! GetHeaders()
+	let execute_script = "python ~/.dotfiles/vim/scripts/c_function_headers.py"
+	silent! exec "read! " . execute_script . " " . expand("%:p:r") . ".c"
 endfunc
 
 source ~/.dotfiles/vimrc-after
