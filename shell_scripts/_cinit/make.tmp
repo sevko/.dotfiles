@@ -1,16 +1,25 @@
-FLAGS = -Wall -Wextra
+PROJECT_NAME = __PROJECTNAME__
+FLAGS = -Wall -Wextra -I ./
 CC = gcc $(FLAGS)
 
-all: bin bin/__PROJECTNAME__
+SRC = $(wildcard src/*.c)
+OBJ = $(patsubst %.c, bin/%.o, $(foreach srcFile, $(SRC), $(notdir $(srcFile))))
+
+.PHONY: all run clean
+
+all: bin bin/$(PROJECT_NAME)
 
 run: all
-	bin/__PROJECTNAME__
+	bin/$(PROJECT_NAME)
 
-bin/__PROJECTNAME__: src/__PROJECTNAME__.c
+bin/$(PROJECT_NAME): $(OBJ)
 	$(CC) -o $@ $^
 
+bin/%.o: src/%.c
+	$(CC) -o $@ -c $^
+
 bin:
-	mkdir bin
+	@mkdir bin
 
 clean:
-	if [ -d bin ]; then rm -rf bin; fi
+	@rm -rf bin

@@ -1,8 +1,5 @@
 #! /bin/zsh
 
-#   Use:
-#       cinit.zsh PROJECT_NAME
-#
 #   Description:
 #       cinit.zsh initializes a C project named PROJECT_NAME, with my
 #       typical directory-structure:
@@ -15,6 +12,11 @@
 #
 #       cinit performs all necessary keyword insertions within project files
 #       (ie, inserting the makefile's target names).
+#
+#   Use:
+#       ./cinit.zsh PROJECT_NAME
+#
+#       PROJECT_NAME -- name of the project
 
 projectName=$1
 
