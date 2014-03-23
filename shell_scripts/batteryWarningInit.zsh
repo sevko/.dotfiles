@@ -12,5 +12,5 @@
 
 if [ "$(ps -e | grep 'batteryWarningd')" = "" ]; then
 	export DISPLAY=:0.0 && export XAUTHORITY=~/.Xauthority && \
-		~/.dotfiles/shell_scripts/batteryWarningd.zsh
+		~/.dotfiles/shell_scripts/batteryWarningd.zsh &
 fi

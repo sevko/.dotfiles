@@ -7,7 +7,11 @@
 #    Use:
 #       chmod +x batteryWarning.zsh
 
-audioFilePath="/usr/bin/sounds-882-solemn.wav"  # sound to be played
+audio_file_path="/usr/bin/sounds-882-solemn.wav"  # sound to be played
+battery_level_low=(5 10 15 20)
+battery_level_high=(90 95 97)
+loop_interval=5     # seconds between battery level checks
+
 battery_level=`acpi -b | grep -P -o '[0-9]+(?=%)'`
 battery_status=$(upower -i /org/freedesktop/UPower/devices/battery_BAT0 |\
 	grep state)     # whether charging or discharging
@@ -16,7 +20,19 @@ battery_status=$(upower -i /org/freedesktop/UPower/devices/battery_BAT0 |\
 # one argument message
 send_warning(){
 	notify-send -u critical "Battery $1" "Battery level is ${battery_level}%!"
-	play $audioFilePath
+	play $audio_file_path
+}
+
+# echo "true" if $battery_level is equal to any of $*; echo "false" if not
+battery_level_critical(){
+	local battery_critical=false
+	for level in ${*:1}; do
+		if [ $battery_level -eq $level ]; then
+			battery_critical=true
+			break
+		fi
+	done
+	echo $battery_critical
 }
 
 # daemon loop running at five-second intervals
@@ -30,20 +46,18 @@ while true; do
 
 	# flash warning if battery level hits critical levels
 	if [ $old_battery_level -ne $battery_level ]; then
-		echo "old"
-		if [ $battery_level -eq 20 -o $battery_level -eq 15 \
-			-o $battery_level -eq 10 -o $battery_level -eq 5 ] \
+		printf "Different: %d" $battery_level
+		if [ "$(battery_level_critical ${battery_level_low[@]})" = "true" ] \
 			&& [ ${battery_status:25} = "discharging" ]; then
 			send_warning "low"
 
-		else if [ $battery_level -eq 90 -o $battery_level -eq 95 \
-			-o $battery_level -eq 98 -o $battery_level -eq 99 ] \
-			&& [ "${battery_status:25}" = "charging" ]; then
-			send_warning "overcharging"
-		fi
+		else
+			if [ "$(battery_level_critical ${battery_level_high[@]})" = \
+				"true" ] && [ "${battery_status:25}" = "charging" ]; then
+				send_warning "overcharging"
+			fi
 		fi
 	fi
 
-	echo $battery_level
-	sleep 5
+	sleep $loop_interval
 done
