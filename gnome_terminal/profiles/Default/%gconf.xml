@@ -1,49 +1,34 @@
 <?xml version="1.0"?>
 <gconf>
-	<entry name="use_custom_command" mtime="1377826546" type="bool" value="false"/>
-	<entry name="login_shell" mtime="1375369916" type="bool" value="false"/>
-	<entry name="title" mtime="1392996109" type="string">
-		<stringvalue>-</stringvalue>
-	</entry>
-	<entry name="scroll_background" mtime="1392996109" type="bool" value="false"/>
-	<entry name="background_image" mtime="1392996109" type="string">
-		<stringvalue>/home/sevko/Pictures/minimalistWallpaper.png</stringvalue>
-	</entry>
-	<entry name="scrollback_lines" mtime="1392996109" type="int" value="10000"/>
-	<entry name="scrollbar_position" mtime="1392996109" type="string">
+	<entry name="scrollback_unlimited" mtime="1395852094" type="bool" value="true"/>
+	<entry name="scrollbar_position" mtime="1395852094" type="string">
 		<stringvalue>hidden</stringvalue>
 	</entry>
-	<entry name="default_show_menubar" mtime="1392996109" type="bool" value="false"/>
-	<entry name="background_darkness" mtime="1392996109" type="float" value="0.95147699117660522"/>
-	<entry name="background_type" mtime="1392996109" type="string">
+	<entry name="default_show_menubar" mtime="1395852094" type="bool" value="false"/>
+	<entry name="font" mtime="1395852094" type="string">
+		<stringvalue>DejaVu Sans Mono 9</stringvalue>
+	</entry>
+	<entry name="use_system_font" mtime="1395852094" type="bool" value="false"/>
+	<entry name="background_darkness" mtime="1395852094" type="float" value="0.94725698232650757"/>
+	<entry name="background_type" mtime="1395852094" type="string">
 		<stringvalue>transparent</stringvalue>
 	</entry>
-	<entry name="default_size_rows" mtime="1392996109" type="int" value="43"/>
-	<entry name="default_size_columns" mtime="1392996109" type="int" value="172"/>
-	<entry name="use_custom_default_size" mtime="1392996109" type="bool" value="true"/>
-	<entry name="cursor_shape" mtime="1375395603" type="string">
-		<stringvalue>block</stringvalue>
+	<entry name="bold_color_same_as_fg" mtime="1395852094" type="bool" value="false"/>
+	<entry name="use_theme_colors" mtime="1395852094" type="bool" value="false"/>
+	<entry name="palette" mtime="1395852094" type="string">
+		<stringvalue>#070736364242:#DCDC32322F2F:#858599990000:#B5B589890000:#26268B8BD2D2:#D3D336368282:#2A2AA1A19898:#EEEEE8E8D5D5:#00002B2B3636:#CBCB4B4B1616:#58586E6E7575:#65657B7B8383:#838394949696:#6C6C7171C4C4:#9393A1A1A1A1:#033925592E14</stringvalue>
 	</entry>
-	<entry name="font" mtime="1392996109" type="string">
-		<stringvalue>Monospace 9</stringvalue>
-	</entry>
-	<entry name="use_system_font" mtime="1392996109" type="bool" value="false"/>
-	<entry name="bold_color_same_as_fg" mtime="1392996109" type="bool" value="false"/>
-	<entry name="use_theme_colors" mtime="1392996109" type="bool" value="false"/>
-	<entry name="palette" mtime="1392996109" type="string">
-		<stringvalue>#000000000000:#CCCC00000000:#0000FFFF0000:#88888A8A8585:#FFFF9D650000:#CCCC00000000:#0000AAAAAAAA:#AAAAAAAAAAAA:#555555555555:#88888A8A8585:#21EBE22128B6:#7373D2D21616:#CCCC00000000:#FFFF5555FFFF:#88888A8A8585:#FFFFFFFFFFFF</stringvalue>
-	</entry>
-	<entry name="alternate_screen_scroll" mtime="1392996109" type="bool" value="true"/>
-	<entry name="background_color" mtime="1392996109" type="string">
+	<entry name="alternate_screen_scroll" mtime="1395852094" type="bool" value="true"/>
+	<entry name="background_color" mtime="1395852094" type="string">
 		<stringvalue>#000000000000</stringvalue>
 	</entry>
-	<entry name="visible_name" mtime="1392996109" type="string">
-		<stringvalue>Default</stringvalue>
+	<entry name="visible_name" mtime="1395852094" type="string">
+		<stringvalue>Solarized</stringvalue>
 	</entry>
-	<entry name="bold_color" mtime="1392996109" type="string">
-		<stringvalue>#4E4E9A9A0606</stringvalue>
+	<entry name="bold_color" mtime="1395852094" type="string">
+		<stringvalue>#EFEF29292929</stringvalue>
 	</entry>
-	<entry name="foreground_color" mtime="1392996109" type="string">
-		<stringvalue>#7373D2D21616</stringvalue>
+	<entry name="foreground_color" mtime="1395852094" type="string">
+		<stringvalue>#8A8AE2E23434</stringvalue>
 	</entry>
 </gconf>
