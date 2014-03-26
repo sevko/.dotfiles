@@ -1,5 +1,8 @@
+inoreab <buffer> id id=""<left><c-r>=EatSpace()<cr>
+inoreab <buffer> cls cls=""<left><c-r>=EatSpace()<cr>
+inorem <buffer> { {}<left>
+so ~/.vimrc-after
+
 setlocal tabstop=2 shiftwidth=2
 inorem <buffer>   < <><left>
-inoreab <buffer>    % %<Space>%<left><Left>
-
-so ~/.vimrc-after
+" inoreab <buffer>    % %<Space>%<left><Left>

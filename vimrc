@@ -92,12 +92,13 @@
 		let NERDTreeMapJumpFirstChild="<leader>k"
 		let NERDTreeMapJumpLastChild="<leader>j"
 
-		let NERDTreeWinSize=26
+		let NERDTreeWinSize=24
 
 	" NERDCommenter
 		let NERDSpaceDelims = 1
 		let g:NERDCustomDelimiters = {
 			\ 'c': {  'left': '//', 'right': '', 'leftAlt': '/*','rightAlt': '*/' },
+			\ 'graphicscript' : { 'left' : '#'}
 		\}
 
 	" smart pasting
@@ -172,6 +173,7 @@
 		au bufnewfile * call LoadTemplate()
 
 		au BufRead  *.tmp set filetype=template
+		au BufRead  *.gsc set filetype=graphicscript
 		au BufReadPost  ~/.vimrc exe "normal! zM"
 		au BufWritePost ~/.vimrc source ~/.vimrc
 
@@ -183,7 +185,7 @@
 		au InsertEnter * set timeoutlen=150
 		au InsertLeave * set timeoutlen=280
 
-		au Filetype gitcommit,markdown,text setlocal spell textwidth=80
+		au FileType modula2     set filetype=markdown
 	augroup END
 
 " key mappings
@@ -199,7 +201,7 @@
 
 	" normal
 
-		nnorem    <leader>ev       :vsplit $MYVIMRC<cr>
+		nnorem   <leader>ev       :tabf $MYVIMRC<cr>
 		nnorem   <leader>w        <esc>:w<cr>
 		nnorem   <leader>q        <esc>:q<cr>
 		nnorem   <leader>wq       <esc>:wq<cr>
@@ -228,7 +230,6 @@
 		nnorem    sv              :source ~/.vimrc<cr>
 		nnorem    s               :set 
 
-		nnorem    <c-a>           ggvG$
 		nnorem    b               <c-v>
 		nnorem    <leader>rt      :retab!<cr>
 		nnorem    tt              :tabf
@@ -237,6 +238,9 @@
 		nnorem    <down>          <esc>:call ResizeDown()<cr>
 		nnorem    <left>          <esc>:call ResizeLeft()<cr>
 		nnorem    <right>         <esc>:call ResizeRight()<cr>
+
+		nnorem    <tab>           >>
+		nnorem    <s-tab>         <<
 
 		nmap      <S-up>          <up><up><up>
 		nmap      <S-down>        <down><down><down>
@@ -277,6 +281,8 @@
 		im        <F2>            <plug>NERDCommenterInsert
 		inorem    <expr> j        ((pumvisible())?("\<c-n>"):("j"))
 		inorem    <expr> k        ((pumvisible())?("\<c-p>"):("k"))
+		inorem    <expr> J        ((pumvisible())?("\<c-n>\<c-n>\<c-n>"):("J"))
+		inorem    <expr> K        ((pumvisible())?("\<c-p>\<c-p>\<c-p>"):("K"))
 		inorem    <tab>           <c-r>=Tab_Or_Complete()<cr>
 		inorem    <bs>            <c-r>=SmartBackspace(col("."), virtcol("."))<cr>
 
@@ -297,8 +303,6 @@
 		inorem    {               {<cr>}<esc>O
 
 	" visual
-
-		vnorem jk                 <esc>
 
 		" Faster navigation
 			vnorem    <leader>l     $
@@ -481,7 +485,7 @@
 		endif
 
 		exe "normal! ggdd"
-		exe "normal! /__START__\<cr>de"
+		silent! exe "normal! /__START__\<cr>de"
 		startinsert!
 	endfunc
 

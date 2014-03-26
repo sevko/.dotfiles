@@ -2,30 +2,33 @@ source ~/.dotfiles/zsh/oh-my-zsh.zsh
 source ~/.dotfiles/zsh/prompt.zsh
 
 # settings
+	setopt extendedglob
 	zstyle ':completion:*' menu select
+	zstyle ':completion:*:processes-names' command 'ps -e -o comm='
 	COMPLETION_WAITING_DOTS="true"
 	DISABLE_UNTRACKED_FILES_DIRTY="true"
 
-	export PATH=$PATH:/home/sevko/.local/bin:/usr/local/sbin:/usr/local/bin
-	export PATH=$PATH:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games
+	export PATH=$PATH:~/.dotfiles/shell_scripts
+	export EDITOR=vim
 
 #(zsh) hotkeys
 	stty intr \^x
 	bindkey -v "^r" history-incremental-search-backward
 
 #aliases
-	alias bpy="bpython"
+	alias bpy="bpython -q"
 	alias ccat="pygmentize -O style=monokai -f terminal -g"
 	alias clip="xclip -select clipboard"
 	alias ev=evince
 	alias gcc="gcc -Wall -Wextra -Wpointer-arith -Wcast-align -Wunreachable-code"
 	alias gth=gthumb
+	alias hp-scan="echo 'nope nope nope'"
 	alias ka=killall
 	alias memcheck="valgrind --leak-check=yes --show-reachable=yes\
 		--num-callers=20 --track-fds=yes --track-origins=yes"
 	alias nyan="nc -v nyancat.dakko.us 23"
+	alias py=python
 	alias scan="command hp-scan --area=0,0,216,279"
-	alias hp-scan="echo 'nope nope nope'"
 	alias so=source
 	alias sasw="sass --watch"
 	alias soz="source ~/.zshrc"
@@ -38,7 +41,7 @@ source ~/.dotfiles/zsh/prompt.zsh
 		alias l="command ls --color -h --group-directories-first"
 		alias ll="l -al"
 		alias m=man
-		alias mk=make
+		alias mk="make -j"
 		alias mkd=mkdir
 		alias wg=wget
 
@@ -49,6 +52,8 @@ source ~/.dotfiles/zsh/prompt.zsh
 		alias gb="git branch"
 		alias gba="git branch -a"
 		alias gbd="git branch -d"
+		alias gbm="git branch --merged"
+		alias gbnm="git branch --no-merged"
 		alias gc="git commit"
 		alias gcl="git clone"
 		alias gco="git checkout"

@@ -6,7 +6,7 @@
 #       ./bbsync.zsh
 
 blackberry_path="/media/sevko/BLACKBERRY1/home/user/music/Media Sync/"
-blackberry_path="${blackberry_path}Compilations/Single"
+blackberry_path="${blackberry_path}Compilations/Single/music/"
 
 if [ ! -d "$blackberry_path" ]; then
 	echo "Blackberry not connected."
@@ -27,4 +27,4 @@ echo "Syncing x1c with blackberry."
 sync_dirs "$blackberry_path" "$HOME/music"
 
 echo "\nSyncing blackberry with x1c."
-sync_dirs "$HOME/music" "$blackberry_path" 
+sync_dirs "$HOME/music" "$blackberry_path"

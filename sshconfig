@@ -1,0 +1,20 @@
+Host stuybooks
+	Hostname 162.243.33.238
+	User root
+
+Host spec
+	Hostname stuyspec.com
+	User skozak
+
+Host marge
+	Hostname marge.stuy.edu
+	User severyn.kozak
+
+Host softdev
+	#Hostname softdev-server.stuycs.org
+	Hostname 192.241.133.179
+	User severyn.kozak
+
+Host cstuy
+	Hostname newweb.cstuy.org
+	User sevko

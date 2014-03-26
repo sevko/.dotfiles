@@ -51,9 +51,10 @@ func! PrintTemplate()
 		\\n
 		\\nextern variables
 		\\n
+		\\nstatic function
+		\\nstatic variables
 		\\nstruct
-		\\ntypedef
-		\\nstatic variables"
+		\\ntypedef"
 endfunc
 
 func! GetHeaders()
