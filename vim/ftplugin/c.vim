@@ -62,4 +62,4 @@ func! GetHeaders()
 	silent! exec "read! " . execute_script . " " . expand("%:p:r") . ".c"
 endfunc
 
-source ~/.dotfiles/vimrc-after
+source ~/.dotfiles/vimrc_after

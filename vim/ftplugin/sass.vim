@@ -1,2 +1,2 @@
 nnorem <buffer> <leader>cs    :call CompileSass()<cr>
-so ~/.vimrc-after
+so ~/.vimrc_after

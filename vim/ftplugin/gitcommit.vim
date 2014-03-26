@@ -11,4 +11,4 @@ hi _gitcommitTypeOfChange ctermfg=2
 hi _gitcommitChangedFile ctermfg=4
 hi _gitcommitSubjectLine ctermfg=3
 
-so ~/.vimrc-after
+so ~/.vimrc_after

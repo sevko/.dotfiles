@@ -4,4 +4,4 @@ inoreab  <buffer>  for for in<cr>endfor<esc>k^2la
 inoreab  <buffer>  func func!<cr>endfunc<esc><Up>$a
 inoreab  <buffer>  aug aug<cr>au!<cr>aug END<esc>2k$a
 
-so ~/.vimrc-after
+so ~/.vimrc_after

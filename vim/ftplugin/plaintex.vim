@@ -4,4 +4,4 @@ setlocal textwidth=80
 iunmap    {
 inorem    {              {}<left>
 
-so ~/.vimrc-after
+so ~/.vimrc_after

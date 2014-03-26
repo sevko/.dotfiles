@@ -26,4 +26,4 @@ inoreab <buffer> sop System.out.println("");<left><Left><Left><c-r>=EatSpace()<c
 
 nnorem <buffer>    <leader>;      $a;<esc>o
 
-so ~/.vimrc-after
+so ~/.vimrc_after

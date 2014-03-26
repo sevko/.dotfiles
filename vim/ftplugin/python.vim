@@ -24,4 +24,4 @@ hi _constant cterm=italic ctermfg=70
 inoreab <buffer>    doc """<cr>"""<esc>O<c-r>=EatSpace()<cr>
 inoreab <buffer>    main    if __name__ == "__main__":<cr>
 
-so ~/.vimrc-after
+so ~/.vimrc_after

@@ -4,4 +4,4 @@ inorem <buffer>   < <><left>
 inoreab <buffer>    % %<Space>%<left><Left>
 inoreab {           {}<Left>
 
-so ~/.vimrc-after
+so ~/.vimrc_after

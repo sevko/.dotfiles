@@ -1,3 +1,3 @@
 nnorem <buffer> <leader>;     $a;<esc>
 
-so ~/.vimrc-after
+so ~/.vimrc_after
