@@ -15,6 +15,10 @@ Host softdev
 	Hostname 192.241.133.179
 	User severyn.kozak
 
+Host tourdecity
+	Hostname 107.170.81.70
+	User root
+
 Host cstuy
 	Hostname newweb.cstuy.org
 	User sevko
