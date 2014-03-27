@@ -8,8 +8,9 @@ syn match _surrounding_element "(\|)\|\[\|\]\|{\|}"
 syn match _delimiters "\.\|,\|:"
 syn match _end_of_line ";"
 syn match _constant "\([a-zA-Z0-9]\)\@<!\u[A-Z0-9_]*[A-Z0-9]\([a-z0-9A-Z_]\)\@!"
-syn match _global "\([a-zA-Z0-9]\)\@<!g_[a-zA-Z0-9]\+\([a-zA-Z0-9]\)\@!"
-syn match _cStruct "\([a-zA-Z0-9]\)[a-zA-Z0-9]\+_t\([a-zA-Z0-9]\)\@!" 
+syn match _cGlobal "\([a-zA-Z0-9]\)\@<!g_[a-zA-Z0-9]\+\([a-zA-Z0-9]\)\@!"
+syn match _cStruct "\([a-zA-Z0-9]\)[a-zA-Z0-9]\+_t\([a-zA-Z0-9]\)\@!"
+syn match _cFunction "\(^[^\t]* \)\@<=[^ ]*\((.*[\n]*.*)[{;]$\)\@="
 
 hi _arithmetic_operator ctermfg=3
 hi _logic_operator ctermfg=2
@@ -20,6 +21,7 @@ hi _end_of_line ctermfg=244
 hi _constant cterm=italic ctermfg=70
 hi _global ctermfg=4
 hi _cStruct ctermfg=6
+hi _cFunction ctermfg=4
 
 inoreab <buffer> if if()<left><c-r>=EatSpace()<cr>
 inoreab <buffer> for for(;;)<left><Left><Left><c-r>=EatSpace()<cr>
