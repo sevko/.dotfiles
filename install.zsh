@@ -1,4 +1,11 @@
-#! /bin/zsh
+#! /usr/bin/zsh
+
+#   Description:
+#       Script to install .dotfiles/ on a new machine, by creating necessary
+#       symlinks between files inside and outside the archive.
+#
+#   Use:
+#       ./install.zsh
 
 # files whose corresponding file is located in $HOME/.dotfiles/ without the
 # leading period, if any
@@ -11,16 +18,11 @@ files=(
 	"$HOME/.vimrc_after"
 )
 
-# files whose corresponding file may exist in a sub-dir of $HOME/.dotfiles/ or
-# have a different name
+# files/directories whose corresponding file may exist in a sub-dir of
+# $HOME/.dotfiles/ or have a different name
 typeset -A special_files
 special_files=(
-	"$HOME/.ssh/config" "ssh/config"
-)
-
-# all directories to be linked
-typeset -A directories
-directories=(
+	"$HOME/.ssh/config" "sshconfig"
 	"$HOME/.gconf/apps/gnome-terminal" "gnome_terminal"
 	"$HOME/.vim/after/ftplugin" "vim/ftplugin"
 )
@@ -32,35 +34,22 @@ link_files(){
 
 # create symlinks for all regular files
 for file in $files; do
-	if [[ -e $file || -L $file ]]; then
-		rm $file
+	if [[ -e $file || -L $file || -d $file ]]; then
+		rm -rf $file
+	else
+		mkdir -p ${file%/*}
 	fi
+
 	link_files $HOME/.dotfiles/${${file##*/}#.*} $file
 done
 
-echo "\n---\n"
-
 # create symlinks for all special files
 for file in ${(k)special_files}; do
-	if [[ ! -e $file ]]; then
-		mkdir -p ${file%/*}
-	else
+	if [[ -e $file || -L $file || -d $file ]]; then
 		rm $file
+	else
+		mkdir -p ${file%/*}
 	fi
 
 	link_files $HOME/.dotfiles/$special_files[$file] $file
-done
-
-echo "\n---\n"
-
-# create symlinks for all directories
-for dir in ${(k)directories}; do
-	rootPath=${dir%/*}
-	if [[ ! -d $dir ]]; then
-		mkdir -p $rootPath
-	else
-		rm -rf $dir
-	fi
-
-	link_files $HOME/.dotfiles/$directories[$dir] $dir
 done

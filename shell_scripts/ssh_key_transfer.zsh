@@ -1,3 +1,5 @@
+#! /usr/bin/zsh
+
 #   Description:
 #       Script to automate ssh public-key addition to a new remote machine.
 #
@@ -12,10 +14,15 @@ if [ "$1" = "" ]; then
 	exit 1
 fi
 
-# scp key over, append it to ~/.ssh/authorized_keys
-scp ~/.ssh/id_rsa.pub $1:~/id_rsa_sevko.pub
-ssh $1 << COMMANDS
-	[ -d .ssh ] || mkdir .ssh
+stty -echo
+echo "Password: "
+read password
+stty echo
+
+#scp key over, append it to ~/.ssh/authorized_keys
+sshpass -p $password scp ~/.ssh/id_rsa.pub $1:~/id_rsa_sevko.pub > /dev/null
+sshpass -p $password ssh -q $1 << COMMANDS > /dev/null
+	mkdir -p .ssh
 	cat id_rsa_sevko.pub >> .ssh/authorized_keys
 	rm id_rsa_sevko.pub
-COMMANDS > /dev/null
+COMMANDS

@@ -1,4 +1,4 @@
-#! /bin/zsh
+#! /usr/bin/zsh
 
 #   Description:
 #       cinit.zsh initializes a C project named PROJECT_NAME, with my
