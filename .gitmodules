@@ -1,0 +1,15 @@
+[submodule "vim/bundle/nerdtree"]
+	path = vim/bundle/nerdtree
+	url = git@github.com:scrooloose/nerdtree.git
+[submodule "vim/bundle/nerdcommenter"]
+	path = vim/bundle/nerdcommenter
+	url = git@github.com:scrooloose/nerdcommenter.git
+[submodule "vim/bundle/solarized"]
+	path = vim/bundle/solarized
+	url = https://github.com/altercation/vim-colors-solarized
+[submodule "vim/bundle/vim-resize"]
+	path = vim/bundle/vim-resize
+	url = https://github.com/breuckelen/vim-resize
+[submodule "vim/bundle/vim-tmux-navigator"]
+	path = vim/bundle/vim-tmux-navigator
+	url = https://github.com/christoomey/vim-tmux-navigator
