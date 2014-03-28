@@ -18,6 +18,7 @@ hi _delimiters ctermfg=166
 hi _end_of_line ctermfg=244
 hi _zshfunction ctermfg=4
 
+inoreab <buffer>  doc #   Description:<cr><cr>Use:<esc><up>O      
 inoreab <buffer>  for for in ; do<cr>done<esc>k03li
 inoreab <buffer>  while while; do<cr>done<esc>k04la
 inoreab <buffer>  if if [ ]; then<cr>fi<esc><Up>3<right>i
