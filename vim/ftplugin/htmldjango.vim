@@ -1,7 +1,7 @@
-setlocal tabstop=2 shiftwidth=2
+syn region djangoTagBlock start="\(^[\t ]*\)=" end="$" contains=djangoStatement,djangoFilter,djangoArgument,djangoTagError display containedin=ALLBUT,@djangoBlocks
 
-inorem <buffer>   < <><left>
 inoreab <buffer>    % %<Space>%<left><Left>
 inoreab {           {}<Left>
 
+so ~/.dotfiles/vim/ftplugin/html.vim
 so ~/.vimrc_after

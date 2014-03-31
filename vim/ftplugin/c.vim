@@ -21,7 +21,7 @@ hi _end_of_line ctermfg=244
 hi _constant cterm=italic ctermfg=70
 hi _global ctermfg=4
 hi _cStruct ctermfg=6
-hi _cFunction ctermfg=4
+hi _cFunction ctermfg=14
 
 inoreab <buffer> if if()<left><c-r>=EatSpace()<cr>
 inoreab <buffer> for for(;;)<left><Left><Left><c-r>=EatSpace()<cr>

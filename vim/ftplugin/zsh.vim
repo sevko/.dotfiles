@@ -9,6 +9,7 @@ syn match _delimiters "\.\|,\|:"
 syn match _end_of_line ";"
 
 syn match _zshfunction "^.*\((){$\)\@="
+syn match _zshpath "\([a-zA-Z0-9_-]\)\@<!\(\/\|\~\|$[^ \t]\+\/\)[^ \t]*"
 
 hi _arithmetic_operator ctermfg=3
 hi _logic_operator ctermfg=2
@@ -16,7 +17,8 @@ hi _bitwise_operator ctermfg=1
 hi _surrounding_element ctermfg=2
 hi _delimiters ctermfg=166
 hi _end_of_line ctermfg=244
-hi _zshfunction ctermfg=4
+hi _zshfunction ctermfg=14
+hi _zshpath cterm=italic ctermfg=3
 
 inoreab <buffer>  doc #   Description:<cr><cr>Use:<esc><up>O      
 inoreab <buffer>  for for in ; do<cr>done<esc>k03li
