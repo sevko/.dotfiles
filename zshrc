@@ -1,17 +1,27 @@
-source ~/.dotfiles/zsh/oh-my-zsh.zsh
-source ~/.dotfiles/zsh/prompt.zsh
-
 # settings
+
 	setopt extendedglob
-	zstyle ':completion:*' menu select
-	zstyle ':completion:*:processes-names' command 'ps -e -o comm='
+
+	# completion
+		autoload -Uz compinit
+		compinit
+
+		zstyle ":completion:*" menu select=2
+		zstyle ":completion:*:processes-names" command "ps -e -o comm="
+
+	zmodload zsh/zle
+	DOT=$HOME/.dotfiles/zsh/
+	source $DOT/oh-my-zsh.zsh
+	source $DOT/prompt.zsh
+
+	fpath=($HOME/.dotfiles/zsh/ $fpath)
+
+	PATH=$PATH:~/.dotfiles/shell_scripts
+	EDITOR=vim
+	KEYTIMEOUT=1
 	COMPLETION_WAITING_DOTS="true"
 	DISABLE_UNTRACKED_FILES_DIRTY="true"
 
-	export PATH=$PATH:~/.dotfiles/shell_scripts
-	export EDITOR=vim
-
-#(zsh) hotkeys
 	stty intr \^x
 	bindkey -v "^r" history-incremental-search-backward
 
@@ -20,10 +30,12 @@ source ~/.dotfiles/zsh/prompt.zsh
 	alias ccat="pygmentize -O style=monokai -f terminal -g"
 	alias clip="xclip -select clipboard"
 	alias ev=evince
-	alias gcc="gcc -Wall -Wextra -Wpointer-arith -Wcast-align -Wunreachable-code"
+	alias gcc="gcc -Wall -Wextra -Wpointer-arith -Wcast-align \
+		-Wunreachable-code"
 	alias gth=gthumb
 	alias hp-scan="echo 'nope nope nope'"
 	alias ka=killall
+	alias keepass="keepassx ~/.keepassx/.passwords.kdb"
 	alias memcheck="valgrind --leak-check=yes --show-reachable=yes\
 		--num-callers=20 --track-fds=yes --track-origins=yes"
 	alias nyan="nc -v nyancat.dakko.us 23"
@@ -32,17 +44,19 @@ source ~/.dotfiles/zsh/prompt.zsh
 	alias so=source
 	alias sasw="sass --watch"
 	alias soz="source ~/.zshrc"
+	alias sudo="sudo "
 	alias t="command tmux"
 	alias tmux="TERM=screen-256color-bce tmux"
 	alias v=vim
 
 	# core utils
 		alias c=cd
-		alias l="command ls --color -h --group-directories-first"
+		alias l="ls --color -h --group-directories-first"
 		alias ll="l -al"
 		alias m=man
 		alias mk="make -j"
 		alias mkd=mkdir
+		alias rmd=rmdir
 		alias wg=wget
 
 	# git
@@ -82,13 +96,17 @@ source ~/.dotfiles/zsh/prompt.zsh
 
 # functions & conditionals
 
-	if [[ -s '/etc/zsh_command_not_found' ]]; then
-		source '/etc/zsh_command_not_found'
-	fi
-
 	gpub(){
 		git push --set-upstream origin $(git symbolic-ref --short HEAD)
 	}
+
+	if [[ -s "/etc/zsh_command_not_found" ]]; then
+		source "/etc/zsh_command_not_found"
+	fi
+
+	if [ "$TMUX" = "" ]
+		then tmux attach || tmux new
+	fi
 
 # The following lines were added by zsh-newuser-install
 	HISTFILE=~/.histfile
@@ -99,6 +117,4 @@ source ~/.dotfiles/zsh/prompt.zsh
 	# The following lines were added by compinstall
 	zstyle :compinstall filename '/home/sevko/.zshrc'
 
-	autoload -Uz compinit
-	compinit
 	# End of lines added by compinstall

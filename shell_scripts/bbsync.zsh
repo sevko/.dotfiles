@@ -10,6 +10,7 @@ blackberry_path="${blackberry_path}Compilations/Single/music/"
 
 if [ ! -d "$blackberry_path" ]; then
 	echo "Blackberry not connected."
+	exit 1
 fi
 
 # copy any files in dir $1 that aren't in dir $2 into dir $2

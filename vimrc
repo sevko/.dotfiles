@@ -38,6 +38,7 @@
 
 	set showcmd
 	set autowrite
+	set ttyfast lazyredraw
 
 	" file backup
 		" backup to ~/.tmp; get rid of .swp files
@@ -97,7 +98,10 @@
 	" NERDCommenter
 		let NERDSpaceDelims = 1
 		let g:NERDCustomDelimiters = {
-			\ 'c': {  'left': '//', 'right': '', 'leftAlt': '/*','rightAlt': '*/' },
+			\ 'c': {  'left': '//', 'right': '',
+				\ 'leftAlt': '/*','rightAlt': '*/' },
+			\ 'cpp': {  'left': '//', 'right': '',
+				\ 'leftAlt': '/*','rightAlt': '*/' },
 			\ 'graphicscript' : { 'left' : '#'}
 		\}
 
@@ -108,8 +112,8 @@
 	" tmux/vim pane navigation
 		let previous_title = substitute
 			\(system("tmux display-message -p '#{pane_title}'"), '\n', '', '')
-		let &t_ti = "\<esc>]2;vim\<Esc>\\" . &t_ti
-		let &t_te = "\<esc>]2;". previous_title . "\<Esc>\\" . &t_te
+		let &t_ti = "\<esc>]2;vim\<esc>\\" . &t_ti
+		let &t_te = "\<esc>]2;". previous_title . "\<esc>\\" . &t_te
 
 	" toggle-surround
 		let surround_close_char = {
@@ -131,7 +135,6 @@
 	hi nontext ctermfg=red
 	hi vertsplit ctermfg=black ctermbg=2
 	hi statuslinenc cterm=none ctermfg=black ctermbg=2
-	hi extraWhiteSpace cterm=none ctermbg=88 | match extraWhiteSpace /\s\+$/
 	hi NonText ctermbg=15
 	hi SpellBad cterm=bold ctermfg=196
 
@@ -145,9 +148,9 @@
 		hi pmenuthumb cterm=none ctermbg=red
 
 	" tab-bar
-		hi TabLineFill cterm=none ctermfg=23 ctermbg=7
+		hi TabLineFill cterm=none ctermbg=15
 		hi TabLineSel cterm=none ctermfg=231 ctermbg=32
-		hi TabLine cterm=none ctermfg=0 ctermbg=7
+		hi TabLine cterm=none ctermfg=7 ctermbg=15
 
 	" statusline
 		" highlighting for status line components
@@ -161,6 +164,7 @@
 		hi User7 cterm=bold ctermfg=234 ctermbg=253
 
 	hi MatchParen cterm=bold ctermfg=45 ctermbg=none
+	hi _extraWhitespace ctermbg=88 | match _extraWhitespace /\s\+$/
 
 " autocommands
 
@@ -172,13 +176,15 @@
 
 		au bufnewfile * call LoadTemplate()
 
-		au BufRead  *.tmp set filetype=template
-		au BufRead  *.gsc set filetype=graphicscript
+		au BufRead,BufNewFile  *.tmp set filetype=template
+		au BufRead,BufNewFile  *.gsc set filetype=graphicscript
+		au BufRead  *.val set filetype=valgrind
 		au BufReadPost  ~/.vimrc exe "normal! zM"
 		au BufWritePost ~/.vimrc source ~/.vimrc
 
-		au InsertEnter * hi clear extraWhiteSpace
-		au InsertLeave * hi extraWhiteSpace cterm=none ctermbg=88
+		au BufWinEnter * match _extraWhitespace /\s\+$/
+		au InsertEnter * match _extraWhitespace /\s\+\%#\@<!$/
+		au InsertLeave * match _extraWhitespace /\s\+$/
 		au InsertEnter,WinLeave * :set nornu
 		au InsertLeave,WinEnter * :call RelativeNumber()
 
@@ -186,6 +192,7 @@
 		au InsertLeave * set timeoutlen=280
 
 		au FileType modula2     set filetype=markdown
+		au FileType html set filetype=htmldjango
 	augroup END
 
 " key mappings
@@ -202,6 +209,7 @@
 	" normal
 
 		nnorem   <leader>ev       :tabf $MYVIMRC<cr>
+		nnorem   <leader>ef       :call OpenFtpluginFile()<cr>
 		nnorem   <leader>w        <esc>:w<cr>
 		nnorem   <leader>q        <esc>:q<cr>
 		nnorem   <leader>wq       <esc>:wq<cr>
@@ -209,14 +217,14 @@
 		nnorem   <leader>wa       <esc>:wa<cr>
 
 		" Faster navigation
-		nnorem    H               b
-		nnorem    L               w
-		nnorem    J               4j
-		nnorem    K               4k
-		nnorem    <leader>l       $
-		nnorem    <leader>h       ^
-		nnorem    <leader>j       G
-		nnorem    <leader>k       gg
+			nnorem    H               b
+			nnorem    L               w
+			nnorem    J               4j
+			nnorem    K               4k
+			nnorem    <leader>l       $
+			nnorem    <leader>h       ^
+			nnorem    <leader>j       G
+			nnorem    <leader>k       gg
 
 		nnorem    <leader>n       :call NumberToggle()<cr>
 		nnorem    <tab>           .
@@ -231,8 +239,8 @@
 		nnorem    s               :set 
 
 		nnorem    b               <c-v>
-		nnorem    <leader>rt      :retab!<cr>
-		nnorem    tt              :tabf
+		nnorem    <leader>rt      :call HardRetab("soft")<cr>
+		nnorem    tt              :tabe 
 
 		nnorem    <up>            <esc>:call ResizeUp()<cr>
 		nnorem    <down>          <esc>:call ResizeDown()<cr>
@@ -242,10 +250,15 @@
 		nnorem    <tab>           >>
 		nnorem    <s-tab>         <<
 
-		nmap      <S-up>          <up><up><up>
-		nmap      <S-down>        <down><down><down>
-		nmap      <S-left>        <left><left><left>
-		nmap      <S-right>       <right><right><right>
+		nmap      <s-up>          <up><up><up>
+		nmap      <s-down>        <down><down><down>
+		nmap      <s-left>        <left><left><left>
+		nmap      <s-right>       <right><right><right>
+
+		nnorem    ;               :
+		nnorem    :               <nop>
+		nnorem    \               @
+		nnorem    @               <nop>
 
 
 		" tmux/vim pane navigation
@@ -255,52 +268,55 @@
 			nnorem <silent> <c-k> :call TmuxOrSplitSwitch('k', 'U')<cr>
 			nnorem <silent> <c-l> :call TmuxOrSplitSwitch('l', 'R')<cr>
 		else
-			map <c-h> <C-w>h
-			map <c-j> <C-w>j
-			map <c-k> <C-w>k
-			map <c-l> <C-w>l
+			map <c-h> <c-w>h
+			map <c-j> <c-w>j
+			map <c-k> <c-w>k
+			map <c-l> <c-w>l
 		endif
 
 	" operator-pending
 
 		" Faster navigation
-		onorem    H            b
-		onorem    L            w
-		onorem    J            4j
-		onorem    K            4k
-		onorem    <leader>l    $
-		onorem    <leader>h    ^
-		onorem    <leader>j    G
-		onorem    <leader>k    gg
+			onorem    H            b
+			onorem    L            w
+			onorem    J            4j
+			onorem    K            4k
+			onorem    <leader>l    $
+			onorem    <leader>h    ^
+			onorem    <leader>j    G
+			onorem    <leader>k    gg
 
 	" insert
 
 		inorem    <special><expr>            <esc>[200~ SmartPaste()
 
 		"Scroll up/down auto-complete menu with j/k
-		im        <F2>            <plug>NERDCommenterInsert
-		inorem    <expr> j        ((pumvisible())?("\<c-n>"):("j"))
-		inorem    <expr> k        ((pumvisible())?("\<c-p>"):("k"))
-		inorem    <expr> J        ((pumvisible())?("\<c-n>\<c-n>\<c-n>"):("J"))
-		inorem    <expr> K        ((pumvisible())?("\<c-p>\<c-p>\<c-p>"):("K"))
-		inorem    <tab>           <c-r>=Tab_Or_Complete()<cr>
-		inorem    <bs>            <c-r>=SmartBackspace(col("."), virtcol("."))<cr>
+			im        <F2>        <plug>NERDCommenterInsert
+			inorem    <expr> j    ((pumvisible())?("\<c-n>"):("j"))
+			inorem    <expr> k    ((pumvisible())?("\<c-p>"):("k"))
+			inorem    <expr> J    ((pumvisible())?("\<c-n>\<c-n>\<c-n>"):("J"))
+			inorem    <expr> K    ((pumvisible())?("\<c-p>\<c-p>\<c-p>"):("K"))
 
-		inorem    <up>            <esc>:call ResizeUp()<cr>i
-		inorem    <down>          <esc>:call ResizeDown()<cr>i
-		inorem    <left>          <esc>:call ResizeLeft()<cr>i
-		inorem    <right>         <esc>:call ResizeRight()<cr>i
+		inorem    <tab>      <c-r>=Tab_Or_Complete()<cr>
+		inorem    <bs>       <c-r>=SmartBackspace(col("."), virtcol("."))<cr>
 
-		inorem    "               ""<left>
-		inorem    '               ''<left>
-		inorem    ""              "
-		inorem    ''              '
-		inorem    (               ()<left>
-		inorem    ((              ()
-		inorem    [               []<left>
-		inorem    [[              []
-		inorem    {{              {}<left>
-		inorem    {               {<cr>}<esc>O
+		inorem    <up>       <esc>:call ResizeUp()<cr>i
+		inorem    <down>     <esc>:call ResizeDown()<cr>i
+		inorem    <left>     <esc>:call ResizeLeft()<cr>i
+		inorem    <right>    <esc>:call ResizeRight()<cr>i
+
+		inorem    "          ""<left>
+		inorem    '          ''<left>
+		inorem    ""         "
+		inorem    ''         '
+		inorem    (          ()<left>
+		inorem    ((         ()
+		inorem    [          []<left>
+		inorem    [[         []
+		inorem    {{         {}<left>
+		inorem    {          {<cr>}<esc>O
+
+		inorem    <c-x>      x<esc>xa 
 
 	" visual
 
@@ -434,9 +450,27 @@
 		exec "normal! :" . a:typeOfSplit . " " . expand("%:p:r") . ".h\<cr>"
 	endfunc
 
+	func! OpenFtpluginFile()
+		exec "normal! :tabf $HOME/.dotfiles/vim/ftplugin/" . &ft . ".vim\<cr>"
+	endfunc
+
 	" compile open Sass file
 	func! CompileSass()
 		exec "!sass ". expand("%:p:") . " " . expand("%:p:r") . ".css"
+	endfunc
+
+	func! HardRetab(tab_type)
+		let soft_tab = repeat(" ", &tabstop)
+
+		if a:tab_type == "soft"
+			let soft_tab_regex = "\\(^\\(" . soft_tab . "\\)*\\)\\@<=" .
+				\ soft_tab
+			silent! exec "normal! :%s/" . soft_tab_regex . "/\t/g\<cr>``"
+		elseif a:tab_type == "hard"
+			let hard_tab_regex = "\\(^[\t]*\\)\\@<=\t"
+			silent! exec "normal! :%s/" . hard_tab_regex . "/" . soft_tab .
+				\ "/g\<cr>``"
+		endif
 	endfunc
 
 	" toggle all folding levels (ie fold everything, unfold everything)
