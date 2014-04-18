@@ -1,6 +1,7 @@
 # settings
 
 	setopt extendedglob
+	setopt GLOB_COMPLETE
 
 	# completion
 		autoload -Uz compinit
@@ -11,7 +12,25 @@
 
 	zmodload zsh/zle
 	DOT=$HOME/.dotfiles/zsh/
-	source $DOT/oh-my-zsh.zsh
+
+	# zsh configuration
+		ZSH=$DOT/plugins/oh-my-zsh
+
+		DISABLE_AUTO_UPDATE="true"
+		COMPLETION_WAITING_DOTS="true"
+		DISABLE_UNTRACKED_FILES_DIRTY="true"
+
+		plugins=(last-working-dir pip git-extras)
+
+		if [ -d $ZSH ]; then
+			source $ZSH/oh-my-zsh.sh
+		fi
+
+		export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:
+		/bin:/usr/games:/usr/local/games:/home/sevko/.local/bin:/usr/local/sbin:
+		/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:
+		/usr/local/games"
+
 	source $DOT/prompt.zsh
 
 	fpath=($HOME/.dotfiles/zsh/ $fpath)
@@ -96,8 +115,52 @@
 
 # functions & conditionals
 
+	# Push the current git branch to the remote.
+	#
+	# use: gpub
 	gpub(){
 		git push --set-upstream origin $(git symbolic-ref --short HEAD)
+	}
+
+	# Delete a git submodule's files and metadata.
+	#
+	# use: gdsu SUBMODULE_NAME
+	# args:
+	#   SUBMODULE_NAME - The name of the submodule to delete.
+	gdsu(){
+		submodule=$1
+
+		test -z $submodule && echo "submodule required" 1>&2 && exit 1
+		test ! -f .gitmodules && echo ".gitmodules file not found" 1>&2 \
+			&& exit 2
+
+		NAME=$(echo $submodule | sed 's/\/$//g')
+		test -z $(git config --file=.gitmodules submodule.$NAME.url) \
+			&& echo "submodule not found" 1>&2 && exit 3
+
+		git config --remove-section submodule.$NAME
+		git config --file=.gitmodules --remove-section submodule.$NAME
+		git rm --cached $NAME
+	}
+
+	# Compile the argument C file into an executable with the same root name.
+	#
+	# use: cc C_SOURCE_FILE
+	# args:
+	#   C_SOURCE_FILE The C file to compile
+	cc(){
+		gcc $1 -o ${1%c}
+	}
+
+	# Add a new host entry to ~/.ssh/config.
+	#
+	# use: add_host HOST HOSTNAME USER
+	# args:
+	#   HOST The host's identifying name.
+	#   HOSTNAME The IP address/hostname of the server.
+	#   USER The user's account username on HOSTNAME.
+	add_host(){
+		echo "\nHost $1\n\tHostname $2\n\tUser $3" >> ~/.ssh/config
 	}
 
 	if [[ -s "/etc/zsh_command_not_found" ]]; then

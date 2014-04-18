@@ -9,8 +9,8 @@ func! LocalVimrc()
 
 	let local_vimrc_path = system(cmd)
 	if len(local_vimrc_path) != 0
-		exec "normal! :source " . local_vimrc_path . "\<cr>"
+		exec "normal! :silent! source " . local_vimrc_path . "\<cr>"
 	endif
 endfunc
 
-call LocalVimrc()
+silent! call LocalVimrc()

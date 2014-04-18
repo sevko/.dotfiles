@@ -1,3 +1,4 @@
+hi vimGroupName cterm=bold
 inoreab  <buffer>  if if<cr>endif<esc>k$a
 inoreab  <buffer>  while while<cr>endwhile<esc>k$a
 inoreab  <buffer>  for for in<cr>endfor<esc>k^2la

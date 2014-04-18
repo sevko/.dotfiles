@@ -54,7 +54,7 @@
 
 	set timeoutlen=280
 	set colorcolumn=81
-	set scrolloff=25 sidescrolloff=24
+	set scrolloff=25
 	set noshowmatch
 	set wildmenu wildmode=longest,list,full
 	set backspace=indent,eol,start
@@ -231,6 +231,8 @@
 		nnorem    =               =<cr>
 		nnorem    f               za
 		nnorem    F               :call ToggleUniversalFold()<cr>
+		nnorem    <c-f>           zO
+		nnorem    <c-c>           zC
 		nnorem    <leader>t       :tabnext<cr>
 		nnorem    <leader>st      :tabprev<cr>
 
@@ -451,7 +453,7 @@
 	endfunc
 
 	func! OpenFtpluginFile()
-		exec "normal! :tabf $HOME/.dotfiles/vim/ftplugin/" . &ft . ".vim\<cr>"
+		exec "normal! :tabe $HOME/.dotfiles/vim/ftplugin/" . &ft . ".vim\<cr>"
 	endfunc
 
 	" compile open Sass file
@@ -475,6 +477,7 @@
 
 	" toggle all folding levels (ie fold everything, unfold everything)
 	func! ToggleUniversalFold()
+		set foldmethod=indent
 		if &foldlevel != 0
 			exec "normal! zM"
 		else
@@ -502,8 +505,13 @@
 	func! LoadTemplate()
 		let templateFileName = glob("~/.dotfiles/vim/templates/" . &filetype .
 			\ ".tmp")
+		let altTemplateFileName = glob("~/.dotfiles/vim/templates/" .
+			\ &filetype . "_" . expand("%:e") . ".tmp")
+
 		if filereadable(templateFileName)
 			exe "normal! :read " . templateFileName . "\<cr>"
+		elseif filereadable(altTemplateFileName)
+			exe "normal! :read " . altTemplateFileName . "\<cr>"
 		else
 			return
 		endif
@@ -539,25 +547,25 @@
 
 	" statusline for current window split
 	func! StatusLine()
-		setl statusline=%1*\ %t\                            " filename
-		setl stl+=%2*%{&readonly?'\ ':''}                  " readonly
+		setl statusline=%1*\ %t\                    " filename
+		setl stl+=%2*%{&readonly?'\ ':''}          " readonly
 
 		if !exists("b:gitBranchName")
 			let b:gitBranchName = GitBranchName()
 		endif
 
-		setl stl+=%3*%{b:gitBranchName}                     " branch name
-		setl stl+=%4*%{&modified?' +\ ':''}                 " modified (note unicode space)
-		setl stl+=%5*%=                                     " right justify
-		setl stl+=%6*\ %{strlen(&ft)?&ft:'none'}\           " filetype
-		setl stl+=%7*\ %p%%\                                " percent of file
+		setl stl+=%3*%{b:gitBranchName}             " branch name
+		setl stl+=%4*%{&modified?' +\ ':''}         " modified (note unicode space)
+		setl stl+=%5*%=                             " right justify
+		setl stl+=%6*\ %{strlen(&ft)?&ft:'none'}\   " filetype
+		setl stl+=%7*\ %p%%\                        " percent of file
 	endfunc
 
 	" statusline for other window splits
 	func! StatusLineNC()
-		setl statusline=%1*\ %t\                            " filename
-		setl stl+=%4*%{&modified?'\ +\ ':''}                " modified
-		setl stl+=%5*%=                                     " right justify
+		setl statusline=%1*\ %t\                    " filename
+		setl stl+=%4*%{&modified?'\ +\ ':''}        " modified
+		setl stl+=%5*%=                             " right justify
 	endfunc
 
 	call StatusLine()
