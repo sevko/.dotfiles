@@ -1,5 +1,8 @@
 <?xml version="1.0"?>
 <gconf>
+	<entry name="help" mtime="1396370681" type="string">
+		<stringvalue>disabled</stringvalue>
+	</entry>
 	<entry name="paste" mtime="1395848501" type="string">
 		<stringvalue>&lt;Primary&gt;v</stringvalue>
 	</entry>
