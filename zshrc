@@ -43,6 +43,7 @@
 
 	stty intr \^x
 	bindkey -v "^r" history-incremental-search-backward
+	# xmodmap -e 'clear Lock' -e 'keycode 0x42 = F10'
 
 #aliases
 	alias bpy="bpython -q"
