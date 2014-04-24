@@ -1,6 +1,12 @@
 #dotfiles
 
-Enclosed are the configuration files, shell-scripts, and miscellaneous
-files that I use for workflow enhancement and some system
-administration. Most of the code's home-brewed, but I've borrowed large
-portions from forums, blogs, and wikis.
+Enclosed are my configuration files and shell-scripts. Most of the code's
+home-brewed, but I've borrowed large portions from forums, blogs, and wikis.
+
+### Installation
+The enclosed installation script will handle all `symlink` creation, and other
+necessary setup.
+
+```
+python setup.py
+```
