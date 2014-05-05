@@ -1,0 +1,129 @@
+# 00=none 01=bold 04=underscore 05=blink 07=reverse 08=concealed
+# Text color codes:
+# 30=black 31=red 32=green 33=yellow 34=blue 35=magenta 36=cyan 37=white
+# Background color codes:
+# 40=black 41=red 42=green 43=yellow 44=blue 45=magenta 46=cyan 47=white
+
+NORMAL 00
+FILE 00
+RESET 0
+DIR 01;31
+LINK 01;36
+MULTIHARDLINK 00
+FIFO 40;33
+SOCK 01;35
+DOOR 01;35
+BLK 40;33;01
+CHR 40;33;01
+ORPHAN 40;31;01
+SETUID 37;41
+SETGID 30;43
+CAPABILITY 30;41
+STICKY_OTHER_WRITABLE 30;42
+OTHER_WRITABLE 34;42
+STICKY 37;44
+EXEC 01;50
+
+.tar 00;35
+.tgz 00;35
+.arj 00;35
+.taz 00;35
+.lzh 00;35
+.lzma 00;35
+.tlz 00;35
+.txz 00;35
+.zip 00;35
+.z 00;35
+.Z 00;35
+.dz 00;35
+.gz 00;35
+.lz 00;35
+.xz 00;35
+.bz2 00;35
+.bz 00;35
+.tbz 00;35
+.tbz2 00;35
+.tz 00;35
+.deb 00;35
+.rpm 00;35
+.jar 00;35
+.war 00;35
+.ear 00;35
+.sar 00;35
+.rar 00;35
+.ace 00;35
+.zoo 00;35
+.cpio 00;35
+.7z 00;35
+.rz 00;35
+
+.jpg 00;34
+.jpeg 00;34
+.gif 00;34
+.bmp 00;34
+.pbm 00;34
+.pgm 00;34
+.ppm 00;34
+.tga 00;34
+.xbm 00;34
+.xpm 00;34
+.tif 00;34
+.tiff 00;34
+.png 00;34
+.svg 00;34
+.svgz 00;34
+.mng 00;34
+.pcx 00;34
+.mov 00;34
+.mpg 00;34
+.mpeg 00;34
+.m2v 00;34
+.mkv 00;34
+.webm 00;34
+.ogm 00;34
+.mp4 00;34
+.m4v 00;34
+.mp4v 00;34
+.vob 00;34
+.qt 00;34
+.nuv 00;34
+.wmv 00;34
+.asf 00;34
+.rm 00;34
+.rmvb 00;34
+.flc 00;34
+.avi 00;34
+.fli 00;34
+.flv 00;34
+.gl 00;34
+.dl 00;34
+.xcf 00;34
+.xwd 00;34
+.yuv 00;34
+.cgm 00;34
+.emf 00;34
+
+.axv 01;35
+.anx 01;35
+.ogv 01;35
+.ogx 01;35
+
+.aac 00;36
+.au 00;36
+.flac 00;36
+.mid 00;36
+.midi 00;36
+.mka 00;36
+.mp3 00;36
+.mpc 00;36
+.ogg 00;36
+.ra 00;36
+.wav 00;36
+
+.axa 00;36
+.oga 00;36
+.spx 00;36
+.xspf 00;36
+
+.o 00;31
+.pdf 00;36

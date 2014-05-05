@@ -1,0 +1,35 @@
+snippet main
+	if __name__ == "__main__":
+		${0}
+snippet def
+	def ${1}(${2}):
+		${0:pass}
+snippet class
+	class ${1}(${2:object}):
+
+		def __init__(self${3}):
+			${4:pass}
+snippet if
+	if ${1}:
+		${2:pass}
+snippet while
+	while ${1}:
+		${2:pass}
+snippet fore
+	for ${1:} in $1s:
+		${0:pass}
+snippet for
+	for ${1:ind} in xrange(${2})
+		${0:pass}
+snippet try
+	try:
+		${1:pass}
+	except ${2:Exception} as ${3:exception}:
+		${4:pass}
+snippet with
+	with ${1:open()} as ${2:source_file}
+		${0:pass}
+snippet im
+	import ${1}
+snippet from
+	from ${1} import ${2}

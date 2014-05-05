@@ -8,7 +8,23 @@ syn match _surrounding_element "(\|)\|\[\|\]\|{\|}"
 syn match _delimiters "\.\|,\|:"
 syn match _end_of_line ";"
 
-syn match _constant "\([a-zA-Z0-9]\)\@<!\u[A-Z0-9_]*\([a-z0-9_]\)\@!"
+syn match pythonStrFormatting
+	\ "%\%(([^)]\+)\)\=[-#0 +]*\d*\%(\.\d\+\)\=[hlL]\=[diouxXeEfFgGcrs%]"
+	\ contained containedin=pythonString,pythonRawString
+syn match pythonStrFormatting
+	\ "%[-#0 +]*\%(\*\|\d\+\)\=\%(\.\%(\*\|\d\+\)\)\=[hlL]\=[diouxXeEfFgGcrs%]"
+	\ contained containedin=pythonString,pythonRawString
+
+syn match _pythonSphinxField "\(^[\t ]*\)\@<=:[^:]\+:" containedin=Comment
+syn match _pythonSphinxStandardDomain "\.\. [^:]\+::" containedin=Comment
+syn match _pythonSphinxReference ":[^:]\+:`[^\t`]\+`" containedin=Comment
+syn match _pythonSphinxItalics "\*[^\*]\+\*" containedin=Comment
+syn match _pythonSphinxBold "\*\*[^\*]\+\*\*" containedin=Comment
+syn match _pythonMagic "__[a-zA-Z]\+__"
+
+syn match _pythonConstant "\([a-zA-Z0-9]\)\@<!\u[A-Z0-9_]*\([a-z0-9_]\)\@!"
+syn region Comment start=/\("""\|'''\)/ end=/\("""\|'''\)/
+syn keyword _pythonKeyword self
 
 hi _arithmetic_operator ctermfg=3
 hi _logic_operator ctermfg=2
@@ -16,10 +32,191 @@ hi _bitwise_operator ctermfg=1
 hi _surrounding_element ctermfg=2
 hi _delimiters ctermfg=166
 hi _end_of_line ctermfg=244
-hi _constant cterm=italic ctermfg=70
-hi pythonFunction ctermfg=14
+hi _pythonConstant cterm=bold ctermfg=14
+hi _pythonDocstringBrief cterm=bold ctermfg=10
+hi _pythonKeyword ctermfg=3
+hi _pythonMagic ctermfg=9
+hi _pythonSphinxField cterm=bold ctermfg=10
+hi _pythonSphinxStandardDomain cterm=bold ctermfg=10
+hi _pythonSphinxReference cterm=bold ctermfg=10
+hi _pythonSphinxItalics cterm=italic ctermfg=10
+hi _pythonSphinxBold cterm=bold ctermfg=10
+hi pythonFunction ctermfg=4
+hi pythonStatement cterm=reverse,bold ctermfg=0 ctermbg=2
+hi pythonStrFormatting ctermfg=5
 
-inoreab <buffer>    doc """<cr>"""<esc>O<c-r>=EatSpace()<cr>
+nnorem <buffer>     <leader>d   :call SphinxComment()<cr>o
+
+inoreab <buffer>    doc     """<cr>"""<cr><esc>kO<c-r>=EatSpace()<cr>
 inoreab <buffer>    main    if __name__ == "__main__":<cr>
+inoreab <buffer>    def     def():<cr>pass<esc>k^wi
+inoreab <buffer>    class   class(object):<cr>def __init__(self):<cr>pass<esc>
+	\2k^wi
+inoreab <buffer>    if      if:<cr>pass<up><left>
+inoreab <buffer>    for     for in :<cr>pass<esc>k0eli
+inoreab <buffer>    while   while:<cr>pass<up><left>
+inoreab <buffer>    with    with as :<cr>pass<esc>k0eli
+inoreab <buffer>    try
+	\ try:<cr><bs>except:<cr>pass<esc>kO<c-r>=EatSpace()<cr>
+inoreab <buffer>    im      import
+inoreab <buffer>    from    from import <esc>0ea
+
+" Insert a Sphinx docstring appropriate for the current line.
+"
+" Class and function declarations will received class and function docstrings,
+" while an empty line will receive a module docstring.
+func! SphinxComment()
+	call GetCurrentIndent()
+	let curr_line = substitute(getline("."), "\\n", " ", "g")
+	let curr_line = substitute(curr_line, g:_tab, "", "g")
+
+	if line(".") > 1 && len(curr_line) == 0
+		echom "Error: current line is the first in the module, or a class or
+			\ function definition."
+		return
+	endif
+
+	let curr_line_words = split(curr_line)
+
+	if line(".") == 1
+		let @a = ModuleComment()
+		exec "normal! \"aP"
+
+	elseif curr_line_words[0] == "def"
+		exec "normal! 0\"ay/\\():\\)\\@<=$\<cr>"
+		let func = substitute(substitute(@a, "\\n", " ", "g"), g:_tab, "", "g")
+		let @a = FunctionComment(func)
+		exec "normal! \"ap"
+
+	elseif curr_line_words[0] == "class"
+		let @a = ClassComment()
+		exec "normal! \"ap"
+	endif
+endfunc
+
+" Return a function template docstring.
+"
+" Heuristics are used to determine whether the function returns anything.
+" A typical function docstring might look like:
+"
+"   '''
+"   Return the square of a number.
+"
+"   :param number: The number to be squared.
+"
+"   :type number: int
+"
+"   :return: The square of **number**.
+"   :rtype: int
+"   '''
+func! FunctionComment(declaration)
+	let params = ""
+	let types = ""
+	for arg_name in split(matchstr(a:declaration, "(.*)")[1:-2], ",")
+		if arg_name != "self"
+			if arg_name[0] == " "
+				let arg_name = arg_name[1:]
+			endif
+			let arg_name = split(arg_name, "=")[0]
+
+			let params .= ":param " . arg_name . ": \n"
+			let types .= ":type " . arg_name . ": \n"
+		endif
+	endfor
+
+	if len(l:params) > 0
+		let params = "\n" . params
+		let types = "\n" . types
+	endif
+
+	let return = len(split(GetPythonBlock(), "return \\(.\\+\\)\\@=")) > 1?
+		\"\n:return: \n:rtype: \n":""
+
+	return IndentDocstring("\"\"\"\n" . params . types . return . "\"\"\"")
+endfunc
+
+" Return a class template docstring.
+"
+" Heuristics are used to identify any instance variables.
+" A typical class docstring might look like:
+"
+"   '''
+"   A person class.
+"
+"   :ivar name: (str) The name of the person.
+"   :ivar age: (int) The age of the person.
+"   '''
+func! ClassComment()
+	let instance_vars = []
+
+	for snippet in split(GetPythonBlock(), "self\\.")[1:]
+		let instance_var = matchstr(snippet, "^[a-zA-Z_0-9]\\+.")
+		if instance_var[-1:] != "(" && instance_var !~ "__.*__"
+			call add(instance_vars, instance_var[:-2])
+		endif
+	endfor
+
+	let instance_vars = filter(copy(instance_vars),
+		\"index(instance_vars, v:val, v:key+1)==-1")
+
+	let instance_vars_comment = ""
+	for instance_var in instance_vars
+		let instance_vars_comment .= ":ivar " .  instance_var . ": () \n"
+	endfor
+
+	if len(instance_vars) > 0
+		let instance_vars_comment = "\n" . instance_vars_comment
+	endif
+
+	return IndentDocstring("\"\"\"\n" . instance_vars_comment . "\"\"\"")
+endfunc
+
+" Return a module template docstring.
+"
+" A typical module docstring might look like:
+"
+"   '''
+"   :synopsis:
+"   '''
+func! ModuleComment()
+	return "\"\"\"\n:synopsis: \n\"\"\"\n"
+endfunc
+
+func! GetCurrentIndent()
+	let g:_tab = &et?repeat(" ", &tabstop):"\t"
+	let g:_curr_indent = matchstr(getline("."), "^[\\t ]*\\([^ \\t]\\)\\@=")
+endfunc
+
+func! IndentDocstring(docstring)
+	let docstring_lines = []
+	for line in split(a:docstring, "\n")
+		if len(line) > 0
+			call add(docstring_lines, g:_curr_indent . g:_tab . line)
+		else
+			call add(docstring_lines, line)
+		endif
+	endfor
+	return join(docstring_lines, "\n") . "\n\n"
+endfunc
+
+" Return the block of code following the current line.
+"
+" Return the block of Python code consisting of either blank lines or lines
+" with a greater indentation level than the current line. Examples include
+" the body of a class, for-loop, or if-statement.
+func! GetPythonBlock()
+	let target_line = "\\n\\(^" . g:_curr_indent . "[^" . g:_tab . "]\\)\\@="
+	let col = col(".")
+	let line = line(".")
+
+	if search(target_line, "nW") == 0
+		exec "normal! 0\"ayG$\<cr>"
+	else
+		exec "normal! 0\"ay/" . target_line . "\<cr>"
+	endif
+
+	call cursor(line, col)
+	return @a
+endfunc
 
 so ~/.vimrc_after

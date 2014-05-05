@@ -4,7 +4,7 @@
 	" properly set to work with the Vim-related packages available in Debian.
 	runtime! debian.vim
 
-	silent! call pathogen#incubate() | call pathogen#helptags()
+	call pathogen#infect('bundle/{}') | call pathogen#helptags()
 
 	if has("syntax")
 		syntax enable
@@ -105,6 +105,9 @@
 			\ 'graphicscript' : { 'left' : '#'}
 		\}
 
+	" SnipMate
+		imap <c-j> <plug>snipMateNextOrTrigger
+
 	" smart pasting
 		let &t_SI .= "\<esc>[?2004h"
 		let &t_EI .= "\<esc>[?2004l"
@@ -193,6 +196,7 @@
 
 		au FileType modula2     set filetype=markdown
 		au FileType html set filetype=htmldjango
+		au BufRead *.json set filetype=javascript.json
 	augroup END
 
 " key mappings
@@ -201,7 +205,7 @@
 
 	" global
 
-		norem        <F1>             :NERDTreeToggle<cr>
+		norem          <f1>             :NERDTreeToggle<cr>
 
 		map            <leader>c        <plug>NERDCommenterToggle
 		map            <leader>cz       <plug>NerdComComment
@@ -236,7 +240,7 @@
 		nnorem    <leader>t       :tabnext<cr>
 		nnorem    <leader>st      :tabprev<cr>
 
-		nnorem    <leader>r       :wincmd r<cr>
+		norem        <leader>r       :call RotateWindows()<cr>
 		nnorem    sv              :source ~/.vimrc<cr>
 		nnorem    s               :set 
 
@@ -308,9 +312,11 @@
 		inorem    <right>    <esc>:call ResizeRight()<cr>i
 
 		inorem    "          ""<left>
-		inorem    '          ''<left>
 		inorem    ""         "
+		inorem    '          ''<left>
 		inorem    ''         '
+		inorem    `          ``<left>
+		inorem    ``         `
 		inorem    (          ()<left>
 		inorem    ((         ()
 		inorem    [          []<left>
@@ -318,13 +324,13 @@
 		inorem    {{         {}<left>
 		inorem    {          {<cr>}<esc>O
 
-		inorem    <c-x>      x<esc>xa 
+		inorem    <c-x>      x<esc>:call EscapeAbbreviation()<cr>a
 
 	" visual
 
 		" Faster navigation
 			vnorem    <leader>l     $
-			vnorem    <leader>h     0
+			vnorem    <leader>h     ^
 			vnorem    <leader>j     G
 			vnorem    <leader>k     gg
 			vnorem    H             b
@@ -332,9 +338,9 @@
 			vnorem    J             4j
 			vnorem    K             4k
 
-		vnorem      <leader>c     "+y
-		vnorem      <tab>         >gv
-		vnorem      <s-tab>       <gv
+		vnorem        <leader>c     "+y
+		vnoremap      <tab> :<bs><bs><bs><bs><bs>call VisualIndent()<cr>
+		vnoremap      <s-tab> :<bs><bs><bs><bs><bs>call VisualDeindent()<cr>
 
 " functions
 
@@ -357,6 +363,34 @@
 		if &nu
 			setl rnu
 		endif
+	endfunc
+
+	" indent a block of text in visual mode, then restore the visual selection
+	" shifted right by the indentation width.
+	func! VisualIndent()
+		let start_line = line("'<")
+		let end_line = line("'>")
+
+		for line in range(start_line, end_line)
+			silent! exec "normal! " . line . "gg>>"
+		endfor
+		exec "normal! l" . start_line . "gg\<c-v>" . end_line . "gg"
+	endfunc
+
+	" deindent a block of text in visual mode, then restore the visual selection
+	" shifted left by the indentation width.
+	func! VisualDeindent()
+		let start_line = line("'<")
+		let end_line = line("'>")
+
+		if col("'<") > 1
+			for line in range(start_line, end_line)
+				silent! exec "normal! " . line . "gg<<"
+			endfor
+			exec "normal! h"
+		endif
+
+		exec "normal! " . start_line . "gg\<c-v>" . end_line . "gg"
 	endfunc
 
 	" tab-key insert-mode auto-completion
@@ -406,8 +440,17 @@
 		return ""
 	endfunction
 
+	func! RotateWindows()
+		if NERDTreeAnyBuffers()
+			let toggle_tree = ":NERDTreeToggle\<cr>"
+			exec "normal! " . toggle_tree ":wincmd r\<cr>" . toggle_tree
+		else
+			exec "normal! :wincmd r\<cr>"
+		endif
+	endfunc
+
 	" closes any open NERDTree buffers
-	function! NERDTreeQuit()
+	func! NERDTreeQuit()
 		redir => buffersoutput
 		silent buffers
 		redir END
@@ -427,7 +470,28 @@
 		if (!windowfound)
 			quitall
 		endif
-	endfunction
+	endfunc
+
+	func! NERDTreeAnyBuffers()
+		redir => buffersoutput
+		silent buffers
+		redir END
+
+		let pattern = '^\s*\(\d\+\)\(.....\) "\(.*\)"\s\+line \(\d\+\)$'
+		let windowfound = 0
+
+		for bline in split(buffersoutput, "\n")
+			let m = matchlist(bline, pattern)
+
+			if (len(m) > 0)
+				if (m[2] =~ '..a..')
+					let windowfound = 1
+				endif
+			endif
+		endfor
+
+		return windowfound
+	endfunc
 
 	" facilitates seamless navigation across tmux/vim splits with a single set
 	" of keymaps
@@ -482,6 +546,14 @@
 			exec "normal! zM"
 		else
 			exec "normal! zR"
+		endif
+	endfunc
+
+	func! EscapeAbbreviation()
+		if col(".") == len(getline("."))
+			exe "normal! xa "
+		else
+			exe "normal! xi "
 		endif
 	endfunc
 
