@@ -128,4 +128,4 @@ def setup():
 	print Shell.HEADER % "Setup: end."
 
 if __name__ == "__main__":
-	 setup()
+	setup()

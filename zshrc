@@ -32,6 +32,7 @@
 		/usr/local/games"
 
 	source $DOT/prompt.zsh
+	eval $(dircolors $DOT/dircolors)
 
 	fpath=($HOME/.dotfiles/zsh/ $fpath)
 
@@ -43,7 +44,6 @@
 
 	stty intr \^x
 	bindkey -v "^r" history-incremental-search-backward
-	# xmodmap -e 'clear Lock' -e 'keycode 0x42 = F10'
 
 #aliases
 	alias bpy="bpython -q"
@@ -53,7 +53,6 @@
 	alias gcc="gcc -Wall -Wextra -Wpointer-arith -Wcast-align \
 		-Wunreachable-code"
 	alias gth=gthumb
-	alias hp-scan="echo 'nope nope nope'"
 	alias ka=killall
 	alias keepass="keepassx ~/.keepassx/.passwords.kdb"
 	alias memcheck="valgrind --leak-check=yes --show-reachable=yes\
@@ -64,14 +63,14 @@
 	alias so=source
 	alias sasw="sass --watch"
 	alias soz="source ~/.zshrc"
-	alias sudo="sudo "
+	alias sudo="nocorrect sudo"
 	alias t="command tmux"
 	alias tmux="TERM=screen-256color-bce tmux"
 	alias v=vim
 
 	# core utils
 		alias c=cd
-		alias l="ls --color -h --group-directories-first"
+		alias l="ls --color=auto -h --group-directories-first -p"
 		alias ll="l -al"
 		alias m=man
 		alias mk="make -j"
@@ -95,7 +94,6 @@
 		alias gd="git diff"
 		alias gf="git fetch"
 		alias gi="git init"
-		alias gl="git log"
 		alias gm="git merge"
 		alias gp="git pull"
 		alias gpu="git push"
@@ -116,19 +114,13 @@
 
 # functions & conditionals
 
-	# Push the current git branch to the remote.
-	#
-	# use: gpub
-	gpub(){
-		git push --set-upstream origin $(git symbolic-ref --short HEAD)
-	}
-
-	# Delete a git submodule's files and metadata.
-	#
-	# use: gdsu SUBMODULE_NAME
-	# args:
-	#   SUBMODULE_NAME - The name of the submodule to delete.
 	gdsu(){
+		# Delete a git submodule's files and metadata.
+		#
+		# use: gdsu SUBMODULE_NAME
+		# args:
+		#   SUBMODULE_NAME - The name of the submodule to delete.
+
 		submodule=$1
 
 		test -z $submodule && echo "submodule required" 1>&2 && exit 1
@@ -144,23 +136,66 @@
 		git rm --cached $NAME
 	}
 
-	# Compile the argument C file into an executable with the same root name.
-	#
-	# use: cc C_SOURCE_FILE
-	# args:
-	#   C_SOURCE_FILE The C file to compile
+	gpub(){
+		# Push the current git branch to the remote.
+		#
+		# use: gpub
+
+		git push --set-upstream origin $(git symbolic-ref --short HEAD)
+	}
+
+	gbda(){
+		# Delete a branch, locally and remotely.
+		#
+		# use: gbda GIT_BRANCH_NAME
+		# args:
+		#   GIT_BRANCH_NAME : The name of the branch to delete.
+
+		git branch -d $1
+		if [ "$(git branch -a --no-color | \
+			pcregrep -M "remotes/origin/$1\n")" ]; then
+			git push origin --delete $1
+		fi
+	}
+
+	_gbda_compl(){
+		# Git-branch name completion for `gbda()`.
+
+		reply=("${(f)$(git branch --no-color | tr -d "^*|  ")}")
+	}
+
+	compctl -K _gbda_compl gbda
+
+	gl(){
+		# Heavily formatted `git log` wrapper.
+		#
+		# use: gl [GIT_LOG_ARGS]
+		# Args:
+		#   GIT_LOG_ARGS : Any arguments to `git log`.
+
+		fmt="%C(1)%h%Creset||%C(3)%an%Creset||%C(2)%cr%Creset||%C(6)%s%Creset"
+		git log --pretty=format:$fmt $* | column -t -s '|||' | less
+	}
+
 	cc(){
+		# Compile the argument C file into an executable with the same root name.
+		#
+		# use: cc C_SOURCE_FILE
+		# args:
+		#   C_SOURCE_FILE The C file to compile
+
 		gcc $1 -o ${1%c}
 	}
 
-	# Add a new host entry to ~/.ssh/config.
-	#
-	# use: add_host HOST HOSTNAME USER
-	# args:
-	#   HOST The host's identifying name.
-	#   HOSTNAME The IP address/hostname of the server.
-	#   USER The user's account username on HOSTNAME.
 	add_host(){
+		# Add a new host entry to ~/.ssh/config.
+		#
+		# use: add_host HOST HOSTNAME USER
+		# args:
+		#   HOST The host's identifying name.
+		#   HOSTNAME The IP address/hostname of the server.
+		#   USER The user's account username on HOSTNAME.
+
 		echo "\nHost $1\n\tHostname $2\n\tUser $3" >> ~/.ssh/config
 	}
 

@@ -22,3 +22,11 @@ Host cstuy
 Host bitshift
 	Hostname 107.170.78.213
 	User sevko
+
+Host elee
+	Hostname lydia.elee.me
+	User sevko
+
+Host bitshift_crawler
+	Hostname 162.243.14.60
+	User root

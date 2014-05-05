@@ -1,11 +1,19 @@
 {
-	"regular_files" : ["~/.bashrc", "~/.gitconfig", "~/.tmux.conf", "~/.vimrc",
-		"~/.zshrc", "~/.vimrc_after"],
+	"_comment" : "The names of files to create symbolic links between.",
+	"regular_files" : [
+		"~/.bashrc",
+		"~/.gitconfig",
+		"~/.tmux.conf",
+		"~/.vimrc",
+		"~/.zshrc",
+		"~/.vimrc_after"
+	],
 	"special_files" : {
 		"~/.ssh/config" : "sshconfig",
 		"~/.gconf/apps/gnome-terminal" : "gnome_terminal",
 		"~/.vim/after/ftplugin" : "vim/ftplugin",
 		"~/.vim/autoload/pathogen.vim" : "vim/bundle/pathogen/autoload/pathogen.vim",
-		"~/.vim/bundle" : "vim/bundle"
+		"~/.vim/bundle" : "vim/bundle",
+		"~/.vim/snippets" : "vim/snippets"
 	}
 }
