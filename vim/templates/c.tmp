@@ -1,3 +1,5 @@
 #include <stdio.h>
 
+#include "__FILEBASE__.h"
+
 __START__

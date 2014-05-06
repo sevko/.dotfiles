@@ -82,6 +82,12 @@
 		set t_ZH=[3m
 		set t_ZR=[23m
 
+	" UltiSnips
+		let g:UltiSnipsExpandTrigger="<c-j>"
+		let g:UltiSnipsJumpForwardTrigger="<c-j>"
+		let g:UltiSnipsJumpBackwardTrigger="<c-k>"
+		let g:UltiSnipsEditSplit = "vertical"
+
 	" NERDTree
 		" key-maps
 		let NERDTreeMapOpenSplit="s"
@@ -104,9 +110,6 @@
 				\ 'leftAlt': '/*','rightAlt': '*/' },
 			\ 'graphicscript' : { 'left' : '#'}
 		\}
-
-	" SnipMate
-		imap <c-j> <plug>snipMateNextOrTrigger
 
 	" smart pasting
 		let &t_SI .= "\<esc>[?2004h"
@@ -181,7 +184,7 @@
 
 		au BufRead,BufNewFile  *.tmp set filetype=template
 		au BufRead,BufNewFile  *.gsc set filetype=graphicscript
-		au BufRead  *.val set filetype=valgrind
+		au BufRead *.val set filetype=valgrind
 		au BufReadPost  ~/.vimrc exe "normal! zM"
 		au BufWritePost ~/.vimrc source ~/.vimrc
 
@@ -325,6 +328,17 @@
 		inorem    {          {<cr>}<esc>O
 
 		inorem    <c-x>      x<esc>:call EscapeAbbreviation()<cr>a
+
+		" Auto completion-menu popup
+			let char_nums = range(char2nr("0"), char2nr("9"))
+			let char_nums += range(char2nr("A"), char2nr("Z"))
+			let char_nums += range(char2nr("a"), char2nr("z"))
+
+			for char_num in char_nums
+				let char = nr2char(char_num)
+				silent! exec "inoremap <silent> " . char . " " . char .
+					\ "<c-n><c-p>"
+			endfor
 
 	" visual
 
@@ -627,7 +641,9 @@
 		endif
 
 		setl stl+=%3*%{b:gitBranchName}             " branch name
-		setl stl+=%4*%{&modified?' +\ ':''}         " modified (note unicode space)
+
+        " modified (note unicode space)
+		setl stl+=%4*%{&modified?' +\ ':''}
 		setl stl+=%5*%=                             " right justify
 		setl stl+=%6*\ %{strlen(&ft)?&ft:'none'}\   " filetype
 		setl stl+=%7*\ %p%%\                        " percent of file

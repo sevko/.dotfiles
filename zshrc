@@ -63,7 +63,7 @@
 	alias so=source
 	alias sasw="sass --watch"
 	alias soz="source ~/.zshrc"
-	alias sudo="nocorrect sudo"
+	alias sudo="nocorrect sudo "
 	alias t="command tmux"
 	alias tmux="TERM=screen-256color-bce tmux"
 	alias v=vim
@@ -134,7 +134,17 @@
 		git config --remove-section submodule.$NAME
 		git config --file=.gitmodules --remove-section submodule.$NAME
 		git rm --cached $NAME
+		rm -rf $1
 	}
+
+	_gdsu_compl(){
+		# Git submodule name completion for `gdsu()`.
+
+		submodules="$(cat .gitmodules | grep -Po '(?<=submodule \").*(?=\")')"
+		reply=("${(f)${submodules}}")
+	}
+
+	compctl -K _gdsu_compl gdsu
 
 	gpub(){
 		# Push the current git branch to the remote.
@@ -173,8 +183,9 @@
 		# Args:
 		#   GIT_LOG_ARGS : Any arguments to `git log`.
 
-		fmt="%C(1)%h%Creset||%C(3)%an%Creset||%C(2)%cr%Creset||%C(6)%s%Creset"
-		git log --pretty=format:$fmt $* | column -t -s '|||' | less
+		git_log_format="%C(1)[ %h ]%Creset||%C(3)%an%Creset||%C(2)%cr%Creset||"
+		git_log_format="$git_log_format%C(6)%s%Creset"
+		git log --pretty=format:$git_log_format $* | column -t -s '|||' | less
 	}
 
 	cc(){
