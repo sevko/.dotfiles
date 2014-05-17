@@ -28,13 +28,30 @@ hi _cFunction ctermfg=4
 hi _cDoxygenDirective cterm=bold ctermfg=10
 hi _cDoxygenReference cterm=bold ctermfg=10
 
-nnorem <buffer> <leader>;   $a;<esc>
-nnorem <buffer> <leader>oh  :call SplitHeader("vsplit")<cr>
-nnorem <buffer> <leader>oc  :call SplitSource("vsplit")<cr>
-nnorem <buffer> <leader>ohs :call SplitHeader("split")<cr>
-nnorem <buffer> <leader>ocs :call SplitSource("split")<cr>
-nnorem <buffer> <leader>gc  :call GetHeaders()<cr>
-nnorem <buffer> <leader>d   :call DoxygenComment()<cr>
+" open the open C header file's accompanying source file in a split of
+" type typeOfSplit
+func! SplitSource(typeOfSplit)
+	exec "normal! :" . a:typeOfSplit . " " . expand("%:p:r") . ".c\<cr>"
+endfunc
+
+" open the open C source file's accompanying header file in a split of
+" type typeOfSplit
+func! SplitHeader(typeOfSplit)
+	exec "normal! :" . a:typeOfSplit . " " . expand("%:p:r") . ".h\<cr>"
+endfunc
+
+com! OpenHeaderVSplit exe "normal! :vsp " . expand("%:p:r") . ".h\<cr>"
+com! OpenHeaderSplit exe "normal! :sp " . expand("%:p:r") . ".h\<cr>"
+com! OpenSourceVSplit exe "normal! :vsp " . expand("%:p:r") . ".c\<cr>"
+com! OpenSourceSplit exe "normal! :sp " . expand("%:p:r") . ".c\<cr>"
+
+nnorem <buffer> <leader>; $a;<esc>
+nnorem <buffer> <leader>oh :OpenHeaderVSplit<cr>
+nnorem <buffer> <leader>ohs :OpenHeaderSplit<cr>
+nnorem <buffer> <leader>oc :OpenSourceVSplit<cr>
+nnorem <buffer> <leader>ocs :OpenSourceSplit<cr>
+nnorem <buffer> <leader>gc :call GetHeaders()<cr>
+nnorem <buffer> <leader>d :call DoxygenComment()<cr>
 
 " print my preferred order of declaration statement
 func! PrintTemplate()

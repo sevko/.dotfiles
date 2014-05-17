@@ -113,9 +113,9 @@
 	" NERDCommenter
 		let NERDSpaceDelims = 1
 		let g:NERDCustomDelimiters = {
-			\ 'c': {  'left': '//', 'right': '',
+			\ 'c': { 'left': '//', 'right': '',
 				\ 'leftAlt': '/*','rightAlt': '*/' },
-			\ 'cpp': {  'left': '//', 'right': '',
+			\ 'cpp': { 'left': '//', 'right': '',
 				\ 'leftAlt': '/*','rightAlt': '*/' },
 			\ 'graphicscript' : { 'left' : '#'},
 			\ "mdl" : { "left" : '//' }
@@ -172,7 +172,7 @@
 		" highlighting for status line components
 		hi User1 ctermfg=231 ctermbg=31
 		hi User2 ctermfg=160 ctermbg=31
-		hi User3 ctermfg=22  ctermbg=118
+		hi User3 ctermfg=22 ctermbg=118
 
 		hi User4 ctermfg=231 ctermbg=1
 		hi User5 cterm=none ctermbg=235
@@ -196,7 +196,7 @@
 		au BufRead,BufNewFile *.gsc set filetype=graphicscript
 		au BufRead,BufNewFile *.mdl set filetype=mdl
 		au BufRead *.val set filetype=valgrind
-		au BufReadPost  ~/.vimrc exe "normal! zM"
+		au BufReadPost ~/.vimrc exe "normal! zM"
 		au BufWritePost ~/.vimrc source ~/.vimrc
 
 		au BufWinEnter,InsertLeave * match _extraWhitespace /\s\+$/
@@ -207,10 +207,17 @@
 		au InsertEnter * set timeoutlen=120
 		au InsertLeave * set timeoutlen=280
 
-		au FileType modula2     set filetype=markdown
+		au FileType modula2 set filetype=markdown
 		au FileType html set filetype=htmldjango
 		au BufRead *.json set filetype=javascript.json
 	augroup END
+
+" commands
+
+	com! OpenFtpluginFile exe "normal! :tabe $HOME/.dotfiles/vim/ftplugin/" .
+		\ &ft . ".vim\<cr>"
+	com! OpenUltiSnipsFile exe "normal! :tabe $HOME/.dotfiles/vim/ultisnips/" .
+		\ &ft . ".snippets\<cr>"
 
 " key mappings
 
@@ -218,67 +225,69 @@
 
 	" global
 
-		norem          <f1>             :NERDTreeToggle<cr>
+		norem <f1> :NERDTreeToggle<cr>
 
-		map            <leader>c        <plug>NERDCommenterToggle
-		map            <leader>cz       <plug>NerdComComment
+		map <leader>c <plug>NERDCommenterToggle
+		map <leader>cz <plug>NerdComComment
 
 	" normal
 
-		nnorem   <leader>ev       :tabf $MYVIMRC<cr>
-		nnorem   <leader>ef       :call OpenFtpluginFile()<cr>
-		nnorem   <leader>w        <esc>:w<cr>
-		nnorem   <leader>q        <esc>:q<cr>
-		nnorem   <leader>wq       <esc>:wq<cr>
-		nnorem   <leader>fq       <esc>:q!<cr>
-		nnorem   <leader>wa       <esc>:wa<cr>
+		nnorem <leader>ev :tabf $MYVIMRC<cr>
+		nnorem <leader>ef :OpenFtpluginFile<cr>
+		nnorem <leader>eu :OpenUltiSnipsFile<cr>
+
+		nnorem <leader>w <esc>:w<cr>
+		nnorem <leader>q <esc>:q<cr>
+		nnorem <leader>wq <esc>:wq<cr>
+		nnorem <leader>fq <esc>:q!<cr>
+		nnorem <leader>wa <esc>:wa<cr>
 
 		" Faster navigation
-			nnorem    H               b
-			nnorem    L               w
-			nnorem    J               4j
-			nnorem    K               4k
-			nnorem    <leader>l       $
-			nnorem    <leader>h       ^
-			nnorem    <leader>j       G
-			nnorem    <leader>k       gg
+			nnorem H b
+			nnorem L w
+			nnorem J 4j
+			nnorem K 4k
+			nnorem <leader>l $
+			nnorem <leader>h ^
+			nnorem <leader>j G
+			nnorem <leader>k gg
 
-		nnorem    <leader>n       :call NumberToggle()<cr>
-		nnorem    <tab>           .
-		nnorem    =               =<cr>
-		nnorem    f               za
-		nnorem    F               :call ToggleUniversalFold()<cr>
-		nnorem    <c-f>           zO
-		nnorem    <c-c>           zC
-		nnorem    <leader>t       :tabnext<cr>
-		nnorem    <leader>st      :tabprev<cr>
+		nnorem <leader>n :call NumberToggle()<cr>
+		nnorem <tab> .
+		nnorem = =<cr>
+		nnorem f za
+		nnorem F :call ToggleUniversalFold()<cr>
+		nnorem <c-f> zO
+		nnorem <c-c> zC
+		nnorem <leader>t :tabnext<cr>
+		nnorem <leader>st :tabprev<cr>
 
-		norem        <leader>r    :call RotateWindows()<cr>
-		nnorem    sv              :source ~/.vimrc<cr>
-		nnorem    s               :sp 
-		nnorem    vs              :vsp 
+		norem <leader>r :call RotateWindows()<cr>
+		nnorem sv :source ~/.vimrc<cr>
+		nnorem s :sp 
+		nnorem vs :vsp 
 
-		nnorem    b               <c-v>
-		nnorem    <leader>rt      :call HardRetab("soft")<cr>
-		nnorem    tt              :tabe 
+		nnorem b <c-v>
+		nnorem <leader>rt :call HardRetab("soft")<cr>
+		nnorem tt :tabe 
 
-		nnorem    <up>            <esc>:call ResizeUp()<cr>
-		nnorem    <down>          <esc>:call ResizeDown()<cr>
-		nnorem    <left>          <esc>:call ResizeLeft()<cr>
-		nnorem    <right>         <esc>:call ResizeRight()<cr>
+		nnorem <up> <esc>:call ResizeUp()<cr>
+		nnorem <down> <esc>:call ResizeDown()<cr>
+		nnorem <left> <esc>:call ResizeLeft()<cr>
+		nnorem <right> <esc>:call ResizeRight()<cr>
 
-		nnorem    <tab>           >>
-		nnorem    <s-tab>         <<
+		nnorem <tab> >>
+		nnorem <s-tab> <<
 
-		nmap      <s-up>          <up><up><up>
-		nmap      <s-down>        <down><down><down>
-		nmap      <s-left>        <left><left><left>
-		nmap      <s-right>       <right><right><right>
+		nmap <s-up> <up><up><up>
+		nmap <s-down> <down><down><down>
+		nmap <s-left> <left><left><left>
+		nmap <s-right> <right><right><right>
 
-		nnorem    ;               :
-		nnorem    :               <nop>
-		nnorem    \               @
-		nnorem    @               <nop>
+		nnorem ; :
+		nnorem : <nop>
+		nnorem \ @
+		nnorem @ <nop>
 
 
 		" tmux/vim pane navigation
@@ -297,14 +306,14 @@
 	" operator-pending
 
 		" Faster navigation
-			onorem    H            b
-			onorem    L            w
-			onorem    J            4j
-			onorem    K            4k
-			onorem    <leader>l    $
-			onorem    <leader>h    ^
-			onorem    <leader>j    G
-			onorem    <leader>k    gg
+			onorem H b
+			onorem L w
+			onorem J 4j
+			onorem K 4k
+			onorem <leader>l $
+			onorem <leader>h ^
+			onorem <leader>j G
+			onorem <leader>k gg
 
 	" insert
 
@@ -320,54 +329,54 @@
 					\ "<c-n><c-p>"
 			endfor
 
-		inorem    <special><expr>            <esc>[200~ SmartPaste()
+		inorem <special><expr> <esc>[200~ SmartPaste()
 
 		"Scroll up/down auto-complete menu with j/k
-			im        <F2>        <plug>NERDCommenterInsert
-			inorem    <expr> j    ((pumvisible())?("\<c-n>"):("j"))
-			inorem    <expr> k    ((pumvisible())?("\<c-p>"):("k"))
-			inorem    <expr> J    ((pumvisible())?("\<c-n>\<c-n>\<c-n>"):("J"))
-			inorem    <expr> K    ((pumvisible())?("\<c-p>\<c-p>\<c-p>"):("K"))
+			im <F2> <plug>NERDCommenterInsert
+			inorem <expr> j ((pumvisible())?("\<c-n>"):("j"))
+			inorem <expr> k ((pumvisible())?("\<c-p>"):("k"))
+			inorem <expr> J ((pumvisible())?("\<c-n>\<c-n>\<c-n>"):("J"))
+			inorem <expr> K ((pumvisible())?("\<c-p>\<c-p>\<c-p>"):("K"))
 
-		inorem    <tab>      <c-r>=Tab_Or_Complete()<cr>
-		inorem    <bs>       <c-r>=SmartBackspace(col("."), virtcol("."))<cr>
-		inorem    <space>    <c-r>=UltiSnipExpand()<cr>
+		inorem <tab> <c-r>=Tab_Or_Complete()<cr>
+		inorem <bs> <c-r>=SmartBackspace(col("."), virtcol("."))<cr>
+		inorem <space> <c-r>=UltiSnipExpand()<cr>
 
-		inorem    <up>       <esc>:call ResizeUp()<cr>i
-		inorem    <down>     <esc>:call ResizeDown()<cr>i
-		inorem    <left>     <esc>:call ResizeLeft()<cr>i
-		inorem    <right>    <esc>:call ResizeRight()<cr>i
+		inorem <up> <esc>:call ResizeUp()<cr>i
+		inorem <down> <esc>:call ResizeDown()<cr>i
+		inorem <left> <esc>:call ResizeLeft()<cr>i
+		inorem <right> <esc>:call ResizeRight()<cr>i
 
-		inorem    "          ""<left>
-		inorem    ""         "
-		inorem    '          ''<left>
-		inorem    ''         '
-		inorem    `          ``<left>
-		inorem    ``         `
-		inorem    (          ()<left>
-		inorem    ((         ()
-		inorem    [          []<left>
-		inorem    [[         []
-		inorem    {{         {}<left>
-		inorem    {          {<cr>}<esc>O
+		inorem " ""<left>
+		inorem "" "
+		inorem ' ''<left>
+		inorem '' '
+		inorem ` ``<left>
+		inorem `` `
+		inorem ( ()<left>
+		inorem (( ()
+		inorem [ []<left>
+		inorem [[ []
+		inorem {{ {}<left>
+		inorem { {<cr>}<esc>O
 
-		inorem    <c-x>      x<esc>:call EscapeAbbreviation()<cr>a
+		inorem <c-x> x<esc>:call EscapeAbbreviation()<cr>a
 
 	" visual
 
 		" Faster navigation
-			vnorem    <leader>l     $
-			vnorem    <leader>h     ^
-			vnorem    <leader>j     G
-			vnorem    <leader>k     gg
-			vnorem    H             b
-			vnorem    L             w
-			vnorem    J             4j
-			vnorem    K             4k
+			vnorem <leader>l $
+			vnorem <leader>h ^
+			vnorem <leader>j G
+			vnorem <leader>k gg
+			vnorem H b
+			vnorem L w
+			vnorem J 4j
+			vnorem K 4k
 
-		vnorem        <leader>c     "+y
-		vnoremap      <tab> :<bs><bs><bs><bs><bs>call VisualIndent()<cr>
-		vnoremap      <s-tab> :<bs><bs><bs><bs><bs>call VisualDeindent()<cr>
+		vnorem <leader>c "+y
+		vnoremap <tab> :<bs><bs><bs><bs><bs>call VisualIndent()<cr>
+		vnoremap <s-tab> :<bs><bs><bs><bs><bs>call VisualDeindent()<cr>
 
 " functions
 
@@ -540,27 +549,6 @@
 		endif
 	endfunction
 
-	" open the open C header file's accompanying source file in a split of
-	" type typeOfSplit
-	func! SplitSource(typeOfSplit)
-		exec "normal! :" . a:typeOfSplit . " " . expand("%:p:r") . ".c\<cr>"
-	endfunc
-
-	" open the open C source file's accompanying header file in a split of
-	" type typeOfSplit
-	func! SplitHeader(typeOfSplit)
-		exec "normal! :" . a:typeOfSplit . " " . expand("%:p:r") . ".h\<cr>"
-	endfunc
-
-	func! OpenFtpluginFile()
-		exec "normal! :tabe $HOME/.dotfiles/vim/ftplugin/" . &ft . ".vim\<cr>"
-	endfunc
-
-	" compile open Sass file
-	func! CompileSass()
-		exec "!sass ". expand("%:p:") . " " . expand("%:p:r") . ".css"
-	endfunc
-
 	func! HardRetab(tab_type)
 		let soft_tab = repeat(" ", &tabstop)
 
@@ -642,7 +630,7 @@
 	" deletes the preceding space; used by abbreviations
 	func! EatSpace()
 		let c = nr2char(getchar(0))
-		return (c == ' ') ? '' : c
+		return (c == " ")?"":c
 	endfunc
 
 	" Show syntax highlighting groups for word under cursor
@@ -655,27 +643,27 @@
 
 	" statusline for current window split
 	func! StatusLine()
-		setl statusline=%1*\ %t\                    " filename
-		setl stl+=%2*%{&readonly?'\ ':''}          " readonly
+		setl statusline=%1*\ %t\ " filename
+		setl stl+=%2*%{&readonly?'\ ':''} " readonly
 
 		if !exists("b:gitBranchName")
 			let b:gitBranchName = GitBranchName()
 		endif
 
-		setl stl+=%3*%{b:gitBranchName}             " branch name
+		setl stl+=%3*%{b:gitBranchName} " branch name
 
         " modified (note unicode space)
 		setl stl+=%4*%{&modified?' +\ ':''}
-		setl stl+=%5*%=                             " right justify
-		setl stl+=%6*\ %{strlen(&ft)?&ft:'none'}\   " filetype
-		setl stl+=%7*\ %p%%\                        " percent of file
+		setl stl+=%5*%= " right justify
+		setl stl+=%6*\ %{strlen(&ft)?&ft:'none'}\  " filetype
+		setl stl+=%7*\ %p%%\  " percent of file
 	endfunc
 
 	" statusline for other window splits
 	func! StatusLineNC()
-		setl statusline=%1*\ %t\                    " filename
-		setl stl+=%4*%{&modified?'\ +\ ':''}        " modified
-		setl stl+=%5*%=                             " right justify
+		setl statusline=%1*\ %t\  " filename
+		setl stl+=%4*%{&modified?'\ +\ ':''} " modified
+		setl stl+=%5*%= " right justify
 	endfunc
 
 	call StatusLine()
