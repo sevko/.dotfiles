@@ -1,7 +1,8 @@
-syn region djangoTagBlock start="\(^[\t ]*\)=" end="$" contains=djangoStatement,djangoFilter,djangoArgument,djangoTagError display containedin=ALLBUT,@djangoBlocks
+setlocal colorcolumn=121
 
-inoreab <buffer>    % %<Space>%<left><Left>
-inoreab {           {}<Left>
+syn region djangoTagBlock start="\(^[\t ]*\)=" end="$"
+	\ contains=djangoStatement,djangoFilter,djangoArgument,djangoTagError
+	\ display containedin=ALLBUT,@djangoBlocks
 
-so ~/.dotfiles/vim/ftplugin/html.vim
-so ~/.vimrc_after
+inoreab <buffer> % %<Space>%<left><Left>
+inoreab { {}<Left>

@@ -22,7 +22,7 @@ hi _surrounding_element ctermfg=2
 hi _delimiters ctermfg=166
 hi _end_of_line ctermfg=244
 hi _cConstant cterm=bold ctermfg=70
-hi _global ctermfg=4
+hi _cGlobal ctermfg=1
 hi _cStruct ctermfg=6
 hi _cFunction ctermfg=4
 hi _cDoxygenDirective cterm=bold ctermfg=10
@@ -48,10 +48,10 @@ func! PrintTemplate()
 		\\n
 		\\nextern variables
 		\\n
-		\\nstatic function
-		\\nstatic variables
 		\\nstruct
-		\\ntypedef"
+		\\ntypedef
+		\\nstatic variables
+		\\nstatic function"
 endfunc
 
 func! GetHeaders()

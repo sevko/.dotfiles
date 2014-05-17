@@ -18,7 +18,7 @@ syn match pythonStrFormatting
 syn match _pythonSphinxField "\(^[\t ]*\)\@<=:[^:]\+:" containedin=Comment
 syn match _pythonSphinxStandardDomain "\.\. [^:]\+::" containedin=Comment
 syn match _pythonSphinxReference ":[^:]\+:`[^\t`]\+`" containedin=Comment
-syn match _pythonSphinxItalics "\*[^\*]\+\*" containedin=Comment
+" syn match _pythonSphinxItalics "\*[^\*]\+\*" containedin=Comment
 syn match _pythonSphinxBold "\*\*[^\*]\+\*\*" containedin=Comment
 syn match _pythonMagic "__[a-zA-Z]\+__"
 
@@ -46,6 +46,8 @@ hi pythonStatement cterm=reverse,bold ctermfg=0 ctermbg=2
 hi pythonStrFormatting ctermfg=5
 
 nnorem <buffer>     <leader>d   :call SphinxComment()<cr>o
+
+inoreab <buffer> __ ____<left><left>
 
 func! SphinxComment()
 	" Insert a Sphinx docstring appropriate for the current line.

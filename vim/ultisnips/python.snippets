@@ -1,0 +1,50 @@
+snippet if "" b
+if $1:
+	${2:pass}
+endsnippet
+
+snippet "(?<=\S\s)if" "" r
+if $1 else $2
+endsnippet
+
+snippet for "" b
+for $1 in ${2:range(${3:len($4)})}:
+	${5:pass}
+endsnippet
+
+snippet "(?<=\S\s)for" "" r
+for $1 in $2
+endsnippet
+
+snippet while
+while $1:
+	${2:pass}
+endsnippet
+
+snippet def
+def $1($2):
+	${3:pass}
+endsnippet
+
+snippet class
+class $1(${2:object}):
+
+	def __init__(self$3):
+		${4:pass}
+endsnippet
+
+snippet with
+with ${1:open($2)} as $3:
+	${4:pass}
+endsnippet
+
+snippet try
+try:
+	${4}
+except ${1:Exception} as ${2:excep}:
+	${3:pass}
+endsnippet
+
+snippet from
+from $1 import $2
+endsnippet
