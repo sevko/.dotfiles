@@ -85,11 +85,6 @@
 		set t_ZH=[3m
 		set t_ZR=[23m
 
-	" Ctrl-p
-		let g:ctrlp_prompt_mappings = {
-			\ "AcceptSelection('e')": ["<c-o>"]
-		\}
-
 	" UltiSnips
 		let g:UltiSnipsExpandTrigger = "<c-j>"
 		let g:UltiSnipsJumpForwardTrigger = "<c-j>"

@@ -28,18 +28,6 @@ hi _cFunction ctermfg=4
 hi _cDoxygenDirective cterm=bold ctermfg=10
 hi _cDoxygenReference cterm=bold ctermfg=10
 
-" open the open C header file's accompanying source file in a split of
-" type typeOfSplit
-func! SplitSource(typeOfSplit)
-	exec "normal! :" . a:typeOfSplit . " " . expand("%:p:r") . ".c\<cr>"
-endfunc
-
-" open the open C source file's accompanying header file in a split of
-" type typeOfSplit
-func! SplitHeader(typeOfSplit)
-	exec "normal! :" . a:typeOfSplit . " " . expand("%:p:r") . ".h\<cr>"
-endfunc
-
 com! OpenHeaderVSplit exe "normal! :vsp " . expand("%:p:r") . ".h\<cr>"
 com! OpenHeaderSplit exe "normal! :sp " . expand("%:p:r") . ".h\<cr>"
 com! OpenSourceVSplit exe "normal! :vsp " . expand("%:p:r") . ".c\<cr>"
