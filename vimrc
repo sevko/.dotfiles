@@ -36,6 +36,8 @@
 		set background=dark
 		silent! colorscheme solarized
 
+	set runtimepath+=~/.dotfiles/vim/
+
 	set showcmd
 	set autowrite
 	set ttyfast lazyredraw
@@ -74,6 +76,7 @@
 	set incsearch
 	set nocursorline
 	set t_Co=256
+	set pumheight=10
 
 	set list lcs=tab:\·\ 
 
@@ -82,11 +85,17 @@
 		set t_ZH=[3m
 		set t_ZR=[23m
 
+	" Ctrl-p
+		let g:ctrlp_prompt_mappings = {
+			\ "AcceptSelection('e')": ["<c-o>"]
+		\}
+
 	" UltiSnips
-		let g:UltiSnipsExpandTrigger="<c-j>"
-		let g:UltiSnipsJumpForwardTrigger="<c-j>"
-		let g:UltiSnipsJumpBackwardTrigger="<c-k>"
+		let g:UltiSnipsExpandTrigger = "<c-j>"
+		let g:UltiSnipsJumpForwardTrigger = "<c-j>"
+		let g:UltiSnipsJumpBackwardTrigger = "<c-k>"
 		let g:UltiSnipsEditSplit = "vertical"
+		let g:UltiSnipsSnippetDirectories = ["ultisnips"]
 
 	" NERDTree
 		" key-maps
@@ -108,7 +117,8 @@
 				\ 'leftAlt': '/*','rightAlt': '*/' },
 			\ 'cpp': {  'left': '//', 'right': '',
 				\ 'leftAlt': '/*','rightAlt': '*/' },
-			\ 'graphicscript' : { 'left' : '#'}
+			\ 'graphicscript' : { 'left' : '#'},
+			\ "mdl" : { "left" : '//' }
 		\}
 
 	" smart pasting
@@ -182,19 +192,19 @@
 
 		au bufnewfile * call LoadTemplate()
 
-		au BufRead,BufNewFile  *.tmp set filetype=template
-		au BufRead,BufNewFile  *.gsc set filetype=graphicscript
+		au BufRead,BufNewFile *.tmp set filetype=template
+		au BufRead,BufNewFile *.gsc set filetype=graphicscript
+		au BufRead,BufNewFile *.mdl set filetype=mdl
 		au BufRead *.val set filetype=valgrind
 		au BufReadPost  ~/.vimrc exe "normal! zM"
 		au BufWritePost ~/.vimrc source ~/.vimrc
 
-		au BufWinEnter * match _extraWhitespace /\s\+$/
+		au BufWinEnter,InsertLeave * match _extraWhitespace /\s\+$/
 		au InsertEnter * match _extraWhitespace /\s\+\%#\@<!$/
-		au InsertLeave * match _extraWhitespace /\s\+$/
 		au InsertEnter,WinLeave * :set nornu
 		au InsertLeave,WinEnter * :call RelativeNumber()
 
-		au InsertEnter * set timeoutlen=150
+		au InsertEnter * set timeoutlen=120
 		au InsertLeave * set timeoutlen=280
 
 		au FileType modula2     set filetype=markdown
@@ -243,9 +253,10 @@
 		nnorem    <leader>t       :tabnext<cr>
 		nnorem    <leader>st      :tabprev<cr>
 
-		norem        <leader>r       :call RotateWindows()<cr>
+		norem        <leader>r    :call RotateWindows()<cr>
 		nnorem    sv              :source ~/.vimrc<cr>
-		nnorem    s               :set 
+		nnorem    s               :sp 
+		nnorem    vs              :vsp 
 
 		nnorem    b               <c-v>
 		nnorem    <leader>rt      :call HardRetab("soft")<cr>
@@ -297,6 +308,18 @@
 
 	" insert
 
+		" Map all alphanumeric keys to trigger the completion-menu popup in
+		" insert mode.
+			let char_nums = range(char2nr("0"), char2nr("9"))
+			let char_nums += range(char2nr("A"), char2nr("Z"))
+			let char_nums += range(char2nr("a"), char2nr("z"))
+
+			for char_num in char_nums
+				let char = nr2char(char_num)
+				silent! exec "inoremap <silent> " . char . " " . char .
+					\ "<c-n><c-p>"
+			endfor
+
 		inorem    <special><expr>            <esc>[200~ SmartPaste()
 
 		"Scroll up/down auto-complete menu with j/k
@@ -308,6 +331,7 @@
 
 		inorem    <tab>      <c-r>=Tab_Or_Complete()<cr>
 		inorem    <bs>       <c-r>=SmartBackspace(col("."), virtcol("."))<cr>
+		inorem    <space>    <c-r>=UltiSnipExpand()<cr>
 
 		inorem    <up>       <esc>:call ResizeUp()<cr>i
 		inorem    <down>     <esc>:call ResizeDown()<cr>i
@@ -328,17 +352,6 @@
 		inorem    {          {<cr>}<esc>O
 
 		inorem    <c-x>      x<esc>:call EscapeAbbreviation()<cr>a
-
-		" Auto completion-menu popup
-			let char_nums = range(char2nr("0"), char2nr("9"))
-			let char_nums += range(char2nr("A"), char2nr("Z"))
-			let char_nums += range(char2nr("a"), char2nr("z"))
-
-			for char_num in char_nums
-				let char = nr2char(char_num)
-				silent! exec "inoremap <silent> " . char . " " . char .
-					\ "<c-n><c-p>"
-			endfor
 
 	" visual
 
@@ -454,6 +467,15 @@
 		return ""
 	endfunction
 
+	" Attempt to expand an UltiSnip snippet; on failure, return " ";
+	" otherwise, "".
+ 	func! UltiSnipExpand()
+		call UltiSnips#ExpandSnippet()
+		return (g:ulti_expand_res == 0)?" ":""
+	endfunc
+
+	" If a NERDTree buffer is open, close it, rotate panes, and then reopen
+	" it; otherwise, just rotate the splits.
 	func! RotateWindows()
 		if NERDTreeAnyBuffers()
 			let toggle_tree = ":NERDTreeToggle\<cr>"

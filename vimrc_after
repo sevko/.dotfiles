@@ -1,7 +1,16 @@
 set autoindent noexpandtab
-set tabstop=4 shiftwidth=4
 
-" searches up the open file's directory tree for a file named .vimrc.local;
+silent! redir @a
+silent! verbose set ts
+silent! redir END
+
+" Set ts/sw only if local ftplugin haven't already done so.
+let split_verbose = split(@a, "Last set from ")
+if len(split_verbose) > 1 && split_verbose[1][0] != "~"
+	setlocal ts=4 sw=4
+endif
+
+" Searches up the open file's directory tree for a file named .vimrc.local;
 " if one exists, sources it.
 func! LocalVimrc()
 	let cmd = "$HOME/.dotfiles/vim/scripts/local_vimrc.zsh " .

@@ -31,6 +31,7 @@
 		/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:
 		/usr/local/games"
 
+	bindkey -M viins \^p fuzzy-match
 	source $DOT/prompt.zsh
 	eval $(dircolors $DOT/dircolors)
 
@@ -50,8 +51,8 @@
 	alias ccat="pygmentize -O style=monokai -f terminal -g"
 	alias clip="xclip -select clipboard"
 	alias ev=evince
-	alias gcc="gcc -Wall -Wextra -Wpointer-arith -Wcast-align \
-		-Wunreachable-code"
+	alias gcc="zsh/plugins/colorgcc/colorgcc.pl -Wall -Wextra -Wpointer-arith\
+		-Wcast-align -Wunreachable-code"
 	alias gth=gthumb
 	alias ka=killall
 	alias keepass="keepassx ~/.keepassx/.passwords.kdb"
@@ -66,7 +67,7 @@
 	alias sudo="nocorrect sudo "
 	alias t="command tmux"
 	alias tmux="TERM=screen-256color-bce tmux"
-	alias v=vim
+	alias v="vim -p"
 
 	# core utils
 		alias c=cd
@@ -87,7 +88,7 @@
 		alias gbd="git branch -d"
 		alias gbm="git branch --merged"
 		alias gbnm="git branch --no-merged"
-		alias gc="git commit"
+		alias gc="git commit --verbose"
 		alias gcl="git clone"
 		alias gco="git checkout"
 		alias gcob="git checkout -b"
@@ -114,12 +115,23 @@
 
 # functions & conditionals
 
+	fgrep(){
+		# Recursively `grep` a directory for a string.
+		#
+		# use: fgrep DIR_NAME STRING
+		# args:
+		#   DIR_NAME : The name of the directory to search.
+		#   STRING : The string for `grep` to match.
+
+		find ${*[1,-2]} -type f -print0 | xargs -0 grep ${*[-1]}
+	}
+
 	gdsu(){
 		# Delete a git submodule's files and metadata.
 		#
 		# use: gdsu SUBMODULE_NAME
 		# args:
-		#   SUBMODULE_NAME - The name of the submodule to delete.
+		#   SUBMODULE_NAME : The name of the submodule to delete.
 
 		submodule=$1
 
@@ -185,7 +197,8 @@
 
 		git_log_format="%C(1)[ %h ]%Creset||%C(3)%an%Creset||%C(2)%cr%Creset||"
 		git_log_format="$git_log_format%C(6)%s%Creset"
-		git log --pretty=format:$git_log_format $* | column -t -s '|||' | less
+		git log --pretty=format:$git_log_format $* | column -t -s '|||' | \
+			less -S
 	}
 
 	cc(){
@@ -193,7 +206,7 @@
 		#
 		# use: cc C_SOURCE_FILE
 		# args:
-		#   C_SOURCE_FILE The C file to compile
+		#   C_SOURCE_FILE : The C file to compile
 
 		gcc $1 -o ${1%c}
 	}
@@ -203,9 +216,9 @@
 		#
 		# use: add_host HOST HOSTNAME USER
 		# args:
-		#   HOST The host's identifying name.
-		#   HOSTNAME The IP address/hostname of the server.
-		#   USER The user's account username on HOSTNAME.
+		#   HOST : The host's identifying name.
+		#   HOSTNAME : The IP address/hostname of the server.
+		#   USER : The user's account username on HOSTNAME.
 
 		echo "\nHost $1\n\tHostname $2\n\tUser $3" >> ~/.ssh/config
 	}
