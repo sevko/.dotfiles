@@ -199,7 +199,7 @@
 		au InsertEnter,WinLeave * :set nornu
 		au InsertLeave,WinEnter * :call RelativeNumber()
 
-		au InsertEnter * set timeoutlen=120
+		au InsertEnter * set timeoutlen=140
 		au InsertLeave * set timeoutlen=280
 
 		au FileType modula2 set filetype=markdown
@@ -471,13 +471,6 @@
 		return ""
 	endfunction
 
-	" Attempt to expand an UltiSnip snippet; on failure, return " ";
-	" otherwise, "".
- 	func! UltiSnipExpand()
-		call UltiSnips#ExpandSnippet()
-		return (g:ulti_expand_res == 0)?" ":""
-	endfunc
-
 	" If a NERDTree buffer is open, close it, rotate panes, and then reopen
 	" it; otherwise, just rotate the splits.
 	func! RotateWindows()
@@ -620,6 +613,20 @@
 		exe "normal! ggdd"
 		silent! exe "normal! /__START__\<cr>de"
 		startinsert!
+	endfunc
+
+	" let g:NERDComScriptNumber = matchstr(scriptnames, '\(\n
+	" \)\@<=\d*\([^\n]*NERD_commenter\.vim[^\n]*\n\)\@=')
+
+	" Attempt to expand an UltiSnip snippet; on failure, return " ";
+	" otherwise, "".
+	func! UltiSnipExpand()
+		if <SNR>13_IsCommentedNormOrSexy(line("."))
+			return " "
+		else
+			call UltiSnips#ExpandSnippet()
+			return (g:ulti_expand_res == 0)?" ":""
+		endif
 	endfunc
 
 	" deletes the preceding space; used by abbreviations
