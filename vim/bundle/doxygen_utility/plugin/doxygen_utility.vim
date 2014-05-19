@@ -31,12 +31,8 @@ func! s:IsOnFunction()
 	" Return a 1 if the user's cursor is on a line containing a function
 	" declaration; otherwise, return 0.
 
-	let registerTemp = @a
-	silent! exec "normal! 0\"ay/;\<cr>"
-	let isOnFunction = @a . ";"
-		\ =~ "^\\(static\\)\\@![^\\t\\n]*(\\([^)]*\\n\\?\\)*);"
-	let @a = registerTemp
-	return isOnFunction
+	let declaration = s:CaptureOutputInRegister("normal! 0\"ay/;\<cr>") . ";"
+	return declaration =~ "^[^\\t\\n]*(\\([^)]*\\n\\?\\)*);"
 endfunc
 
 func! s:IsOnStruct()
@@ -53,11 +49,48 @@ func! s:IsOnFileHeader()
 endfunc
 
 func! s:GenerateMacroComment()
-	echom "s:GenerateMacroComment"
+	" Inserts a Doxygen comment for a function-like macro.
+
+	let doxygen_comment = "/*\n * @brief \n"
+
+	let arg_string = matchstr(getline("."),
+		\ '\(^\s*#define \S\+(\)\@<=[^)]*)\@=')
+	if 0 < len(arg_string)
+		let doxygen_comment .= "\n"
+		for arg in split(substitute(arg_string, " ", "", "g"), ",")
+			let doxygen_comment .= printf(" * @param %s () \n", arg)
+		endfor
+	endif
+
+	set paste
+	exe "normal! O" . doxygen_comment . " */"
+	set nopaste
 endfunc
 
 func! s:GenerateFunctionComment()
-	echom "s:GenerateFunctionComment"
+	let doxygen_comment = "/*\n * @brief \n"
+
+	let declaration = s:CaptureOutputInRegister("normal! 0\"ay/;\<cr>")
+	let arg_string = matchstr(declaration, '(\@<=.*\()$\)\@=')
+
+	if arg_string == "void"
+		return
+	endif
+
+	if 0 < len(arg_string)
+		let doxygen_comment  .= " *\n"
+		for arg in split(arg_string, ",")
+			let doxygen_comment .= printf(" * @param %s \n", split(arg)[-1])
+		endfor
+	endif
+
+	if substitute(declaration, "^static ", "", "g") !~ '^void\s*[^*]'
+		let doxygen_comment .= " *\n * @return \n"
+	endif
+
+	set paste
+	exe "normal! O" . doxygen_comment . " */"
+	set nopaste
 endfunc
 
 func! s:GenerateStructComment()
@@ -66,4 +99,12 @@ endfunc
 
 func! s:GenerateFileHeaderComment()
 	echom "s:GenerateFileHeaderComment"
+endfunc
+
+func! s:CaptureOutputInRegister(command_string)
+	let currRegisterValue = @a
+	silent! exec a:command_string
+	let output = @a
+	let @a = currRegisterValue
+	return output
 endfunc
