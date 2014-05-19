@@ -333,6 +333,9 @@
 			inorem <expr> J ((pumvisible())?("\<c-n>\<c-n>\<c-n>"):("J"))
 			inorem <expr> K ((pumvisible())?("\<c-p>\<c-p>\<c-p>"):("K"))
 
+		inorem jj j
+		inorem kk k
+
 		inorem <tab> <c-r>=Tab_Or_Complete()<cr>
 		inorem <bs> <c-r>=SmartBackspace(col("."), virtcol("."))<cr>
 		inorem <space> <c-r>=UltiSnipExpand()<cr>

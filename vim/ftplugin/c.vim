@@ -12,8 +12,6 @@ syn match _cConstant
 syn match _cGlobal "\([a-zA-Z0-9]\)\@<!g_[a-zA-Z0-9]\+\([a-zA-Z0-9]\)\@!"
 syn match _cStruct "\([a-zA-Z0-9]\)[a-zA-Z0-9]\+_t\([a-zA-Z0-9]\)\@!"
 syn match _cFunction "\(^[^# \t][^ \t].\+ \)\@<=[^ \t]\+\((\)\@="
-syn match _cDoxygenDirective "@[a-zA-Z0-9]\+" containedin=cComment[L]\=
-syn match _cDoxygenReference "::[a-zA-Z0-9_]\+" containedin=cComment[L]\=
 
 hi _arithmetic_operator ctermfg=3
 hi _logic_operator ctermfg=2
@@ -39,7 +37,7 @@ nnorem <buffer> <leader>ohs :OpenHeaderSplit<cr>
 nnorem <buffer> <leader>oc :OpenSourceVSplit<cr>
 nnorem <buffer> <leader>ocs :OpenSourceSplit<cr>
 nnorem <buffer> <leader>gc :call GetHeaders()<cr>
-nnorem <buffer> <leader>d :call DoxygenComment()<cr>
+" nnorem <buffer> <leader>d :call DoxygenComment()<cr>
 
 " print my preferred order of declaration statement
 func! PrintTemplate()
@@ -64,11 +62,12 @@ func! GetHeaders()
 	silent! exec "read! " . script . " " . expand("%:p:r") . ".c"
 endfunc
 
-func! DoxygenComment()
-	let script = "python ~/.dotfiles/vim/scripts/c_doxygen_comment.py"
-	silent! exec "normal! 0\"ay/\\()[;{]\\)\\@<=$\<cr>"
-	let func_string = substitute(@a, "\\n", " ", "g")
-	exec (line(".") - 1) . "r! echo '" . func_string . "' | " . script
-endfunc
+" func! DoxygenComment()
+	" let script = "python ~/.dotfiles/vim/scripts/c_doxygen_comment.py"
+	" silent! exec "normal! 0\"ay/\\()[;{]\\)\\@<=$\<cr>"
+	" let func_string = substitute(@a, "\\n", " ", "g")
+	" exec (line(".") - 1) . "r! echo '" . func_string . "' | " . script
+" endfunc
 
 source ~/.dotfiles/vimrc_after
+source ~/.dotfiles/vim/scripts/doxygen_utility.vim

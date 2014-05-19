@@ -51,8 +51,7 @@
 	alias ccat="pygmentize -O style=monokai -f terminal -g"
 	alias clip="xclip -select clipboard"
 	alias ev=evince
-	alias gcc="zsh/plugins/colorgcc/colorgcc.pl -Wall -Wextra -Wpointer-arith\
-		-Wcast-align -Wunreachable-code"
+	alias gcc="gcc -Wall -Wextra"
 	alias gth=gthumb
 	alias ka=killall
 	alias keepass="keepassx ~/.keepassx/.passwords.kdb"
