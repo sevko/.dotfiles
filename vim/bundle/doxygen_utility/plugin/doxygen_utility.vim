@@ -1,19 +1,21 @@
 " Syntax highlighting
 noremap <leader>d :call GenerateDoxygenComment()<cr>
 
-" Functions
 func! GenerateDoxygenComment()
+	" Detect any Doxygen-documentable statements in the current line and, if
+	" there are any, insert an appropriate comment template.
+
 	if s:IsOnMacro()
-		call s:GenerateMacroComment()
+		call s:InsertMacroComment()
 
 	elseif s:IsOnFunction()
-		call s:GenerateFunctionComment()
+		call s:InsertFunctionComment()
 
 	elseif s:IsOnFileHeader()
-		call s:GenerateFileHeaderComment()
+		call s:InsertFileHeaderComment()
 
 	elseif s:IsOnStruct()
-		call s:GenerateStructComment()
+		call s:InsertStructComment()
 
 	else
 		echom "No Doxygen-documentable type detected under cursor."
@@ -31,7 +33,7 @@ func! s:IsOnFunction()
 	" Return a 1 if the user's cursor is on a line containing a function
 	" declaration; otherwise, return 0.
 
-	let declaration = s:CaptureOutputInRegister("normal! 0\"ay/;\<cr>") . ";"
+	let declaration = s:CaptureOutputInRegister("0\"ay/;\<cr>") . ";"
 	return declaration =~ "^[^\\t\\n]*(\\([^)]*\\n\\?\\)*);"
 endfunc
 
@@ -48,7 +50,7 @@ func! s:IsOnFileHeader()
 	return line(".") == 1 && len(getline(".")) == 0
 endfunc
 
-func! s:GenerateMacroComment()
+func! s:InsertMacroComment()
 	" Inserts a Doxygen comment for a function-like macro.
 
 	let doxygen_comment = "/*\n * @brief \n"
@@ -62,15 +64,15 @@ func! s:GenerateMacroComment()
 		endfor
 	endif
 
-	set paste
-	exe "normal! O" . doxygen_comment . " */"
-	set nopaste
+	call s:InsertStringAboveCurrentLine(doxygen_comment . "*/")
 endfunc
 
-func! s:GenerateFunctionComment()
+func! s:InsertFunctionComment()
+	" Insert a Doxygen comment for a function.
+
 	let doxygen_comment = "/*\n * @brief \n"
 
-	let declaration = s:CaptureOutputInRegister("normal! 0\"ay/;\<cr>")
+	let declaration = s:CaptureOutputInRegister("0\"ay/;\<cr>")
 	let arg_string = matchstr(declaration, '(\@<=.*\()$\)\@=')
 
 	if arg_string == "void"
@@ -88,23 +90,42 @@ func! s:GenerateFunctionComment()
 		let doxygen_comment .= " *\n * @return \n"
 	endif
 
-	set paste
-	exe "normal! O" . doxygen_comment . " */"
-	set nopaste
+	call s:InsertStringAboveCurrentLine(doxygen_comment . "*/")
 endfunc
 
-func! s:GenerateStructComment()
-	echom "s:GenerateStructComment"
+func! s:InsertStructComment()
+	" Inserts Doxygen comments into a struct definition.
+
+	exe "norm! O//\<esc>/{\<cr>"
+	let num_struct_lines = len(
+		\ split(s:CaptureOutputInRegister("\"ay/}\<cr>"), "\n")) - 1
+	exe "norm! :.,+" . num_struct_lines . "s/;$/; \\/\\/ \<cr>"
 endfunc
 
-func! s:GenerateFileHeaderComment()
-	echom "s:GenerateFileHeaderComment"
+func! s:InsertFileHeaderComment()
+	" Insert a Doxygen comment for a file header.
+
+	let doxygen_comment = "/*\n * @file\n * @brief \n*/"
+	call s:InsertStringAboveCurrentLine(doxygen_comment)
 endfunc
 
 func! s:CaptureOutputInRegister(command_string)
+	" Execute a vim command using the `a` register to store data, and return
+	" the register's contents; then, reset the register's value to whatever it
+	" was originally.
+
 	let currRegisterValue = @a
-	silent! exec a:command_string
+	silent! exec "norm! " . a:command_string
 	let output = @a
 	let @a = currRegisterValue
 	return output
+endfunc
+
+func! s:InsertStringAboveCurrentLine(string)
+	" Insert a string above the cursor's line, while ignoring mappings,
+	" abbreviations, and other insert-mode modifiers.
+
+	set paste
+	exe "normal! O" . a:string
+	set nopaste
 endfunc
