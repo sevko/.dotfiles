@@ -1,4 +1,6 @@
-" Syntax highlighting
+syn match _cDoxygenDirective "@[a-zA-Z0-9]\+" containedin=cComment[L]\=
+syn match _cDoxygenReference "::\S\+" containedin=cComment[L]\=
+
 noremap <leader>d :call GenerateDoxygenComment()<cr>
 
 func! GenerateDoxygenComment()
