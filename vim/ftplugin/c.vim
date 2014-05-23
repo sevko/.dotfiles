@@ -38,6 +38,9 @@ nnorem <buffer> <leader>oc :OpenSourceVSplit<cr>
 nnorem <buffer> <leader>ocs :OpenSourceSplit<cr>
 nnorem <buffer> <leader>gc :call GetHeaders()<cr>
 " nnorem <buffer> <leader>d :call DoxygenComment()<cr>
+"
+nnorem { :call InsertBraces()<cr>
+nnorem } :call DeleteBraces()<cr>
 
 " print my preferred order of declaration statement
 func! PrintTemplate()
@@ -62,12 +65,35 @@ func! GetHeaders()
 	silent! exec "read! " . script . " " . expand("%:p:r") . ".c"
 endfunc
 
-" func! DoxygenComment()
-	" let script = "python ~/.dotfiles/vim/scripts/c_doxygen_comment.py"
-	" silent! exec "normal! 0\"ay/\\()[;{]\\)\\@<=$\<cr>"
-	" let func_string = substitute(@a, "\\n", " ", "g")
-	" exec (line(".") - 1) . "r! echo '" . func_string . "' | " . script
-" endfunc
+func! DeleteBraces()
+	let l:curX = col(".")
+	let l:curY = line(".")
+
+	let l:innerNumTabs = len(matchstr(getline("."), '^\t*'))
+	exe "norm! ?\\(^\t\\{1," . l:innerNumTabs . "\\}\\S.*)\\)\\@<={$\<cr>x"
+
+	let l:outerNumTabs = len(matchstr(getline("."), '^\t*'))
+	exe "norm! /\\(^\t\\{" . l:outerNumTabs . "\\}\\)\\@<=}\<cr>dd"
+
+	call cursor(l:curY, l:curX)
+endfunc
+
+func! InsertBraces()
+	let l:curX = col(".")
+	let l:curY = line(".")
+
+	" Insert an opening brace
+	let l:innerNumTabs = len(matchstr(getline("."), '^\t*'))
+	exe "norm! ?\\(^\t\\{1," . l:innerNumTabs . "\\}\\S.*\\)\\@<=)$\<cr>a{"
+
+	" Insert a closing brace
+	let l:outerNumTabs = len(matchstr(getline("."), '^\t*'))
+	exe "norm! /^\t\\{1," . l:outerNumTabs . "\\}\\(\\S.*\\|$\\)\<cr>"
+	exe "norm! ?^\t\\{" . (l:outerNumTabs + 1) . "\\}\<cr>"
+	exe "norm! o}"
+
+	call cursor(l:curY, l:curX)
+endfunc
 
 source ~/.dotfiles/vimrc_after
 source ~/.dotfiles/vim/scripts/doxygen_utility.vim
