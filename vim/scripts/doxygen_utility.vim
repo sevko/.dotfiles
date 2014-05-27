@@ -60,7 +60,7 @@ func! s:InsertMacroComment()
 	let arg_string = matchstr(getline("."),
 		\ '\(^\s*#define \S\+(\)\@<=[^)]*)\@=')
 	if 0 < len(arg_string)
-		let doxygen_comment .= "\n"
+		let doxygen_comment .= " *\n"
 		for arg in split(substitute(arg_string, " ", "", "g"), ",")
 			let doxygen_comment .= printf(" * @param %s () \n", arg)
 		endfor

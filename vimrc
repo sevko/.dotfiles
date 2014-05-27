@@ -79,6 +79,7 @@
 	set pumheight=10
 
 	set list lcs=tab:\·\ 
+	set iskeyword+=-
 
 	" italic comments
 		highlight Comment cterm=italic
@@ -89,7 +90,6 @@
 		let g:UltiSnipsExpandTrigger = "<c-j>"
 		let g:UltiSnipsJumpForwardTrigger = "<c-j>"
 		let g:UltiSnipsJumpBackwardTrigger = "<c-k>"
-		let g:UltiSnipsEditSplit = "vertical"
 		let g:UltiSnipsSnippetDirectories = ["ultisnips"]
 
 	" NERDTree
@@ -147,7 +147,8 @@
 	hi vertsplit ctermfg=black ctermbg=2
 	hi statuslinenc cterm=none ctermfg=black ctermbg=2
 	hi NonText ctermbg=15
-	hi SpellBad cterm=bold ctermfg=196
+	hi Search ctermbg=1 ctermfg=8
+	hi SpellBad cterm=none ctermfg=1
 
 	hi statusline cterm=none ctermbg=235
 	hi statuslinenc ctermfg=none ctermbg=235
@@ -257,10 +258,10 @@
 		nnorem <leader>t :tabnext<cr>
 		nnorem <leader>st :tabprev<cr>
 
-		norem <leader>r :call RotateWindows()<cr>
+		nnorem <leader>r :call RotateWindows()<cr>
 		nnorem sv :source ~/.vimrc<cr>
-		nnorem s :sp 
-		nnorem vs :vsp 
+		nnorem ss :sp <c-d>
+		nnorem vv :vsp <c-d>
 
 		nnorem b <c-v>
 		nnorem <leader>rt :call HardRetab("soft")<cr>
@@ -283,7 +284,6 @@
 		nnorem : <nop>
 		nnorem \ @
 		nnorem @ <nop>
-
 
 		" tmux/vim pane navigation
 		if exists('$TMUX')
@@ -328,8 +328,6 @@
 
 		"Scroll up/down auto-complete menu with j/k
 			im <F2> <plug>NERDCommenterInsert
-			inorem <expr> j ((pumvisible())?("\<c-n>"):("j"))
-			inorem <expr> k ((pumvisible())?("\<c-p>"):("k"))
 			inorem <expr> J ((pumvisible())?("\<c-n>\<c-n>\<c-n>"):("J"))
 			inorem <expr> K ((pumvisible())?("\<c-p>\<c-p>\<c-p>"):("K"))
 
@@ -337,6 +335,7 @@
 		inorem kk k
 
 		inorem <tab> <c-r>=Tab_Or_Complete()<cr>
+		inorem <s-tab> <c-p>
 		inorem <bs> <c-r>=SmartBackspace(col("."), virtcol("."))<cr>
 		inorem <space> <c-r>=UltiSnipExpand()<cr>
 
@@ -617,9 +616,6 @@
 		silent! exe "normal! /__START__\<cr>de"
 		startinsert!
 	endfunc
-
-	" let g:NERDComScriptNumber = matchstr(scriptnames, '\(\n
-	" \)\@<=\d*\([^\n]*NERD_commenter\.vim[^\n]*\n\)\@=')
 
 	" Attempt to expand an UltiSnip snippet; on failure, return " ";
 	" otherwise, "".

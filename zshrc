@@ -60,13 +60,19 @@
 	alias nyan="nc -v nyancat.dakko.us 23"
 	alias py=python
 	alias scan="command hp-scan --area=0,0,216,279"
-	alias so=source
 	alias sasw="sass --watch"
+	alias so=source
 	alias soz="source ~/.zshrc"
 	alias sudo="nocorrect sudo "
 	alias t="command tmux"
 	alias tmux="TERM=screen-256color-bce tmux"
 	alias v="vim -p"
+
+	# apt-get
+		alias agi="sudo apt-get install"
+		alias agr="sudo apt-get remove"
+		alias agrp="sudo apt-get remove --purge"
+		alias acs="sudo apt-cache search"
 
 	# core utils
 		alias c=cd
@@ -76,6 +82,7 @@
 		alias mk="make -j"
 		alias mkd=mkdir
 		alias rmd=rmdir
+		alias rmrf="rm -rf"
 		alias wg=wget
 
 	# git
@@ -207,7 +214,7 @@
 		# args:
 		#   C_SOURCE_FILE : The C file to compile
 
-		gcc $1 -o ${1%c}
+		gcc $1 -o ${1%.c}
 	}
 
 	add_host(){

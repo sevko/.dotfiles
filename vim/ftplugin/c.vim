@@ -8,10 +8,11 @@ syn match _surrounding_element "(\|)\|\[\|\]\|{\|}"
 syn match _delimiters "\.\|,\|:"
 syn match _end_of_line ";"
 syn match _cConstant
-	\ "\([a-zA-Z0-9]\)\@<!\u\([A-Z0-9_]*[A-Z0-9]\)\=\([a-z0-9A-Z_]\)\@!"
+	\ "\w\@<!\u\([A-Z0-9_]*[A-Z0-9]\)\=\w\@!"
+syn match _cAddressOperator "\(\W\@<=&[^ \t&]\@=\|\*\S\@=\)"
 syn match _cGlobal "\([a-zA-Z0-9]\)\@<!g_[a-zA-Z0-9]\+\([a-zA-Z0-9]\)\@!"
 syn match _cStruct "\([a-zA-Z0-9]\)[a-zA-Z0-9]\+_t\([a-zA-Z0-9]\)\@!"
-syn match _cFunction "\(^[^# \t][^ \t].\+ \)\@<=[^ \t]\+\((\)\@="
+syn match _cFunction "\(^[^# \t][^ \t].\+ \*\=\)\@<=[^*]\+\((\)\@="
 
 hi _arithmetic_operator ctermfg=3
 hi _logic_operator ctermfg=2
@@ -19,6 +20,7 @@ hi _bitwise_operator ctermfg=1
 hi _surrounding_element ctermfg=2
 hi _delimiters ctermfg=166
 hi _end_of_line ctermfg=244
+hi _cAddressOperator ctermfg=5
 hi _cConstant cterm=bold ctermfg=70
 hi _cGlobal ctermfg=1
 hi _cStruct ctermfg=6
@@ -31,7 +33,8 @@ com! OpenHeaderSplit exe "normal! :sp " . expand("%:p:r") . ".h\<cr>"
 com! OpenSourceVSplit exe "normal! :vsp " . expand("%:p:r") . ".c\<cr>"
 com! OpenSourceSplit exe "normal! :sp " . expand("%:p:r") . ".c\<cr>"
 
-nnorem <buffer> <leader>; $a;<esc>
+nnorem <buffer> <leader>;
+	\ :exe "norm! $" . (getline(".")[-1:] == "{"?"r":"a") . ";"<cr>
 nnorem <buffer> <leader>oh :OpenHeaderVSplit<cr>
 nnorem <buffer> <leader>ohs :OpenHeaderSplit<cr>
 nnorem <buffer> <leader>oc :OpenSourceVSplit<cr>
@@ -44,21 +47,11 @@ nnorem } :call DeleteBraces()<cr>
 
 " print my preferred order of declaration statement
 func! PrintTemplate()
-	echom "
-		\\n#include lib
-		\\n#include system
-		\\n#include local
-		\\n
-		\\n#define function-macro
-		\\n#define object-macro
-		\\n
-		\\nextern variables
-		\\n
-		\\nstruct
-		\\ntypedef
-		\\nstatic variables
-		\\nstatic function"
-endfunc
+	echo join(["#include lib", "#include system", "#include local", "",
+		\ "#define function-macro", "#define object-macro", "",
+		\ "extern variables", "typedef", "struct", "static variables",
+		\ "static function"], "\n")
+	endfunc
 
 func! GetHeaders()
 	let script = "python ~/.dotfiles/vim/scripts/c_function_headers.py"

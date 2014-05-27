@@ -27,11 +27,6 @@ hi javascriptFunction ctermfg=3
 hi javaScriptSpecialCharacter ctermfg=1
 hi javaScriptBraces ctermfg=1
 
-inoreab <buffer>    fun     function
-inoreab <buffer> if if()<left><c-r>=EatSpace()<cr>
-inoreab <buffer> for for(;;)<left><Left><Left><c-r>=EatSpace()<cr>
-inoreab <buffer> while while()<left><c-r>=EatSpace()<cr>
-
 nnorem <buffer> <leader>;     $a;<esc>
 
 so ~/.vimrc_after
