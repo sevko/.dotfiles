@@ -75,7 +75,7 @@
 		alias acs="sudo apt-cache search"
 
 	# core utils
-		alias c=cd
+		alias c="echo 'nope nope nope' ||"
 		alias l="ls --color=auto -h --group-directories-first -p"
 		alias ll="l -al"
 		alias m=man
@@ -124,9 +124,9 @@
 	fgrep(){
 		# Recursively `grep` a directory for a string.
 		#
-		# use: fgrep DIR_NAME STRING
+		# use: fgrep *DIR_NAMES STRING
 		# args:
-		#   DIR_NAME : The name of the directory to search.
+		#   *DIR_NAMES : The name of the directories to search.
 		#   STRING : The string for `grep` to match.
 
 		find ${*[1,-2]} -type f -print0 | xargs -0 grep ${*[-1]}
@@ -210,11 +210,12 @@
 	cc(){
 		# Compile the argument C file into an executable with the same root name.
 		#
-		# use: cc C_SOURCE_FILE
+		# use: cc *COMPILER_OPTIONS C_SOURCE_FILE
 		# args:
-		#   C_SOURCE_FILE : The C file to compile
+		#   *COMPILER_OPTIONS : Options passed to the compiler.
+		#   C_SOURCE_FILE : The C file to compile.
 
-		gcc $1 -o ${1%.c}
+		gcc $* -o ${*[-1]%.c}
 	}
 
 	add_host(){
