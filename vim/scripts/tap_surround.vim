@@ -7,7 +7,7 @@ let g:surround_close_char = {
 	\"{" : "}",
 	\"(" : ")",
 	\'"' : '"',
-	\"'" : "'",
+	\"''" : "''",
 	\"[" : "]",
 	\"`" : "`"
 \}
@@ -15,17 +15,54 @@ let g:surround_close_char = {
 func! s:CreateKeymaps()
 	" Create all normal/visual keymaps for tap_surround functions.
 
-	for key in keys(g:surround_close_char)
+	func! s:CreateNormalInsertKeymap(key, ...)
+		" Create a keymap for s:NormalInsertElementPair().
+		"
+		" Args:
+		"   key : (str) The delimiter to map.
+		"   ... : (str) An optionally specified argument to pass into the
+		"       mapped function.
+
 		exe printf("norm! :nnorem %s%s " .
-			\":call NormalInsertElementPair('%s', '%s')<cr>\<cr>",
-			\g:tap_surround_prefix, key, key, g:surround_close_char[key])
-		exe printf("norm! :nnorem %s%s%s " .
-			\":call NormalDeleteElementPair('%s', '%s')<cr>\<cr>",
-			\g:tap_surround_prefix, key, key, key, g:surround_close_char[key])
+			\':call NormalInsertElementPair("%s", "%s")<cr>\<cr>',
+			\g:tap_surround_prefix, (a:0 > 0)?(a:1):(a:key), a:key,
+			\g:surround_close_char[a:key])
+	endfunc
+
+	func! s:CreateNormalDeleteKeymap(key, ...)
+		" Create a keymap for s:NormalDeleteElementPair().
+		"
+		" Args:
+		"   See s:CreateNormalInsertKeymap().
+
+		exe printf("norm! :nnorem %s%s " .
+			\':call NormalDeleteElementPair("%s", "%s")<cr>\<cr>',
+			\g:tap_surround_prefix, repeat((a:0 > 0)?(a:1):(a:key), 2), a:key,
+			\g:surround_close_char[a:key])
+	endfunc
+
+	func! s:CreateVisualInsertKeymap(key, ...)
+		" Create a keymap for s:CreateVisualInsertKeymap().
+		"
+		" Args:
+		"   See s:CreateNormalInsertKeymap().
+
 		exe printf("norm! :vnorem %s%s " .
-			\":%scall VisualInsertElementPair('%s', '%s')<cr>\<cr>",
-			\g:tap_surround_prefix, key, repeat("<bs>", 5), key,
-			\g:surround_close_char[key])
+			\':%scall VisualInsertElementPair("%s", "%s")<cr>\<cr>',
+			\g:tap_surround_prefix, (a:0 > 0)?(a:1):(a:key), repeat("<bs>", 5),
+			\a:key, g:surround_close_char[a:key])
+	endfunc
+
+	for key in keys(g:surround_close_char)
+		if key =~ '"'
+			call s:CreateNormalInsertKeymap(key, "\"")
+			call s:CreateNormalDeleteKeymap(key, "\"")
+			call s:CreateVisualInsertKeymap(key, "\"")
+		else
+			call s:CreateNormalInsertKeymap(key)
+			call s:CreateNormalDeleteKeymap(key)
+			call s:CreateVisualInsertKeymap(key)
+		endif
 	endfor
 endfunc
 
@@ -58,31 +95,58 @@ func! NormalDeleteElementPair(open_delim, close_delim)
 	" Delete a pair of surrounding elements.
 	"
 	" Args:
-	"   open_delim : (str) The opening surrounding delimiter.
-	"   open_delim : (str) The closing surrounding delimiter.
+	"   See s:NormalInsertElementPair().
 
-	let l:original_cur_col = col(".")
-	let l:escaped_delims = [
-		\escape(a:open_delim, "[]"),
-		\escape(a:close_delim, "[]")
-	\]
+	let original_cur_col = col(".")
 
-	if a:open_delim == "'" || a:close_delim == '"'
-		exe 'norm! /[^\\]\@<=' . a:open_delim . "\<cr>x"
-		exe 'norm! /\(^\|[^\\]\)\@<=' . a:open_delim . "\<cr>x"
-		exe 'norm! ?[^\\]\@<=' . a:close_delim . "\<cr>x"
-	elseif searchpair(l:escaped_delims[0], "", l:escaped_delims[1], "b") != 0
-		exe "norm! " . repeat("x", len(a:open_delim))
-		call searchpair(l:escaped_delims[0], "", l:escaped_delims[1])
-		exe "norm! " . repeat("x", len(a:close_delim))
-	endif
+	func! s:IndexOfOpenDelim(open_delim, close_delim, start_ind)
+		" Find an opening element.
+		"
+		" Finds the opening element corresponding to the nesting level of
+		" a:start_ind, by backtracking along the current line. Delimiters
+		" escaped with a backslash are taken into account.
+		"
+		" Args:
+		"   open_delim : See s:NormalDeleteElementPair() a:open_delim.
+		"   close_delim : See s:NormalDeleteElementPair() a:close_delim.
+		"   start_ind : (int) The index to begin parsing from.
+		"
+		" Return:
+		"   (int) The index of the opening element in the current line; if one
+		"   isn't found, return -1.
 
-	call cursor(line("."), l:original_cur_col - len(a:open_delim))
+		let nest_level = 0
+		let curr_ln = getline(".")
+		let curr_ind = a:start_ind
+
+		while 0 <= l:curr_ind
+			if l:curr_ln =~ printf('^%s%s%s', repeat(".", l:curr_ind - 1),
+				\repeat('[^\\]', l:curr_ind > 0), a:open_delim)
+				let nest_level -= 1
+			elseif l:curr_ln =~ printf('^%s%s%s', repeat(".", l:curr_ind - 1),
+				\repeat('[^\\]', l:curr_ind > 0), a:close_delim)
+				let nest_level += 1
+			endif
+
+			if l:nest_level == -1
+				break
+			endif
+			let l:curr_ind -= 1
+		endwhile
+
+		return l:curr_ind
+	endfunc
+
+	call cursor(line("."),
+		\s:IndexOfOpenDelim(a:open_delim, a:close_delim, col(".") - 1) + 1)
 endfunc
 
 func! VisualInsertElementPair(open_delim, close_delim)
 	" Insert opening and closing delimiters at the bounds of a visual
 	" selection.
+	"
+	" Args:
+	"   See s:NormalInsertElementPair().
 
 	call cursor(line("."), col("'<"))
 	exe "norm! i" . a:open_delim
