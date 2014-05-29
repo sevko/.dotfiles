@@ -1,63 +1,4 @@
-" A plugin for easy paired-element manipulation.
-"
-" Contains functions for the painless insertion and deletion of paired
-" surrounding elements (parentheses, double quotes, etc.)
-
-func! s:ConfigurePlugin()
-	" Configure the plugin's keymaps, variables, etc.
-
-	if !exists("g:tap_surround_prefix")
-		let g:tap_surround_prefix = "<leader>"
-	endif
-
-	let g:surround_close_char = {
-		\"<" : ">",
-		\"{" : "}",
-		\"(" : ")",
-		\'"' : '"',
-		\"'" : "'",
-		\"[" : "]",
-		\"`" : "`"
-	\}
-
-	call s:CreateKeymaps()
-endfunc
-
-func! s:CreateKeymaps()
-	" Create all normal/visual keymaps for tap_surround functions.
-
-	for key in keys(g:surround_close_char)
-		if l:key !~ "'"
-			exe printf("norm! :nnorem <silent> %s%s :call " .
-				\"NormalInsertElementPair('%s', '%s')<cr>\<cr>",
-				\g:tap_surround_prefix, l:key, l:key,
-				\g:surround_close_char[l:key])
-			exe printf("norm! :nnorem <silent> %s%s :call " .
-				\"NormalDeleteElementPair('%s', '%s')<cr>\<cr>",
-				\g:tap_surround_prefix,
-				\repeat(l:key, 2), l:key, g:surround_close_char[l:key])
-			exe printf("norm! :vnorem <silent> %s%s :%scall " .
-				\"VisualInsertElementPair('%s', '%s')<cr>\<cr>",
-				\g:tap_surround_prefix, l:key,
-				\repeat("<bs>", 5), l:key, g:surround_close_char[l:key])
-		else
-			exe printf("norm! :nnorem <silent> %s%s :call " .
-				\'NormalInsertElementPair("%s", "%s")' . "<cr>\<cr>",
-				\g:tap_surround_prefix, l:key, l:key,
-				\g:surround_close_char[l:key])
-			exe printf("norm! :nnorem <silent> %s%s :call " .
-				\'NormalDeleteElementPair("%s", "%s")' . "<cr>\<cr>",
-				\g:tap_surround_prefix, repeat(l:key, 2), l:key,
-				\g:surround_close_char[l:key])
-			exe printf("norm! :vnorem <silent> %s%s :%scall " .
-				\'VisualInsertElementPair("%s", "%s")' . "<cr>\<cr>",
-				\g:tap_surround_prefix, l:key, repeat("<bs>", 5), l:key,
-				\g:surround_close_char[l:key])
-		endif
-	endfor
-endfunc
-
-func! NormalInsertElementPair(open_delim, close_delim)
+func! TapSurround#NormalInsertElementPair(open_delim, close_delim)
 	" Enclose the string under the cursor with delimiters.
 	"
 	" If the character under the cursor is a non-word char, surround it;
@@ -82,7 +23,7 @@ func! NormalInsertElementPair(open_delim, close_delim)
 	call cursor(line("."), l:original_cur_col + len(a:open_delim))
 endfunc
 
-func! NormalDeleteElementPair(open_delim, close_delim)
+func! TapSurround#NormalDeleteElementPair(open_delim, close_delim)
 	" Delete a pair of surrounding elements.
 	"
 	" Args:
@@ -185,7 +126,7 @@ func! NormalDeleteElementPair(open_delim, close_delim)
 	endif
 endfunc
 
-func! VisualInsertElementPair(open_delim, close_delim)
+func! TapSurround#VisualInsertElementPair(open_delim, close_delim)
 	" Insert opening and closing delimiters at the bounds of a visual
 	" selection.
 	"
@@ -199,5 +140,3 @@ func! VisualInsertElementPair(open_delim, close_delim)
 
 	call cursor(line("."), col("'<") + len(a:open_delim))
 endfunc
-
-silent! call s:ConfigurePlugin()
