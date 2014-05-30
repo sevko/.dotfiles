@@ -27,32 +27,30 @@ func! s:CreateKeymaps()
 	" Create all normal/visual keymaps for tap_surround functions.
 
 	for key in keys(g:surround_close_char)
-		if l:key !~ "'"
-			exe printf("norm! :nnorem <silent> %s%s :call " .
-				\"TapSurround#NormalInsertElementPair('%s', '%s')<cr>\<cr>",
-				\g:tap_surround_prefix, l:key, l:key,
-				\g:surround_close_char[l:key])
-			exe printf("norm! :nnorem <silent> %s%s :call " .
-				\"TapSurround#NormalDeleteElementPair('%s', '%s')<cr>\<cr>",
-				\g:tap_surround_prefix,
-				\repeat(l:key, 2), l:key, g:surround_close_char[l:key])
-			exe printf("norm! :vnorem <silent> %s%s :%scall " .
-				\"TapSurround#VisualInsertElementPair('%s', '%s')<cr>\<cr>",
-				\g:tap_surround_prefix, l:key,
-				\repeat("<bs>", 5), l:key, g:surround_close_char[l:key])
+		if key !~ "'"
+			exe printf("nnorem <silent> %s%s :call " .
+				\"TapSurround#NormalInsertElementPair('%s', '%s')<cr>",
+				\g:tap_surround_prefix, key, key, g:surround_close_char[key])
+			exe printf("nnorem <silent> %s%s :call " .
+				\"TapSurround#NormalDeleteElementPair('%s', '%s')<cr>",
+				\g:tap_surround_prefix, repeat(key, 2), key,
+				\g:surround_close_char[key])
+			exe printf("vnorem <silent> %s%s :%scall " .
+				\"TapSurround#VisualInsertElementPair('%s', '%s')<cr>",
+				\g:tap_surround_prefix, key, repeat("<bs>", 5), key,
+				\g:surround_close_char[key])
 		else
-			exe printf("norm! :nnorem <silent> %s%s :call " .
-				\'TapSurround#NormalInsertElementPair("%s", "%s")' . "<cr>\<cr>",
-				\g:tap_surround_prefix, l:key, l:key,
-				\g:surround_close_char[l:key])
-			exe printf("norm! :nnorem <silent> %s%s :call " .
-				\'TapSurround#NormalDeleteElementPair("%s", "%s")' . "<cr>\<cr>",
-				\g:tap_surround_prefix, repeat(l:key, 2), l:key,
-				\g:surround_close_char[l:key])
-			exe printf("norm! :vnorem <silent> %s%s :%scall " .
-				\'TapSurround#VisualInsertElementPair("%s", "%s")' . "<cr>\<cr>",
-				\g:tap_surround_prefix, l:key, repeat("<bs>", 5), l:key,
-				\g:surround_close_char[l:key])
+			exe printf("nnorem <silent> %s%s :call " .
+				\'TapSurround#NormalInsertElementPair("%s", "%s")' . "<cr>",
+				\g:tap_surround_prefix, key, key, g:surround_close_char[key])
+			exe printf("nnorem <silent> %s%s :call " .
+				\'TapSurround#NormalDeleteElementPair("%s", "%s")' . "<cr>",
+				\g:tap_surround_prefix, repeat(key, 2), key,
+				\g:surround_close_char[key])
+			exe printf("vnorem <silent> %s%s :%scall " .
+				\'TapSurround#VisualInsertElementPair("%s", "%s")' . "<cr>",
+				\g:tap_surround_prefix, key, repeat("<bs>", 5), key,
+				\g:surround_close_char[key])
 		endif
 	endfor
 endfunc
