@@ -1,9 +1,4 @@
-syn match _cDoxygenDirective "@[a-zA-Z0-9]\+" containedin=cComment[L]\=
-syn match _cDoxygenReference "::\S\+" containedin=cComment[L]\=
-
-noremap <leader>d :call GenerateDoxygenComment()<cr>
-
-func! GenerateDoxygenComment()
+func! DoxygenUtility#GenerateDoxygenComment()
 	" Detect any Doxygen-documentable statements in the current line and, if
 	" there are any, insert an appropriate comment template.
 
@@ -23,6 +18,7 @@ func! GenerateDoxygenComment()
 		echom "No Doxygen-documentable type detected under cursor."
 	endif
 endfunc
+
 
 func! s:IsOnMacro()
 	" Return a 1 if the user's cursor is on a line containing a function-like
@@ -84,7 +80,9 @@ func! s:InsertFunctionComment()
 	if 0 < len(arg_string)
 		let doxygen_comment  .= " *\n"
 		for arg in split(arg_string, ",")
-			let doxygen_comment .= printf(" * @param %s \n", split(arg)[-1])
+			let arg_name = split(arg)[-1]
+			let doxygen_comment .= printf(" * @param %s \n",
+				\(l:arg_name[0] != "*")?(l:arg_name):(l:arg_name[1]))
 		endfor
 	endif
 
@@ -115,6 +113,9 @@ func! s:CaptureOutputInRegister(command_string)
 	" Execute a vim command using the `a` register to store data, and return
 	" the register's contents; then, reset the register's value to whatever it
 	" was originally.
+	"
+	" Args:
+	"   command_string : (str) The command to execute.
 
 	let currRegisterValue = @a
 	silent! exec "norm! " . a:command_string
@@ -126,6 +127,9 @@ endfunc
 func! s:InsertStringAboveCurrentLine(string)
 	" Insert a string above the cursor's line, while ignoring mappings,
 	" abbreviations, and other insert-mode modifiers.
+	"
+	" Args:
+	"   string : (str) The string to insert.
 
 	set paste
 	exe "normal! O" . a:string
