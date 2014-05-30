@@ -40,8 +40,6 @@ nnorem <buffer> <leader>ohs :OpenHeaderSplit<cr>
 nnorem <buffer> <leader>oc :OpenSourceVSplit<cr>
 nnorem <buffer> <leader>ocs :OpenSourceSplit<cr>
 nnorem <buffer> <leader>gc :call GetHeaders()<cr>
-" nnorem <buffer> <leader>d :call DoxygenComment()<cr>
-"
 nnorem { :call InsertBraces()<cr>
 nnorem } :call DeleteBraces()<cr>
 
@@ -89,4 +87,3 @@ func! InsertBraces()
 endfunc
 
 source ~/.dotfiles/vimrc_after
-source ~/.dotfiles/vim/scripts/doxygen_utility.vim

@@ -22,4 +22,17 @@ func! LocalVimrc()
 	endif
 endfunc
 
+let g:NERDComSNR = GetScriptNumber("NERD_commenter.vim")
+
+" Attempt to expand an UltiSnip snippet; on failure, return " ";
+" otherwise, "".
+func! UltiSnipExpand()
+	if eval(printf("<SNR>%d_IsCommentedNormOrSexy(line('.'))", g:NERDComSNR))
+		return " "
+	else
+		call UltiSnips#ExpandSnippet()
+		return (g:ulti_expand_res == 0)?" ":""
+	endif
+endfunc
+
 silent! call LocalVimrc()

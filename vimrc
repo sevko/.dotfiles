@@ -1,20 +1,15 @@
 " default
 
-	" This line should not be removed as it ensures that various options are
-	" properly set to work with the Vim-related packages available in Debian.
 	runtime! debian.vim
-
-	call pathogen#infect('bundle/{}') | call pathogen#helptags()
 
 	if has("syntax")
 		syntax enable
 	endif
 
 	if filereadable("/etc/vim/vimrc.local")
-	  source /etc/vim/vimrc.local
+		source /etc/vim/vimrc.local
 	endif
 
-	" jump to the last position when reopening a file
 	if has("autocmd")
 	  au bufreadpost * if line("'\"") > 1 && line("'\"") <= line("$")
 		\| exe "normal! g'\"" | endif
@@ -27,10 +22,11 @@
 		execute "set <s-left>=\e[1;2D"
 	endif
 
-" settings
+	call pathogen#infect("bundle/{}") | call pathogen#helptags()
+	syntax on
+	filetype plugin indent on
 
-	filetype indent on
-	filetype plugin on
+" settings
 
 	" colorscheme
 		set background=dark
@@ -79,7 +75,6 @@
 	set pumheight=10
 
 	set list lcs=tab:\·\ 
-	set iskeyword+=-
 
 	" italic comments
 		highlight Comment cterm=italic
@@ -125,17 +120,6 @@
 			\(system("tmux display-message -p '#{pane_title}'"), '\n', '', '')
 		let &t_ti = "\<esc>]2;vim\<esc>\\" . &t_ti
 		let &t_te = "\<esc>]2;". previous_title . "\<esc>\\" . &t_te
-
-	" toggle-surround
-		let surround_close_char = {
-			\"<" : ">",
-			\"%" : "%",
-			\"{" : "}",
-			\"(" : ")",
-			\'"' : '"',
-			\"'" : "'",
-			\"[" : "]"
-		\}
 
 " highlighting
 
@@ -205,6 +189,7 @@
 
 		au FileType modula2 set filetype=markdown
 		au FileType html set filetype=htmldjango
+		au FileType cpp set filetype=cpp.c
 		au BufRead *.json set filetype=javascript.json
 	augroup END
 
@@ -262,18 +247,20 @@
 		nnorem sv :source ~/.vimrc<cr>
 		nnorem ss :sp <c-d>
 		nnorem vv :vsp <c-d>
+		nnorem ;vsp :echo "Nope."
+		nnorem ;sp :echo "Nope."
 
 		nnorem b <c-v>
 		nnorem <leader>rt :call HardRetab("soft")<cr>
 		nnorem tt :tabe 
 
+		nnorem <tab> >>
+		nnorem <s-tab> <<
+
 		nnorem <up> <esc>:call ResizeUp()<cr>
 		nnorem <down> <esc>:call ResizeDown()<cr>
 		nnorem <left> <esc>:call ResizeLeft()<cr>
 		nnorem <right> <esc>:call ResizeRight()<cr>
-
-		nnorem <tab> >>
-		nnorem <s-tab> <<
 
 		nmap <s-up> <up><up><up>
 		nmap <s-down> <down><down><down>
@@ -350,12 +337,18 @@
 		inorem '' '
 		inorem ` ``<left>
 		inorem `` `
+
 		inorem ( ()<left>
 		inorem (( ()
 		inorem [ []<left>
 		inorem [[ []
-		inorem {{ {}<left>
 		inorem { {<cr>}<esc>O
+		inorem {{ {}<left>
+
+		inorem & <space>&&<space>
+		inorem && &
+		inorem \| <space>\|\|<space>
+		inorem \|\| \|
 
 		inorem <c-x> x<esc>:call EscapeAbbreviation()<cr>a
 
@@ -429,7 +422,7 @@
 	" tab-key insert-mode auto-completion
 	function! Tab_Or_Complete()
 		let colPos = col('.')
-		if colPos > 1 && strpart(getline('.'), colPos - 2, 3) =~ '^\w'
+		if colPos > 1 && strpart(getline('.'), colPos - 2, 3) =~ '^\k'
 			return "\<c-n>"
 		else
 			return SmartTab(colPos)
@@ -571,6 +564,28 @@
 		endif
 	endfunc
 
+	func! GetScriptNumber(script_name)
+		" Return the <SNR> of a script.
+		"
+		" Args:
+		"   script_name : (str) The name of a sourced script.
+		"
+		" Return:
+		"   (int) The <SNR> of the script; if the script isn't found, -1.
+
+		redir => scriptnames
+		silent! exe "norm! :scriptnames\<cr>"
+		redir END
+
+		for script in split(l:scriptnames, "\n")
+			if l:script =~ a:script_name
+				return str2nr(matchstr(l:script, '\(^[ ]*\)\@<=\d\+'))
+			endif
+		endfor
+
+		return -1
+	endfunc
+
 	" if current file inside a git tree, return the name of the current branch;
 	" else, return an empty string
 	func! GitBranchName()
@@ -615,17 +630,6 @@
 		exe "normal! ggdd"
 		silent! exe "normal! /__START__\<cr>de"
 		startinsert!
-	endfunc
-
-	" Attempt to expand an UltiSnip snippet; on failure, return " ";
-	" otherwise, "".
-	func! UltiSnipExpand()
-		if <SNR>13_IsCommentedNormOrSexy(line("."))
-			return " "
-		else
-			call UltiSnips#ExpandSnippet()
-			return (g:ulti_expand_res == 0)?" ":""
-		endif
 	endfunc
 
 	" deletes the preceding space; used by abbreviations
