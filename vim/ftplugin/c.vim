@@ -39,9 +39,9 @@ nnorem <buffer> <leader>oh :OpenHeaderVSplit<cr>
 nnorem <buffer> <leader>ohs :OpenHeaderSplit<cr>
 nnorem <buffer> <leader>oc :OpenSourceVSplit<cr>
 nnorem <buffer> <leader>ocs :OpenSourceSplit<cr>
-nnorem <buffer> <leader>gc :call GetHeaders()<cr>
-nnorem { :call InsertBraces()<cr>
-nnorem } :call DeleteBraces()<cr>
+nnorem <buffer> <leader>gc :call <SID>GetFunctionHeaders()<cr>
+nnorem { :call <SID>InsertBraces()<cr>
+nnorem } :call <SID>DeleteBraces()<cr>
 
 " print my preferred order of declaration statement
 func! PrintTemplate()
@@ -56,34 +56,44 @@ func! GetHeaders()
 	silent! exec "read! " . script . " " . expand("%:p:r") . ".c"
 endfunc
 
-func! DeleteBraces()
-	let l:curX = col(".")
-	let l:curY = line(".")
+func! s:DeleteBraces()
+	" Delete the braces encapsulating the block of code under the cursor.
 
-	let l:innerNumTabs = len(matchstr(getline("."), '^\t*'))
-	exe "norm! ?\\(^\t\\{1," . l:innerNumTabs . "\\}\\S.*)\\)\\@<={$\<cr>x"
+	let orig_cur_pos = [line("."), col(".")]
 
-	let l:outerNumTabs = len(matchstr(getline("."), '^\t*'))
-	exe "norm! /\\(^\t\\{" . l:outerNumTabs . "\\}\\)\\@<=}\<cr>dd"
+	call searchpair("{", "", "}")
+	exe "norm! dd"
+	call searchpair("{", "", "}", "b")
+	exe "norm! x"
 
-	call cursor(l:curY, l:curX)
+	call cursor(l:orig_cur_pos)
 endfunc
 
-func! InsertBraces()
-	let l:curX = col(".")
-	let l:curY = line(".")
+func! s:InsertBraces()
+	" Insert braces around the block of code under the cursor.
 
-	" Insert an opening brace
-	let l:innerNumTabs = len(matchstr(getline("."), '^\t*'))
-	exe "norm! ?\\(^\t\\{1," . l:innerNumTabs . "\\}\\S.*\\)\\@<=)$\<cr>a{"
+	let orig_cur_pos = [line("."), col(".")]
 
-	" Insert a closing brace
-	let l:outerNumTabs = len(matchstr(getline("."), '^\t*'))
-	exe "norm! /^\t\\{1," . l:outerNumTabs . "\\}\\(\\S.*\\|$\\)\<cr>"
-	exe "norm! ?^\t\\{" . (l:outerNumTabs + 1) . "\\}\<cr>"
-	exe "norm! o}"
+	let indent_lvl = len(matchstr(getline("."), "^\t*"))
+	let search_patt_fmt = printf('^%s\{0,%%d\}\(\S.*\)\=[^{]$', "\t")
+	if cursor(searchpos(printf(l:search_patt_fmt, l:indent_lvl - 1), "b")) != -1
+		exe "norm! $a{"
+	endif
 
-	call cursor(l:curY, l:curX)
+	if cursor(searchpos(printf(l:search_patt_fmt, l:indent_lvl - 1))) != -1 &&
+		\cursor(searchpos(printf(l:search_patt_fmt, l:indent_lvl), "b")) != -1
+		exe "norm! o}"
+	endif
+
+	call cursor(l:orig_cur_pos)
+endfunc
+
+func! s:GetFunctionHeaders()
+	" Paste the open header file's corresponding C file's function headers
+	" below the cursor's line.
+
+	let script = "python ~/.dotfiles/vim/scripts/c_function_headers.py"
+	silent! exec "read! " . script . " " . expand("%:p:r") . ".c"
 endfunc
 
 source ~/.dotfiles/vimrc_after

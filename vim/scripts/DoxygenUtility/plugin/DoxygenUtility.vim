@@ -19,5 +19,5 @@ endfunc
 
 aug DoxygenUtility
 	au!
-	au FileType c call s:ConfigurePlugin()
+	au FileType c silent! call s:ConfigurePlugin()
 aug END

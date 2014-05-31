@@ -19,7 +19,6 @@ func! DoxygenUtility#GenerateDoxygenComment()
 	endif
 endfunc
 
-
 func! s:IsOnMacro()
 	" Return a 1 if the user's cursor is on a line containing a function-like
 	" macro declaration; otherwise, return 0.

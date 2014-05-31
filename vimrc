@@ -170,7 +170,7 @@
 		au WinEnter,BufRead,BufNewFile * call StatusLine()
 		au WinLeave * call StatusLineNC()
 
-		au bufnewfile * call LoadTemplate()
+		au bufnewfile * silent! call LoadTemplate()
 
 		au BufRead,BufNewFile *.tmp set filetype=template
 		au BufRead,BufNewFile *.gsc set filetype=graphicscript

@@ -75,7 +75,7 @@
 		alias acs="sudo apt-cache search"
 
 	# core utils
-		alias c="echo 'nope nope nope' ||"
+		alias c=cd
 		alias l="ls --color=auto -h --group-directories-first -p"
 		alias ll="l -al"
 		alias m=man
