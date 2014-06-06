@@ -2,6 +2,7 @@
 
 	runtime! debian.vim
 
+	set filetype=none
 	if has("syntax")
 		syntax enable
 	endif
@@ -23,7 +24,6 @@
 	endif
 
 	call pathogen#infect("bundle/{}") | call pathogen#helptags()
-	syntax on
 	filetype plugin indent on
 
 " settings
@@ -107,9 +107,13 @@
 				\ 'leftAlt': '/*','rightAlt': '*/' },
 			\ 'cpp': { 'left': '//', 'right': '',
 				\ 'leftAlt': '/*','rightAlt': '*/' },
-			\ 'graphicscript' : { 'left' : '#'},
 			\ "mdl" : { "left" : '//' }
 		\}
+
+	" emmet
+		imap <c-e> <c-y>,
+		let g:user_emmet_install_global = 0
+		autocmd FileType html,htmldjango,css EmmetInstall
 
 	" smart pasting
 		let &t_SI .= "\<esc>[?2004h"
@@ -121,7 +125,7 @@
 		let &t_ti = "\<esc>]2;vim\<esc>\\" . &t_ti
 		let &t_te = "\<esc>]2;". previous_title . "\<esc>\\" . &t_te
 
-" highlighting
+" syntax/highlighting
 
 	hi cursorlinenr ctermfg=red ctermbg=0
 	hi folded ctermbg=2 ctermfg=black
@@ -173,7 +177,6 @@
 		au bufnewfile * silent! call LoadTemplate()
 
 		au BufRead,BufNewFile *.tmp set filetype=template
-		au BufRead,BufNewFile *.gsc set filetype=graphicscript
 		au BufRead,BufNewFile *.mdl set filetype=mdl
 		au BufRead *.val set filetype=valgrind
 		au BufReadPost ~/.vimrc exe "normal! zM"
@@ -367,11 +370,13 @@
 		vnorem <leader>c "+y
 		vnoremap <tab> :<bs><bs><bs><bs><bs>call VisualIndent()<cr>
 		vnoremap <s-tab> :<bs><bs><bs><bs><bs>call VisualDeindent()<cr>
+		vnorem // y/<c-r>"<cr>
 
 " functions
 
-	" toggles between relative and absolute line numbering
 	function! NumberToggle()
+		" Toggle between relative and absolute line numbering.
+
 		if !&number
 			return
 		endif
@@ -383,17 +388,19 @@
 		endif
 	endfunc
 
-	" if line-numbering enabled, set relative-line-numbering; used by
-	" window-movement autocommand
 	func! RelativeNumber()
+		" If line-numbering enabled, set relative-line-numbering; used by
+		" window-movement autocommand
+
 		if &nu
 			setl rnu
 		endif
 	endfunc
 
-	" indent a block of text in visual mode, then restore the visual selection
-	" shifted right by the indentation width.
 	func! VisualIndent()
+		" Indent a block of text in visual mode, then restore the visual
+		" selection shifted right by the indentation width.
+
 		let start_line = line("'<")
 		let end_line = line("'>")
 
@@ -403,9 +410,10 @@
 		exec "normal! l" . start_line . "gg\<c-v>" . end_line . "gg"
 	endfunc
 
-	" deindent a block of text in visual mode, then restore the visual selection
-	" shifted left by the indentation width.
 	func! VisualDeindent()
+		" Deindent a block of text in visual mode, then restore the visual
+		" selection shifted left by the indentation width.
+
 		let start_line = line("'<")
 		let end_line = line("'>")
 
@@ -419,8 +427,10 @@
 		exec "normal! " . start_line . "gg\<c-v>" . end_line . "gg"
 	endfunc
 
-	" tab-key insert-mode auto-completion
 	function! Tab_Or_Complete()
+		" If the preceding letter is a keyword-character, trigger
+		" autocompletion; otherwise, insert the output of `SmartTab()`.
+
 		let colPos = col('.')
 		if colPos > 1 && strpart(getline('.'), colPos - 2, 3) =~ '^\k'
 			return "\<c-n>"
@@ -429,9 +439,17 @@
 		endif
 	endfunction
 
-	" if any preceding characters are only spaces or tabs, insert a hard tab
-	" otherwise, insert a soft tab
 	func! SmartTab(colPos)
+		" Insert either a soft or hard tab, depending on the contents of the
+		" line preceding the cursor position.
+		"
+		" Args:
+		"   colPos : (int) Output of `col(".")`.
+		"
+		" Return:
+		"   (str) If any preceding characters are only hard-tabs, insert a
+		"   hard tab otherwise, insert a soft tab.
+
 		let currLn = getline(".")
 		if a:colPos == 1 || currLn[:a:colPos - 2] =~ "^[\t]*$"
 			return "\<tab>"
@@ -440,9 +458,14 @@
 		endif
 	endfunc
 
-	" if cursor position is preceded by multiple spaces, delete all spaces
-	" until the last tab-stop column
 	func! SmartBackspace(colPos, virtColPos)
+		" If the cursor position is preceded by multiple spaces, delete all
+		" spaces until the last tab-stop column.
+		"
+		" Args:
+		"   colPos : (int) Output of `col(".")`.
+		"   virtColPos : (int) Output of `virtcol(".")`.
+
 		let distFromStart = (a:virtColPos - 1) % &tabstop
 		if distFromStart == 0
 			let distFromStart = &tabstop
@@ -459,16 +482,18 @@
 		endif
 	endfunc
 
-	" toggles paste setting when pasting from the terminal
 	function! SmartPaste()
+		" Toggles `paste` when pasting from the system clipboard.
+
 		set pastetoggle=<esc>[201~
 		set paste
 		return ""
 	endfunction
 
-	" If a NERDTree buffer is open, close it, rotate panes, and then reopen
-	" it; otherwise, just rotate the splits.
 	func! RotateWindows()
+		" If a NERDTree buffer is open, close it, rotate panes, and then reopen
+		" it; otherwise, just rotate all windows.
+
 		if NERDTreeAnyBuffers()
 			let toggle_tree = ":NERDTreeToggle\<cr>"
 			exec "normal! " . toggle_tree ":wincmd r\<cr>" . toggle_tree
@@ -477,8 +502,9 @@
 		endif
 	endfunc
 
-	" closes any open NERDTree buffers
 	func! NERDTreeQuit()
+		" If any NERDTree buffers are open, close them.
+
 		redir => buffersoutput
 		silent buffers
 		redir END
@@ -501,6 +527,11 @@
 	endfunc
 
 	func! NERDTreeAnyBuffers()
+		" Detect whether a NERDTree buffer is open.
+		"
+		" Return:
+		"   (int) If NERDTree is open, 1; otherwise, 0.
+
 		redir => buffersoutput
 		silent buffers
 		redir END
@@ -521,9 +552,10 @@
 		return windowfound
 	endfunc
 
-	" facilitates seamless navigation across tmux/vim splits with a single set
-	" of keymaps
 	function! TmuxOrSplitSwitch(wincmd, tmuxdir)
+		" Facilitates seamless navigation across tmux/vim splits with a single
+		" set of keymaps.
+
 		let previous_winnr = winnr()
 		silent! execute "wincmd " . a:wincmd
 		if previous_winnr == winnr()
@@ -533,6 +565,12 @@
 	endfunction
 
 	func! HardRetab(tab_type)
+		" Retab whitespace at the beginning of all lines.
+		"
+		" Args:
+		"   tab_type : (str) If "soft", convert all soft-tabs to hard-tabs.
+		"       If "hard", convert all hard-tabs into soft-tabs.
+
 		let soft_tab = repeat(" ", &tabstop)
 
 		if a:tab_type == "soft"
@@ -546,8 +584,9 @@
 		endif
 	endfunc
 
-	" toggle all folding levels (ie fold everything, unfold everything)
 	func! ToggleUniversalFold()
+		" Toggle global fold.
+
 		set foldmethod=indent
 		if &foldlevel != 0
 			exec "normal! zM"
@@ -557,6 +596,8 @@
 	endfunc
 
 	func! EscapeAbbreviation()
+		" Enter a space and suppress any abbreviation expansion.
+
 		if col(".") == len(getline("."))
 			exe "normal! xa "
 		else
@@ -574,21 +615,25 @@
 		"   (int) The <SNR> of the script; if the script isn't found, -1.
 
 		redir => scriptnames
-		silent! exe "norm! :scriptnames\<cr>"
+		silent! scriptnames
 		redir END
 
 		for script in split(l:scriptnames, "\n")
 			if l:script =~ a:script_name
-				return str2nr(matchstr(l:script, '\(^[ ]*\)\@<=\d\+'))
+				return str2nr(split(l:script, ":")[0])
 			endif
 		endfor
 
 		return -1
 	endfunc
 
-	" if current file inside a git tree, return the name of the current branch;
-	" else, return an empty string
 	func! GitBranchName()
+		" Return the open file's Git work-tree's branch name.
+		"
+		" Return:
+		"   (str) If the open file is inside a Git tree, return its current
+		"   branch; otherwise, "".
+
 		let gitCommand = "cd " . expand("%:p:h") . " &&
 			\ git rev-parse --is-inside-work-tree > /dev/null 2>&1 &&
 			\ (git symbolic-ref --short HEAD 2> /dev/null ||
@@ -601,9 +646,10 @@
 		endif
 	endfunc
 
-	" load filetype specific template and perform any necessary template flag
-	" substitutions
 	func! LoadTemplate()
+		" Load a filetype-specific template and perform any necessary template
+		" flag substitutions.
+
 		let templateFileName = glob("~/.dotfiles/vim/templates/" . &filetype .
 			\ ".tmp")
 		let altTemplateFileName = glob("~/.dotfiles/vim/templates/" .
@@ -632,22 +678,24 @@
 		startinsert!
 	endfunc
 
-	" deletes the preceding space; used by abbreviations
 	func! EatSpace()
+		" Deletes the preceding space; used by abbreviations.
+
 		let c = nr2char(getchar(0))
 		return (c == " ")?"":c
 	endfunc
 
-	" Show syntax highlighting groups for word under cursor
 	func! SynStack()
-		if !exists("*synstack")
-			return
+		" Print the names of the syntax groups for the word under the cursor.
+
+		if exists("*synstack")
+			echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
 		endif
-		echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
 	endfunc
 
-	" statusline for current window split
 	func! StatusLine()
+		" Statusline generator for the currently selected window split.
+
 		setl statusline=%1*\ %t\ " filename
 		setl stl+=%2*%{&readonly?'\ ':''} " readonly
 
@@ -664,8 +712,9 @@
 		setl stl+=%7*\ %p%%\  " percent of file
 	endfunc
 
-	" statusline for other window splits
 	func! StatusLineNC()
+		" Statusline generator for idle window splits.
+
 		setl statusline=%1*\ %t\  " filename
 		setl stl+=%4*%{&modified?'\ +\ ':''} " modified
 		setl stl+=%5*%= " right justify

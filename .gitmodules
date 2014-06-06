@@ -28,3 +28,6 @@
 [submodule "vim/bundle/vim-github-colorscheme"]
 	path = vim/bundle/vim-github-colorscheme
 	url = https://github.com/endel/vim-github-colorscheme
+[submodule "vim/bundle/emmet-vim"]
+	path = vim/bundle/emmet-vim
+	url = https://github.com/mattn/emmet-vim.git
