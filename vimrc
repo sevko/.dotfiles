@@ -153,7 +153,6 @@
 		hi TabLine cterm=none ctermfg=7 ctermbg=15
 
 	" statusline
-		" highlighting for status line components
 		hi User1 ctermfg=231 ctermbg=31
 		hi User2 ctermfg=160 ctermbg=31
 		hi User3 ctermfg=22 ctermbg=118
@@ -184,8 +183,8 @@
 
 		au BufWinEnter,InsertLeave * match _extraWhitespace /\s\+$/
 		au InsertEnter * match _extraWhitespace /\s\+\%#\@<!$/
-		au InsertEnter,WinLeave * :set nornu
-		au InsertLeave,WinEnter * :call RelativeNumber()
+		au InsertEnter,WinLeave * set nornu
+		au InsertLeave,WinEnter * exe "norm! " . ((&nu)?":set rnu\<cr>":"")
 
 		au InsertEnter * set timeoutlen=140
 		au InsertLeave * set timeoutlen=280
@@ -226,7 +225,7 @@
 		nnorem <leader>fq <esc>:q!<cr>
 		nnorem <leader>wa <esc>:wa<cr>
 
-		" Faster navigation
+		" faster navigation
 			nnorem H b
 			nnorem L w
 			nnorem J 4j
@@ -237,12 +236,10 @@
 			nnorem <leader>k gg
 
 		nnorem <leader>n :call NumberToggle()<cr>
-		nnorem <tab> .
 		nnorem = =<cr>
 		nnorem f za
-		nnorem F :call ToggleUniversalFold()<cr>
-		nnorem <c-f> zO
-		nnorem <c-c> zC
+		nnorem F :set foldmethod=indent <bar> exe "norm! " .
+			\(&foldlevel != 0?"zM":"zR")<cr>
 		nnorem <leader>t :tabnext<cr>
 		nnorem <leader>st :tabprev<cr>
 
@@ -315,9 +312,11 @@
 			endfor
 
 		inorem <special><expr> <esc>[200~ SmartPaste()
+		im <F2> <plug>NERDCommenterInsert
 
 		"Scroll up/down auto-complete menu with j/k
-			im <F2> <plug>NERDCommenterInsert
+			inorem <expr> j ((pumvisible())?("\<c-n>"):("j"))
+			inorem <expr> k ((pumvisible())?("\<c-p>"):("k"))
 			inorem <expr> J ((pumvisible())?("\<c-n>\<c-n>\<c-n>"):("J"))
 			inorem <expr> K ((pumvisible())?("\<c-p>\<c-p>\<c-p>"):("K"))
 
@@ -385,15 +384,6 @@
 			set nornu
 		else
 			set rnu
-		endif
-	endfunc
-
-	func! RelativeNumber()
-		" If line-numbering enabled, set relative-line-numbering; used by
-		" window-movement autocommand
-
-		if &nu
-			setl rnu
 		endif
 	endfunc
 
@@ -584,25 +574,10 @@
 		endif
 	endfunc
 
-	func! ToggleUniversalFold()
-		" Toggle global fold.
-
-		set foldmethod=indent
-		if &foldlevel != 0
-			exec "normal! zM"
-		else
-			exec "normal! zR"
-		endif
-	endfunc
-
 	func! EscapeAbbreviation()
 		" Enter a space and suppress any abbreviation expansion.
 
-		if col(".") == len(getline("."))
-			exe "normal! xa "
-		else
-			exe "normal! xi "
-		endif
+		exe printf("norm! x%s ", (col(".") == len(getline("."))?"a":"i"))
 	endfunc
 
 	func! GetScriptNumber(script_name)

@@ -34,7 +34,7 @@ com! OpenSourceVSplit exe "normal! :vsp " . expand("%:p:r") . ".c\<cr>"
 com! OpenSourceSplit exe "normal! :sp " . expand("%:p:r") . ".c\<cr>"
 
 nnorem <buffer> <leader>;
-	\ :exe "norm! $" . (getline(".")[-1:] == "{"?"r":"a") . ";"<cr>
+	\ :exe "norm! $" . ("{," =~ getline(".")[-1:]?"r":"a") . ";"<cr>
 nnorem <buffer> <leader>oh :OpenHeaderVSplit<cr>
 nnorem <buffer> <leader>ohs :OpenHeaderSplit<cr>
 nnorem <buffer> <leader>oc :OpenSourceVSplit<cr>
@@ -43,13 +43,14 @@ nnorem <buffer> <leader>gc :call <SID>GetFunctionHeaders()<cr>
 nnorem { :call <SID>InsertBraces()<cr>
 nnorem } :call <SID>DeleteBraces()<cr>
 
-" print my preferred order of declaration statement
 func! PrintTemplate()
+	" Echo my preferred order of declarations and definitions.
+
 	echo join(["#include lib", "#include system", "#include local", "",
 		\ "#define function-macro", "#define object-macro", "",
-		\ "extern variables", "typedef", "struct", "static variables",
-		\ "static function"], "\n")
-	endfunc
+		\ "extern variables", "typedef", "struct", "global variables",
+		\"static variables", "static function"], "\n")
+endfunc
 
 func! GetHeaders()
 	let script = "python ~/.dotfiles/vim/scripts/c_function_headers.py"
