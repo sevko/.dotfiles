@@ -1,5 +1,4 @@
 # settings
-
 	setopt extendedglob
 	setopt GLOB_COMPLETE
 
@@ -31,7 +30,6 @@
 		/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:
 		/usr/local/games"
 
-	bindkey -M viins \^p fuzzy-match
 	source $DOT/prompt.zsh
 	eval $(dircolors $DOT/dircolors)
 
@@ -47,7 +45,6 @@
 	bindkey -v "^r" history-incremental-search-backward
 
 #aliases
-	alias bpy="bpython -q"
 	alias ccat="pygmentize -O style=monokai -f terminal -g"
 	alias clip="xclip -select clipboard"
 	alias ev=evince
@@ -101,7 +98,7 @@
 		alias gd="git diff"
 		alias gf="git fetch"
 		alias gi="git init"
-		alias gm="git merge"
+		alias gm="git merge --no-ff"
 		alias gp="git pull"
 		alias gpu="git push"
 		alias gpuo="git push origin"
@@ -120,7 +117,6 @@
 	export PROMPT_DIRTRIM=3
 
 # functions & conditionals
-
 	fgrep(){
 		# Recursively `grep` a directory for a string.
 		#
@@ -155,15 +151,6 @@
 		rm -rf $1
 	}
 
-	_gdsu_compl(){
-		# Git submodule name completion for `gdsu()`.
-
-		submodules="$(cat .gitmodules | grep -Po '(?<=submodule \").*(?=\")')"
-		reply=("${(f)${submodules}}")
-	}
-
-	compctl -K _gdsu_compl gdsu
-
 	gpub(){
 		# Push the current git branch to the remote.
 		#
@@ -185,14 +172,6 @@
 			git push origin --delete $1
 		fi
 	}
-
-	_gbda_compl(){
-		# Git-branch name completion for `gbda()`.
-
-		reply=("${(f)$(git branch --no-color | tr -d "^*|  ")}")
-	}
-
-	compctl -K _gbda_compl gbda
 
 	gl(){
 		# Heavily formatted `git log` wrapper.
@@ -237,6 +216,25 @@
 	if [ "$TMUX" = "" ]
 		then tmux attach || tmux new
 	fi
+
+	# completion
+
+		compctl -K _gdsu_compl gdsu
+		compctl -K _gbda_compl gbda
+
+		_gdsu_compl(){
+			# Git submodule name completion for `gdsu()`.
+
+			submodules="$(cat .gitmodules |\
+				grep -Po '(?<=submodule \").*(?=\")')"
+			reply=("${(f)${submodules}}")
+		}
+
+		_gbda_compl(){
+			# Git-branch name completion for `gbda()`.
+
+			reply=("${(f)$(git branch --no-color | tr -d "^*|  ")}")
+		}
 
 # The following lines were added by zsh-newuser-install
 	HISTFILE=~/.histfile

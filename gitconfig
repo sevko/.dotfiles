@@ -15,11 +15,11 @@
 [push]
 	default = simple
 
-[color]
-	ui = always
-
 [commit]
 	template = /home/sevko/.dotfiles/git/gitcommit.tmp
+
+[color]
+	ui = always
 
 [color "branch"]
 	current = yellow
@@ -27,10 +27,10 @@
 	remote = magenta
 
 [color "diff"]
-	meta = cyan
-	frag = magenta bold
-	old = red
-	new = blue
+	meta = 5
+	frag = 9 bold
+	old = 1
+	new = 4
 	whitespace = white reverse
 
 [color "status"]
