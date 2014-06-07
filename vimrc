@@ -24,27 +24,16 @@
 	endif
 
 	call pathogen#infect("bundle/{}") | call pathogen#helptags()
+	syntax on
 	filetype plugin indent on
 
 " settings
-
-	" colorscheme
-		set background=dark
-		silent! colorscheme solarized
 
 	set runtimepath+=~/.dotfiles/vim/
 
 	set showcmd
 	set autowrite
 	set ttyfast lazyredraw
-
-	" file backup
-		" backup to ~/.tmp; get rid of .swp files
-		set backup
-		set backupdir=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
-		set backupskip=/tmp/*,/private/tmp/*
-		set directory=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
-		set writebackup
 
 	set nu rnu
 	set nowrap
@@ -56,18 +45,9 @@
 	set noshowmatch
 	set wildmenu wildmode=longest,list,full
 	set backspace=indent,eol,start
-
-	" indentation
-		set autoindent
-		set noexpandtab tabstop=4 shiftwidth=4
-
-	" code folding settings
-		set foldmethod=indent
-		set foldnestmax=10
-		set nofoldenable foldlevel=1
+	set nf+=alpha
 
 	set splitbelow splitright
-
 	set laststatus=2
 	set incsearch
 	set nocursorline
@@ -75,6 +55,27 @@
 	set pumheight=10
 
 	set list lcs=tab:\·\ 
+
+	" colorscheme
+		set background=dark
+		silent! colorscheme solarized
+
+	" backup to ~/.tmp; get rid of .swp files
+		set backup
+		set backupdir=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
+		set backupskip=/tmp/*,/private/tmp/*
+		set directory=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
+		set writebackup
+
+	" indentation
+		set autoindent
+		set noexpandtab tabstop=4 shiftwidth=4
+
+	" code folding settings
+		set foldignore=
+		set foldmethod=indent
+		set foldnestmax=10
+		set nofoldenable foldlevel=1
 
 	" italic comments
 		highlight Comment cterm=italic
@@ -86,19 +87,6 @@
 		let g:UltiSnipsJumpForwardTrigger = "<c-j>"
 		let g:UltiSnipsJumpBackwardTrigger = "<c-k>"
 		let g:UltiSnipsSnippetDirectories = ["ultisnips"]
-
-	" NERDTree
-		" key-maps
-		let NERDTreeMapOpenSplit="s"
-		let NERDTreeMapOpenVSplit="v"
-
-		let NERDTreeMapActivateNode="h"
-		let NERDTreeMapToggleHidden="<c-h>"
-
-		let NERDTreeMapJumpFirstChild="<leader>k"
-		let NERDTreeMapJumpLastChild="<leader>j"
-
-		let NERDTreeWinSize=24
 
 	" NERDCommenter
 		let NERDSpaceDelims = 1
@@ -139,7 +127,9 @@
 	hi SpellBad cterm=none ctermfg=1
 
 	hi statusline cterm=none ctermbg=235
-	hi statuslinenc ctermfg=none ctermbg=235
+	hi statuslinenc ctermfg=none ctermbg=236
+
+	hi _constant cterm=bold ctermfg=70
 
 	" autocomplete menu
 		hi pmenu cterm=none ctermbg=2 ctermfg=233
@@ -165,11 +155,12 @@
 	hi MatchParen cterm=bold ctermfg=45 ctermbg=none
 	hi _extraWhitespace ctermbg=88 | match _extraWhitespace /\s\+$/
 
+	syn match _constant "\w\@<!\u\([A-Z0-9_]*[A-Z0-9]\)\=\w\@!"
+
 " autocommands
 
 	augroup miscellaneous
 		au!
-		au WinEnter * call NERDTreeQuit()
 		au WinEnter,BufRead,BufNewFile * call StatusLine()
 		au WinLeave * call StatusLineNC()
 
@@ -208,8 +199,6 @@
 
 	" global
 
-		norem <f1> :NERDTreeToggle<cr>
-
 		map <leader>c <plug>NERDCommenterToggle
 		map <leader>cz <plug>NerdComComment
 
@@ -236,14 +225,17 @@
 			nnorem <leader>k gg
 
 		nnorem <leader>n :call NumberToggle()<cr>
+		nnorem + <c-a>
+		nnorem _ <c-x>
 		nnorem = =<cr>
+		nnorem <c-f> zO
 		nnorem f za
-		nnorem F :set foldmethod=indent <bar> exe "norm! " .
+		nnorem <silent> F :set foldmethod=indent <bar> exe "norm! " .
 			\(&foldlevel != 0?"zM":"zR")<cr>
 		nnorem <leader>t :tabnext<cr>
 		nnorem <leader>st :tabprev<cr>
 
-		nnorem <leader>r :call RotateWindows()<cr>
+		nnorem <leader>r :wincmd r<cr>
 		nnorem sv :source ~/.vimrc<cr>
 		nnorem ss :sp <c-d>
 		nnorem vv :vsp <c-d>
@@ -315,8 +307,6 @@
 		im <F2> <plug>NERDCommenterInsert
 
 		"Scroll up/down auto-complete menu with j/k
-			inorem <expr> j ((pumvisible())?("\<c-n>"):("j"))
-			inorem <expr> k ((pumvisible())?("\<c-p>"):("k"))
 			inorem <expr> J ((pumvisible())?("\<c-n>\<c-n>\<c-n>"):("J"))
 			inorem <expr> K ((pumvisible())?("\<c-p>\<c-p>\<c-p>"):("K"))
 
@@ -479,68 +469,6 @@
 		set paste
 		return ""
 	endfunction
-
-	func! RotateWindows()
-		" If a NERDTree buffer is open, close it, rotate panes, and then reopen
-		" it; otherwise, just rotate all windows.
-
-		if NERDTreeAnyBuffers()
-			let toggle_tree = ":NERDTreeToggle\<cr>"
-			exec "normal! " . toggle_tree ":wincmd r\<cr>" . toggle_tree
-		else
-			exec "normal! :wincmd r\<cr>"
-		endif
-	endfunc
-
-	func! NERDTreeQuit()
-		" If any NERDTree buffers are open, close them.
-
-		redir => buffersoutput
-		silent buffers
-		redir END
-		let pattern = '^\s*\(\d\+\)\(.....\) "\(.*\)"\s\+line \(\d\+\)$'
-		let windowfound = 0
-
-		for bline in split(buffersoutput, "\n")
-			let m = matchlist(bline, pattern)
-
-			if (len(m) > 0)
-				if (m[2] =~ '..a..')
-					let windowfound = 1
-				endif
-			endif
-		endfor
-
-		if (!windowfound)
-			quitall
-		endif
-	endfunc
-
-	func! NERDTreeAnyBuffers()
-		" Detect whether a NERDTree buffer is open.
-		"
-		" Return:
-		"   (int) If NERDTree is open, 1; otherwise, 0.
-
-		redir => buffersoutput
-		silent buffers
-		redir END
-
-		let pattern = '^\s*\(\d\+\)\(.....\) "\(.*\)"\s\+line \(\d\+\)$'
-		let windowfound = 0
-
-		for bline in split(buffersoutput, "\n")
-			let m = matchlist(bline, pattern)
-
-			if (len(m) > 0)
-				if (m[2] =~ '..a..')
-					let windowfound = 1
-				endif
-			endif
-		endfor
-
-		return windowfound
-	endfunc
 
 	function! TmuxOrSplitSwitch(wincmd, tmuxdir)
 		" Facilitates seamless navigation across tmux/vim splits with a single
