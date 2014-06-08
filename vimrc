@@ -2,7 +2,6 @@
 
 	runtime! debian.vim
 
-	set filetype=none
 	if has("syntax")
 		syntax enable
 	endif
@@ -24,21 +23,20 @@
 	endif
 
 	call pathogen#infect("bundle/{}") | call pathogen#helptags()
-	syntax on
 	filetype plugin indent on
 
 " settings
 
-	set runtimepath+=~/.dotfiles/vim/
-
 	set showcmd
 	set autowrite
 	set ttyfast lazyredraw
-
 	set nu rnu
 	set nowrap
-	set linebreak
+	set splitbelow splitright
+	set incsearch
+	" set nocursorline
 
+	set runtimepath+=~/.dotfiles/vim/
 	set timeoutlen=280
 	set colorcolumn=81
 	set scrolloff=25
@@ -46,11 +44,7 @@
 	set wildmenu wildmode=longest,list,full
 	set backspace=indent,eol,start
 	set nf+=alpha
-
-	set splitbelow splitright
 	set laststatus=2
-	set incsearch
-	set nocursorline
 	set t_Co=256
 	set pumheight=10
 
@@ -113,7 +107,7 @@
 		let &t_ti = "\<esc>]2;vim\<esc>\\" . &t_ti
 		let &t_te = "\<esc>]2;". previous_title . "\<esc>\\" . &t_te
 
-" syntax/highlighting
+" highlighting
 
 	hi cursorlinenr ctermfg=red ctermbg=0
 	hi folded ctermbg=2 ctermfg=black
@@ -128,8 +122,6 @@
 
 	hi statusline cterm=none ctermbg=235
 	hi statuslinenc ctermfg=none ctermbg=236
-
-	hi _constant cterm=bold ctermfg=70
 
 	" autocomplete menu
 		hi pmenu cterm=none ctermbg=2 ctermfg=233
@@ -155,14 +147,12 @@
 	hi MatchParen cterm=bold ctermfg=45 ctermbg=none
 	hi _extraWhitespace ctermbg=88 | match _extraWhitespace /\s\+$/
 
-	syn match _constant "\w\@<!\u\([A-Z0-9_]*[A-Z0-9]\)\=\w\@!"
-
 " autocommands
 
 	augroup miscellaneous
 		au!
-		au WinEnter,BufRead,BufNewFile * call StatusLine()
-		au WinLeave * call StatusLineNC()
+		au WinEnter,BufRead,BufNewFile * silent! call StatusLine()
+		au WinLeave * silent! call StatusLineNC()
 
 		au bufnewfile * silent! call LoadTemplate()
 
@@ -175,7 +165,7 @@
 		au BufWinEnter,InsertLeave * match _extraWhitespace /\s\+$/
 		au InsertEnter * match _extraWhitespace /\s\+\%#\@<!$/
 		au InsertEnter,WinLeave * set nornu
-		au InsertLeave,WinEnter * exe "norm! " . ((&nu)?":set rnu\<cr>":"")
+		au InsertLeave,WinEnter * silent! exe "norm! " . ((&nu)?":set rnu\<cr>":"")
 
 		au InsertEnter * set timeoutlen=140
 		au InsertLeave * set timeoutlen=280
@@ -192,6 +182,7 @@
 		\ &ft . ".vim\<cr>"
 	com! OpenUltiSnipsFile exe "normal! :tabe $HOME/.dotfiles/vim/ultisnips/" .
 		\ &ft . ".snippets\<cr>"
+	com! -nargs=1 Ftpackage so ~/.dotfiles/vim/ftpackage/<args>.vim
 
 " key mappings
 
@@ -237,14 +228,14 @@
 
 		nnorem <leader>r :wincmd r<cr>
 		nnorem sv :source ~/.vimrc<cr>
-		nnorem ss :sp <c-d>
-		nnorem vv :vsp <c-d>
+		nnorem ss :silent! sp 
+		nnorem vv :silent! vsp 
 		nnorem ;vsp :echo "Nope."
 		nnorem ;sp :echo "Nope."
 
 		nnorem b <c-v>
 		nnorem <leader>rt :call HardRetab("soft")<cr>
-		nnorem tt :tabe 
+		nnorem tt :silent! tabe 
 
 		nnorem <tab> >>
 		nnorem <s-tab> <<
@@ -293,15 +284,15 @@
 
 		" Map all alphanumeric keys to trigger the completion-menu popup in
 		" insert mode.
-			let char_nums = range(char2nr("0"), char2nr("9"))
-			let char_nums += range(char2nr("A"), char2nr("Z"))
-			let char_nums += range(char2nr("a"), char2nr("z"))
+			" let char_nums = range(char2nr("0"), char2nr("9"))
+			" let char_nums += range(char2nr("A"), char2nr("Z"))
+			" let char_nums += range(char2nr("a"), char2nr("z"))
 
-			for char_num in char_nums
-				let char = nr2char(char_num)
-				silent! exec "inoremap <silent> " . char . " " . char .
-					\ "<c-n><c-p>"
-			endfor
+			" for char_num in char_nums
+				" let char = nr2char(char_num)
+				" silent! exec "inoremap <silent> " . char . " " . char .
+					" \ "<c-n><c-p>"
+			" endfor
 
 		inorem <special><expr> <esc>[200~ SmartPaste()
 		im <F2> <plug>NERDCommenterInsert
@@ -336,11 +327,6 @@
 		inorem [[ []
 		inorem { {<cr>}<esc>O
 		inorem {{ {}<left>
-
-		inorem & <space>&&<space>
-		inorem && &
-		inorem \| <space>\|\|<space>
-		inorem \|\| \|
 
 		inorem <c-x> x<esc>:call EscapeAbbreviation()<cr>a
 

@@ -1,6 +1,7 @@
 hi sassClass ctermfg=14
 
-com! CompileSass exec "!sass ". expand("%:p:") . " " . expand("%:p:r") . ".css"
-nnorem <buffer> <leader>cs :CompileSass<cr>
-set sw=4
+nnorem <buffer> <leader>cs :
+	\exec "!sass ". expand("%:p:") . " " . expand("%:p:r") . ".css"
+inorem <buffer> : : 
+
 so ~/.vimrc_after

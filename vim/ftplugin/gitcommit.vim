@@ -1,5 +1,4 @@
 setlocal spell spelllang=en_us
-setlocal textwidth=80
 
 syn match _gitcommitTypeOfChange
 	\ "^[^\t]*\(Add\|Mod\|Ref\|Fix\|Rem\|Rea\)\([^a-zA-Z0-9]\)\@="

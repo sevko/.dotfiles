@@ -1,38 +1,40 @@
-set autoindent noexpandtab
+" settings
 
-silent! redir @a
-silent! verbose set ts
-silent! redir END
+	set autoindent noexpandtab
+	let g:NERDCommenterSNR = GetScriptNumber("NERD_commenter.vim")
 
-" Set ts/sw only if local ftplugin haven't already done so.
-let split_verbose = split(@a, "Last set from ")
-if len(split_verbose) > 1 && split_verbose[1][0] != "~"
-	setlocal ts=4 sw=4
-endif
+" syntax/highlighting
 
-" Searches up the open file's directory tree for a file named .vimrc.local;
-" if one exists, sources it.
-func! LocalVimrc()
-	let cmd = "$HOME/.dotfiles/vim/scripts/local_vimrc.zsh " .
-		\ expand("%:p:")
+	syn match _constant "\w\@<!\u\([A-Z0-9_]*[A-Z0-9]\)\=\w\@!"
 
-	let local_vimrc_path = system(cmd)
-	if len(local_vimrc_path) != 0
-		exec "normal! :silent! source " . local_vimrc_path . "\<cr>"
-	endif
-endfunc
+" functions
 
-let g:NERDComSNR = GetScriptNumber("NERD_commenter.vim")
+	func! LocalVimrc()
+		" Searches up the open file's directory tree for a file named
+		" ".vimrc.local"; if one exists, sources it.
 
-" Attempt to expand an UltiSnip snippet; on failure, return " ";
-" otherwise, "".
-func! UltiSnipExpand()
-	if eval(printf("<SNR>%d_IsCommentedNormOrSexy(line('.'))", g:NERDComSNR))
-		return " "
-	else
-		call UltiSnips#ExpandSnippet()
-		return (g:ulti_expand_res == 0)?" ":""
-	endif
-endfunc
+		let cmd = "$HOME/.dotfiles/vim/scripts/local_vimrc.zsh " .
+			\ expand("%:p:")
 
-silent! call LocalVimrc()
+		let local_vimrc_path = system(cmd)
+		if len(local_vimrc_path) != 0
+			exec "normal! :silent! source " . local_vimrc_path . "\<cr>"
+		endif
+	endfunc
+
+	func! UltiSnipExpand()
+		" Attempt to expand an UltiSnip snippet.
+		"
+		" Return:
+		"   (str) On successful expansion, return ""; on failure, " ".
+
+		if eval(printf("<SNR>%d_IsCommentedNormOrSexy(line('.'))",
+			\g:NERDCommenterSNR))
+			return " "
+		else
+			call UltiSnips#ExpandSnippet()
+			return (g:ulti_expand_res == 0)?" ":""
+		endif
+	endfunc
+
+	silent! call LocalVimrc()

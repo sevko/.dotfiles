@@ -1,12 +1,6 @@
-syn match _arithmetic_operator "+\|-\|\*\|%\|<\|>\|="
-syn match _arithmetic_operator "\(/\|*\)\@<!/\(/\|*\)\@!"
-syn match _logic_operator "&&\|||\|!"
-syn match _bitwise_operator "\(&\)\@<!&\(&\)\@!"
-syn match _bitwise_operator "\(|\)\@<!|\(|\)\@!"
-syn match _bitwise_operator "<<\|>>\|\^"
-syn match _surrounding_element "(\|)\|\[\|\]\|{\|}"
-syn match _delimiters "\.\|,\|:"
-syn match _end_of_line ";"
+Ftpackage standard
+
+set noet softtabstop=0 ts=4 sw=4
 
 syn match pythonStrFormatting
 	\ "%\%(([^)]\+)\)\=[-#0 +]*\d*\%(\.\d\+\)\=[hlL]\=[diouxXeEfFgGcrs%]"
@@ -22,17 +16,9 @@ syn match _pythonSphinxReference ":[^:]\+:`[^\t`]\+`" containedin=Comment
 syn match _pythonSphinxBold "\*\*[^\*]\+\*\*" containedin=Comment
 syn match _pythonMagic "__[a-zA-Z]\+__"
 
-syn match _pythonConstant "\([a-zA-Z0-9]\)\@<!\u[A-Z0-9_]*\([a-z0-9_]\)\@!"
 syn region Comment start=/\("""\|'''\)/ end=/\("""\|'''\)/
 syn keyword _pythonKeyword self
 
-hi _arithmetic_operator ctermfg=3
-hi _logic_operator ctermfg=2
-hi _bitwise_operator ctermfg=1
-hi _surrounding_element ctermfg=2
-hi _delimiters ctermfg=166
-hi _end_of_line ctermfg=244
-hi _pythonConstant cterm=bold ctermfg=14
 hi _pythonDocstringBrief cterm=bold ctermfg=10
 hi _pythonKeyword ctermfg=3
 hi _pythonMagic ctermfg=9
@@ -46,8 +32,7 @@ hi pythonStatement cterm=reverse,bold ctermfg=0 ctermbg=2
 hi pythonStrFormatting ctermfg=5
 
 nnorem <buffer>     <leader>d   :call SphinxComment()<cr>o
-
-inoreab <buffer> __ ____<left><left>
+inorem <buffer> __ ____<left><left>
 
 func! SphinxComment()
 	" Insert a Sphinx docstring appropriate for the current line.

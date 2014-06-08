@@ -1,3 +1,6 @@
+Ftpackage standard
+Ftpackage curly_bracket
+
 set iskeyword+=:
 
 syn match _vimGlobal "g:\w\+" containedin=vimVar
