@@ -1,4 +1,3 @@
-Ftpackage standard
 Ftpackage curly_bracket
 
 set iskeyword+=:

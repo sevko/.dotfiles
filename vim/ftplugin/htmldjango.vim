@@ -5,4 +5,4 @@ syn region djangoTagBlock start="\(^[\t ]*\)=" end="$"
 	\ display containedin=ALLBUT,@djangoBlocks
 
 inorem <buffer> % %<Space>%<left><Left>
-inorem { {}<Left>
+inorem <buffer> { {}<Left>

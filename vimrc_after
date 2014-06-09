@@ -5,7 +5,16 @@
 
 " syntax/highlighting
 
+	syn match _arithmeticOperator "[+\-*%<>=]"
+	syn match _bitwiseOperator "\(&\)\@<!&\(&\)\@!"
+	syn match _bitwiseOperator "\(|\)\@<!|\(|\)\@!"
+	syn match _bitwiseOperator "<<\|>>\|\^"
+	syn match _surroundingElement "[()[\]{}]"
 	syn match _constant "\w\@<!\u\([A-Z0-9_]*[A-Z0-9]\)\=\w\@!"
+
+	hi _arithmeticOperator ctermfg=3
+	hi _bitwiseOperator ctermfg=1
+	hi _surroundingElement ctermfg=2
 
 " functions
 

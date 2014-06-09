@@ -1,5 +1,3 @@
-Ftpackage standard
-
 set noet softtabstop=0 ts=4 sw=4
 
 syn match pythonStrFormatting

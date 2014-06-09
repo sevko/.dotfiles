@@ -1,5 +1,4 @@
-Ftpackage standard
-Ftpackage curly_brackets
+Ftpackage curly_bracket
 
 syn match _cAddressOperator "\(\W\@<=&[^ \t&]\@=\|\*\S\@=\|->\)"
 syn match _cGlobal "\([a-zA-Z0-9]\)\@<!g_[a-zA-Z0-9]\+\([a-zA-Z0-9]\)\@!"
