@@ -34,7 +34,6 @@
 	set nowrap
 	set splitbelow splitright
 	set incsearch
-	" set nocursorline
 
 	set runtimepath+=~/.dotfiles/vim/
 	set timeoutlen=280
@@ -95,7 +94,7 @@
 	" emmet
 		imap <c-e> <c-y>,
 		let g:user_emmet_install_global = 0
-		autocmd FileType html,htmldjango,css EmmetInstall
+		autocmd FileType htmldjango,css EmmetInstall
 
 	" smart pasting
 		let &t_SI .= "\<esc>[?2004h"
@@ -107,7 +106,7 @@
 		let &t_ti = "\<esc>]2;vim\<esc>\\" . &t_ti
 		let &t_te = "\<esc>]2;". previous_title . "\<esc>\\" . &t_te
 
-" highlighting
+" highlighting/syntax
 
 	hi cursorlinenr ctermfg=red ctermbg=0
 	hi folded ctermbg=2 ctermfg=black
@@ -122,6 +121,8 @@
 
 	hi statusline cterm=none ctermbg=235
 	hi statuslinenc ctermfg=none ctermbg=236
+	hi MatchParen cterm=bold ctermfg=45 ctermbg=none
+	hi _extraWhitespace ctermbg=88
 
 	" autocomplete menu
 		hi pmenu cterm=none ctermbg=2 ctermfg=233
@@ -144,8 +145,7 @@
 		hi User6 ctermfg=231 ctermbg=31
 		hi User7 cterm=bold ctermfg=234 ctermbg=253
 
-	hi MatchParen cterm=bold ctermfg=45 ctermbg=none
-	hi _extraWhitespace ctermbg=88 | match _extraWhitespace /\s\+$/
+	match _extraWhitespace /\s\+$/
 
 " autocommands
 
@@ -154,26 +154,25 @@
 		au WinEnter,BufRead,BufNewFile * silent! call StatusLine()
 		au WinLeave * silent! call StatusLineNC()
 
-		au bufnewfile * silent! call LoadTemplate()
-
-		au BufRead,BufNewFile *.tmp set filetype=template
-		au BufRead,BufNewFile *.mdl set filetype=mdl
-		au BufRead *.val set filetype=valgrind
-		au BufReadPost ~/.vimrc exe "normal! zM"
-		au BufWritePost ~/.vimrc source ~/.vimrc
-
-		au BufWinEnter,InsertLeave * match _extraWhitespace /\s\+$/
-		au InsertEnter * match _extraWhitespace /\s\+\%#\@<!$/
+		au InsertEnter * hi _extraWhitespace ctermbg=8 
 		au InsertEnter,WinLeave * set nornu
-		au InsertLeave,WinEnter * silent! exe "norm! " . ((&nu)?":set rnu\<cr>":"")
-
 		au InsertEnter * set timeoutlen=140
 		au InsertLeave * set timeoutlen=280
+		au InsertLeave * hi _extraWhitespace ctermbg=88
+		au InsertLeave,WinEnter * silent! exe "norm! " . (&nu?":set rnu\<cr>":"")
 
 		au FileType modula2 set filetype=markdown
 		au FileType html set filetype=htmldjango
 		au FileType cpp set filetype=cpp.c
-		au BufRead *.json set filetype=javascript.json
+
+		au bufnewfile * silent! call LoadTemplate()
+		au BufRead,BufNewFile *.json set filetype=javascript.json
+		au BufRead,BufNewFile *.tmp set filetype=template
+		au BufRead,BufNewFile *.mdl set filetype=mdl
+		au BufRead,BufRead *.supp set filetype=supp
+		au BufRead *.val set filetype=valgrind
+		au BufReadPost ~/.vimrc exe "normal! zM"
+		au BufWritePost ~/.vimrc source ~/.vimrc
 	augroup END
 
 " commands
@@ -307,7 +306,6 @@
 		inorem <tab> <c-r>=Tab_Or_Complete()<cr>
 		inorem <s-tab> <c-p>
 		inorem <bs> <c-r>=SmartBackspace(col("."), virtcol("."))<cr>
-		inorem <space> <c-r>=UltiSnipExpand()<cr>
 
 		inorem <up> <esc>:call ResizeUp()<cr>i
 		inorem <down> <esc>:call ResizeDown()<cr>i
@@ -608,5 +606,3 @@
 		setl stl+=%4*%{&modified?'\ +\ ':''} " modified
 		setl stl+=%5*%= " right justify
 	endfunc
-
-	call StatusLine()
