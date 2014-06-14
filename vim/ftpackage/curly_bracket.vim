@@ -8,9 +8,6 @@ inorem && &
 inorem \| <space>\|\|<space>
 inorem \|\| \|
 
-syn match _logic_operator "&&\|||\|!"
-syn match _end_of_line ";"
-
 func! s:DeleteBraces()
 	" Delete the braces encapsulating the block of code under the cursor.
 

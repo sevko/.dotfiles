@@ -145,8 +145,6 @@
 		hi User6 ctermfg=231 ctermbg=31
 		hi User7 cterm=bold ctermfg=234 ctermbg=253
 
-	match _extraWhitespace /\s\+$/
-
 " autocommands
 
 	augroup miscellaneous

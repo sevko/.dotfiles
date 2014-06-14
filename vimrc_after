@@ -3,22 +3,14 @@
 	set autoindent noexpandtab
 	let g:NERDCommenterSNR = GetScriptNumber("NERD_commenter.vim")
 
-" syntax/highlighting
+	match _extraWhitespace /\s\+$/
 
-	syn match _arithmeticOperator "[+\-*%<>=]"
-	syn match _bitwiseOperator "\(&\)\@<!&\(&\)\@!"
-	syn match _bitwiseOperator "\(|\)\@<!|\(|\)\@!"
-	syn match _bitwiseOperator "<<\|>>\|\^"
-	syn match _surroundingElement "[()[\]{}]"
-	syn match _constant "\w\@<!\u\([A-Z0-9_]*[A-Z0-9]\)\=\w\@!"
-
-	hi _arithmeticOperator ctermfg=3
-	hi _bitwiseOperator ctermfg=1
-	hi _surroundingElement ctermfg=2
+" key mappings
+	inorem <space> <c-r>=UltiSnipExpand()<cr>
 
 " functions
 
-	func! LocalVimrc()
+	func! s:LocalVimrc()
 		" Searches up the open file's directory tree for a file named
 		" ".vimrc.local"; if one exists, sources it.
 
@@ -46,4 +38,4 @@
 		endif
 	endfunc
 
-	silent! call LocalVimrc()
+	silent! call s:LocalVimrc()
