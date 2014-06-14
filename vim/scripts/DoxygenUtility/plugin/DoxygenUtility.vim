@@ -6,10 +6,6 @@
 func! s:ConfigurePlugin()
 	" Conduct any necessary plugin configuration.
 
-	if &ft != "c"
-		return
-	endif
-
 	syn match _cDoxygenDirective "@[a-zA-Z0-9]\+" containedin=cComment[L]\=
 	syn match _cDoxygenReference "::\S\+" containedin=cComment[L]\=
 
@@ -19,5 +15,5 @@ endfunc
 
 aug DoxygenUtility
 	au!
-	au FileType c silent! call s:ConfigurePlugin()
+	au FileType c,cpp silent! call s:ConfigurePlugin()
 aug END

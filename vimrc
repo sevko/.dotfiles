@@ -152,7 +152,7 @@
 		au WinEnter,BufRead,BufNewFile * silent! call StatusLine()
 		au WinLeave * silent! call StatusLineNC()
 
-		au InsertEnter * hi _extraWhitespace ctermbg=8 
+		au InsertEnter * hi _extraWhitespace ctermbg=8
 		au InsertEnter,WinLeave * set nornu
 		au InsertEnter * set timeoutlen=140
 		au InsertLeave * set timeoutlen=280
@@ -179,6 +179,8 @@
 		\ &ft . ".vim\<cr>"
 	com! OpenUltiSnipsFile exe "normal! :tabe $HOME/.dotfiles/vim/ultisnips/" .
 		\ &ft . ".snippets\<cr>"
+	com! ToggleUniversalFold :set foldmethod=indent <bar> exe "norm! " .
+			\(&foldlevel != 0?"zM":"zR")
 	com! -nargs=1 Ftpackage so ~/.dotfiles/vim/ftpackage/<args>.vim
 
 " key mappings
@@ -212,14 +214,13 @@
 			nnorem <leader>j G
 			nnorem <leader>k gg
 
-		nnorem <leader>n :call NumberToggle()<cr>
+		nnorem <leader>n :set rnu!<cr>
 		nnorem + <c-a>
 		nnorem _ <c-x>
 		nnorem = =<cr>
 		nnorem <c-f> zO
 		nnorem f za
-		nnorem <silent> F :set foldmethod=indent <bar> exe "norm! " .
-			\(&foldlevel != 0?"zM":"zR")<cr>
+		nnorem <silent> F :ToggleUniversalFold<cr>
 		nnorem <leader>t :tabnext<cr>
 		nnorem <leader>st :tabprev<cr>
 
@@ -345,19 +346,19 @@
 
 " functions
 
-	function! NumberToggle()
-		" Toggle between relative and absolute line numbering.
+	" func! NumberToggle()
+		" " Toggle between relative and absolute line numbering.
 
-		if !&number
-			return
-		endif
+		" if !&number
+			" return
+		" endif
 
-		if(&relativenumber)
-			set nornu
-		else
-			set rnu
-		endif
-	endfunc
+		" if(&relativenumber)
+			" set nornu
+		" else
+			" set rnu
+		" endif
+	" endfunc
 
 	func! VisualIndent()
 		" Indent a block of text in visual mode, then restore the visual
@@ -389,34 +390,34 @@
 		exec "normal! " . start_line . "gg\<c-v>" . end_line . "gg"
 	endfunc
 
-	function! Tab_Or_Complete()
+	func! Tab_Or_Complete()
 		" If the preceding letter is a keyword-character, trigger
 		" autocompletion; otherwise, insert the output of `SmartTab()`.
+
+		func! SmartTab(colPos)
+			" Insert either a soft or hard tab, depending on the contents of the
+			" line preceding the cursor position.
+			"
+			" Args:
+			"   colPos : (int) Output of `col(".")`.
+			"
+			" Return:
+			"   (str) If any preceding characters are only hard-tabs, insert a
+			"   hard tab otherwise, insert a soft tab.
+
+			let currLn = getline(".")
+			if a:colPos == 1 || currLn[:a:colPos - 2] =~ "^[\t]*$"
+				return "\<tab>"
+			else
+				return repeat(" ", &tabstop - (virtcol(".") - 1) % &tabstop)
+			endif
+		endfunc
 
 		let colPos = col('.')
 		if colPos > 1 && strpart(getline('.'), colPos - 2, 3) =~ '^\k'
 			return "\<c-n>"
 		else
 			return SmartTab(colPos)
-		endif
-	endfunction
-
-	func! SmartTab(colPos)
-		" Insert either a soft or hard tab, depending on the contents of the
-		" line preceding the cursor position.
-		"
-		" Args:
-		"   colPos : (int) Output of `col(".")`.
-		"
-		" Return:
-		"   (str) If any preceding characters are only hard-tabs, insert a
-		"   hard tab otherwise, insert a soft tab.
-
-		let currLn = getline(".")
-		if a:colPos == 1 || currLn[:a:colPos - 2] =~ "^[\t]*$"
-			return "\<tab>"
-		else
-			return repeat(" ", &tabstop - (virtcol(".") - 1) % &tabstop)
 		endif
 	endfunc
 
@@ -444,15 +445,15 @@
 		endif
 	endfunc
 
-	function! SmartPaste()
+	func! SmartPaste()
 		" Toggles `paste` when pasting from the system clipboard.
 
 		set pastetoggle=<esc>[201~
 		set paste
 		return ""
-	endfunction
+	endfunc
 
-	function! TmuxOrSplitSwitch(wincmd, tmuxdir)
+	func! TmuxOrSplitSwitch(wincmd, tmuxdir)
 		" Facilitates seamless navigation across tmux/vim splits with a single
 		" set of keymaps.
 
@@ -462,7 +463,7 @@
 			call system("tmux select-pane -" . a:tmuxdir)
 		redraw!
 		endif
-	endfunction
+	endfunc
 
 	func! HardRetab(tab_type)
 		" Retab whitespace at the beginning of all lines.
@@ -510,25 +511,6 @@
 		endfor
 
 		return -1
-	endfunc
-
-	func! GitBranchName()
-		" Return the open file's Git work-tree's branch name.
-		"
-		" Return:
-		"   (str) If the open file is inside a Git tree, return its current
-		"   branch; otherwise, "".
-
-		let gitCommand = "cd " . expand("%:p:h") . " &&
-			\ git rev-parse --is-inside-work-tree > /dev/null 2>&1 &&
-			\ (git symbolic-ref --short HEAD 2> /dev/null ||
-			\ git rev-parse HEAD | cut -b-10)"
-		let branchName = system(gitCommand)
-		if len(branchName) > 0
-			return " " . branchName[:len(branchName) - 2] . "  "
-		else
-			return ""
-		endif
 	endfunc
 
 	func! LoadTemplate()
@@ -580,6 +562,25 @@
 
 	func! StatusLine()
 		" Statusline generator for the currently selected window split.
+
+		func! GitBranchName()
+			" Return the open file's Git work-tree's branch name.
+			"
+			" Return:
+			"   (str) If the open file is inside a Git tree, return its current
+			"   branch; otherwise, "".
+
+			let gitCommand = "cd " . expand("%:p:h") . " &&
+				\ git rev-parse --is-inside-work-tree > /dev/null 2>&1 &&
+				\ (git symbolic-ref --short HEAD 2> /dev/null ||
+				\ git rev-parse HEAD | cut -b-10)"
+			let branchName = system(gitCommand)
+			if len(branchName) > 0
+				return " " . branchName[:len(branchName) - 2] . "  "
+			else
+				return ""
+			endif
+		endfunc
 
 		setl statusline=%1*\ %t\ " filename
 		setl stl+=%2*%{&readonly?'\ ':''} " readonly
