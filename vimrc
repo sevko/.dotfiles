@@ -346,20 +346,6 @@
 
 " functions
 
-	" func! NumberToggle()
-		" " Toggle between relative and absolute line numbering.
-
-		" if !&number
-			" return
-		" endif
-
-		" if(&relativenumber)
-			" set nornu
-		" else
-			" set rnu
-		" endif
-	" endfunc
-
 	func! VisualIndent()
 		" Indent a block of text in visual mode, then restore the visual
 		" selection shifted right by the indentation width.
@@ -517,15 +503,15 @@
 		" Load a filetype-specific template and perform any necessary template
 		" flag substitutions.
 
-		let templateFileName = glob("~/.dotfiles/vim/templates/" . &filetype .
-			\ ".tmp")
-		let altTemplateFileName = glob("~/.dotfiles/vim/templates/" .
-			\ &filetype . "_" . expand("%:e") . ".tmp")
+		let templatesDir = glob("~/.dotfiles/vim/templates")
+		let templateFileName = printf("%s/%s.tmp", l:templatesDir, &ft)
+		let altTemplateFileName = printf(
+			"%s/%s_%s.tmp", l:templatesDir, &ft, expand("%:e"))
 
-		if filereadable(templateFileName)
-			exe "normal! :read " . templateFileName . "\<cr>"
-		elseif filereadable(altTemplateFileName)
-			exe "normal! :read " . altTemplateFileName . "\<cr>"
+		if filereadable(l:templateFileName)
+			exe printf(":read %s", l:templateFileName)
+		elseif filereadable(l:altTemplateFileName)
+			exe printf(":read %s", l:altTemplateFileName)
 		else
 			return
 		endif
@@ -536,12 +522,12 @@
 		\}
 
 		if search(templateFlags["fileBaseName"]) > 0
-			exe "normal! :%s/" . templateFlags["fileBaseName"] .
+			exe "norm! :%s/" . templateFlags["fileBaseName"] .
 				\ "/" . expand("%:t:r") . "/g\<cr>"
 		endif
 
-		exe "normal! ggdd"
-		silent! exe "normal! /__START__\<cr>de"
+		exe "norm! ggdd"
+		silent! exe "norm! /__START__\<cr>de"
 		startinsert!
 	endfunc
 

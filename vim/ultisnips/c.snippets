@@ -77,3 +77,15 @@ endsnippet
 snippet @de
 @deprecated 
 endsnippet
+
+snippet "if[n]?def" "" r
+`!p snip.rv = match.group(0)` $1
+$2
+#endif
+endsnippet
+
+snippet do
+do {
+	$1
+} while(0);
+endsnippet

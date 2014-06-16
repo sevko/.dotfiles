@@ -1,3 +1,25 @@
-snippet "(id|class|src|href|type|name|for|rel)" "" r
-`!p snip.rv = match.group(1)`="$1"
+snippet link
+<link rel="stylesheet" type="text/css" href="$1">
+endsnippet
+
+snippet "= ex"
+= extends "$1.html"
+endsnippet
+
+snippet "= block"
+= block $1
+	$2
+= endblock
+endsnippet
+
+snippet "= if"
+= if $1
+	$2
+= endif
+endsnippet
+
+snippet "= for"
+= for $1 in $2
+$3
+= endfor
 endsnippet

@@ -1,26 +1,41 @@
 Ftpackage curly_bracket
 
-syn match _cAddressOperator "\(\W\@<=&[^ \t&]\@=\|\*\S\@=\|->\)"
+syn match _arithmetic_operator '[+\-%=*]\|[*\/]\@<!\/[*\/]\@!'
+syn match _bitwise_operator "<<\|>>\|[~^&|]"
+syn match _constant "\w\@<!\u\([A-Z0-9_]*[A-Z0-9]\)\=\w\@!"
+syn match _delimiter "[,;]"
+syn match _ternary "[?:]"
+syn match _logic_operator "&&\|||\|!"
+syn match _equality_operator "[><=!]=\|[><]"
+syn match _cAddressOperator "\(\W\@<=&[^ \t&]\@=\|\*\S\@=\|->\|\.\)"
 syn match _cGlobal "\([a-zA-Z0-9]\)\@<!g_[a-zA-Z0-9]\+\([a-zA-Z0-9]\)\@!"
+syn match _surrounding_element "[()[\]{}]"
 syn match _cStruct "\([a-zA-Z0-9]\)[a-zA-Z0-9]\+_t\([a-zA-Z0-9]\)\@!"
-syn match _cFunction "\(^[^# \t][^ \t].\+ \*\=\)\@<=[^*]\+\((\)\@="
+syn match _cFunction "\(^[^# \t].\+ \*\=\)\@<=[^*]\+(\@="
 
+hi _arithmetic_operator ctermfg=3
+hi _bitwise_operator ctermfg=1
+hi _equality_operator ctermfg=4
+hi _logic_operator ctermfg=9
+hi _delimiter ctermfg=242
+hi _surrounding_element ctermfg=2
 hi _constant cterm=bold ctermfg=70
-
 hi _cAddressOperator ctermfg=5
+hi _ternary ctermfg=1
 hi _cGlobal ctermfg=1
 hi _cStruct ctermfg=6
 hi _cFunction ctermfg=4
 hi _cDoxygenDirective cterm=bold ctermfg=10
 hi _cDoxygenReference cterm=bold ctermfg=10
 
-nnorem <buffer> <leader>oh :exe "normal! :vsp " . expand("%:p:r") . ".h\<cr>"<cr>
-nnorem <buffer> <leader>ohs :exe "normal! :sp " . expand("%:p:r") . ".h\<cr>"<cr>
-nnorem <buffer> <leader>oc :exe "normal! :vsp " . expand("%:p:r") . ".c\<cr>"<cr>
-nnorem <buffer> <leader>ocs :exe "normal! :sp " . expand("%:p:r") . ".c\<cr>"<cr>
+com! -nargs=1 OpenTwinFile :exe printf("norm! :%s %s.%s\<cr>", <args>,
+	\expand("%:p:r"), (expand("%:e") == "c")?"h":"c")
+
+nnorem <buffer> <leader>ov :OpenTwinFile "vsplit"<cr>
+nnorem <buffer> <leader>os :OpenTwinFile "split"<cr>
 nnorem <buffer> <leader>gc :call <SID>GetFunctionHeaders()<cr>
 
-func! PrintTemplate()
+func! s:PrintTemplate()
 	" Echo my preferred order of declarations and definitions.
 
 	echo join(["#include lib", "#include system", "#include local", "",
@@ -34,7 +49,7 @@ func! s:GetFunctionHeaders()
 	" below the cursor's line.
 
 	let script = "python ~/.dotfiles/vim/scripts/c_function_headers.py"
-	silent! exec "read! " . script . " " . expand("%:p:r") . ".c"
+	silent! exe printf("read! %s %s.c", l:script, expand("%:p:r"))
 endfunc
 
 source ~/.dotfiles/vimrc_after

@@ -72,8 +72,8 @@ func! s:InsertFunctionComment()
 	let declaration = s:CaptureOutputInRegister("0\"ay/;\<cr>")
 	let arg_string = matchstr(declaration, '(\@<=.*\()$\)\@=')
 
-	if arg_string != "void" && 0 < len(arg_string)
-		let doxygen_comment  .= " *\n"
+	if 0 < len(arg_string) && arg_string != "void"
+		let doxygen_comment .= " *\n"
 		for arg in split(arg_string, ",")
 			let arg_name = split(arg)[-1]
 			let doxygen_comment .= printf(" * @param %s \n",
