@@ -17,8 +17,10 @@ func! s:PopulateCommonSyntaxGroups()
 	let g:synclude_matches = {}
 
 	for line in readfile(g:synclude_matches_file)
-		let split_line = split(l:line)
-		let g:synclude_matches[l:split_line[0]] = join(split_line[1:], " ")
+		if line[0] != "#"
+			let split_line = split(l:line)
+			let g:synclude_matches[l:split_line[0]] = join(split_line[1:], " ")
+		endif
 	endfor
 endfunc
 
