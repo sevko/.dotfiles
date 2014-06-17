@@ -106,6 +106,9 @@
 		let &t_ti = "\<esc>]2;vim\<esc>\\" . &t_ti
 		let &t_te = "\<esc>]2;". previous_title . "\<esc>\\" . &t_te
 
+	" Synclude
+		let g:synclude_matches_file = "~/.dotfiles/vim/matches.syn"
+
 " highlighting/syntax
 
 	hi cursorlinenr ctermfg=red ctermbg=0

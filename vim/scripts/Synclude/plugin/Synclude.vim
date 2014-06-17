@@ -4,15 +4,21 @@
 " syntax matches that are common across programming languages, like constants
 " or bitwise operators, to prevent redefinition (DRY).
 
-let g:common_syntax_groups = {}
+if !exists("g:synclude_matches_file")
+	let g:synclude_matches_file = glob("~/.vim/Synclude/matches.syn")
+else
+	let g:synclude_matches_file = glob(g:synclude_matches_file)
+endif
 
 func! s:PopulateCommonSyntaxGroups()
 	" Read in syntax matches defined in 'groups.syn', and populate
-	" `g:common_syntax_groups`.
+	" `g:synclude_matches`.
 
-	for line in readfile(glob("~/.dotfiles/vim/scripts/Synclude/groups.syn"))
+	let g:synclude_matches = {}
+
+	for line in readfile(g:synclude_matches_file)
 		let split_line = split(l:line)
-		let g:common_syntax_groups[l:split_line[0]] = join(split_line[1:], " ")
+		let g:synclude_matches[l:split_line[0]] = join(split_line[1:], " ")
 	endfor
 endfunc
 
@@ -21,6 +27,9 @@ endfunc
 " Args:
 "   1 : The name of the match.
 com! -nargs=1 Synclude exe printf("syn match _%s %s", "<args>",
-	\g:common_syntax_groups["<args>"])
+	\g:synclude_matches["<args>"])
+
+" Open the matches file for editing.
+com! SyncludeEdit exe printf("norm! :vsp %s\<cr>", g:synclude_matches_file)
 
 call s:PopulateCommonSyntaxGroups()
