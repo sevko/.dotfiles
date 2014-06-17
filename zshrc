@@ -45,6 +45,7 @@
 	bindkey -v "^r" history-incremental-search-backward
 
 #aliases
+	alias bpy=bpython
 	alias ccat="pygmentize -O style=monokai -f terminal -g"
 	alias clip="xclip -select clipboard"
 	alias ev=evince
@@ -180,10 +181,9 @@
 		# Args:
 		#   GIT_LOG_ARGS : Any arguments to `git log`.
 
-		git_log_format="%C(1)[ %h ]%Creset||%C(3)%an%Creset||%C(2)%cr%Creset||"
-		git_log_format="$git_log_format%C(6)%s%Creset"
-		git log --pretty=format:$git_log_format $* | column -t -s '|||' | \
-			less -S
+		git_log_format="%C(1)[ %h ]%Creset %C(3)%an%Creset "
+		git_log_format="$git_log_format%C(2)%cr%Creset %C(6)%s%Creset"
+		git log --pretty=format:$git_log_format $*
 	}
 
 	cc(){
