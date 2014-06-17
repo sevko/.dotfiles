@@ -1,1 +1,7 @@
 constant "\w\@<!\u\([A-Z0-9_]*[A-Z0-9]\)\=\w\@!"
+bitwise_operator "<<\|>>\|[~^&|]"
+equality_operator "[><=!]=\|[><]"
+logic_operator "&&\|||\|!"
+ternary "[?:]"
+surrounding_element "[()[\]{}]"
+arithmetic_operator '[+\-%=*\/]'

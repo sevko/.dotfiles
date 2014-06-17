@@ -1,12 +1,13 @@
 Ftpackage curly_bracket
 
+Synclude constant
 syn match _arithmetic_operator '[+\-%=*]\|[*\/]\@<!\/[*\/]\@!'
-syn match _bitwise_operator "<<\|>>\|[~^&|]"
-syn match _constant "\w\@<!\u\([A-Z0-9_]*[A-Z0-9]\)\=\w\@!"
 syn match _delimiter "[,;]"
-syn match _ternary "[?:]"
-syn match _logic_operator "&&\|||\|!"
-syn match _equality_operator "[><=!]=\|[><]"
+Synclude ternary
+Synclude logic_operator
+Synclude equality_operator
+Synclude bitwise_operator
+
 syn match _cAddressOperator "\(\W\@<=&[^ \t&]\@=\|\*\S\@=\|->\|\.\)"
 syn match _cGlobal "\([a-zA-Z0-9]\)\@<!g_[a-zA-Z0-9]\+\([a-zA-Z0-9]\)\@!"
 syn match _surrounding_element "[()[\]{}]"

@@ -1,24 +1,27 @@
 set noet softtabstop=0 ts=4 sw=4
 
 syn match _arithmetic_operator '[+\-%=*\/]'
-syn match _bitwise_operator "<<\|>>\|[~^&|]"
-syn match _constant "\w\@<!\u\([A-Z0-9_]*[A-Z0-9]\)\=\w\@!"
-syn match _equality_operator "[><=!]=\|[><]"
-syn match _surrounding_element "[()[\]{}]"
+Synclude arithmetic_operator
+Synclude bitwise_operator
+Synclude constant
+Synclude equality_operator
+Synclude surrounding_element
 syn match _delimiter "[,:.]"
+
 syn match pythonStrFormatting
 	\ "%\%(([^)]\+)\)\=[-#0 +]*\d*\%(\.\d\+\)\=[hlL]\=[diouxXeEfFgGcrs%]"
 	\ contained containedin=pythonString,pythonRawString
 syn match pythonStrFormatting
 	\ "%[-#0 +]*\%(\*\|\d\+\)\=\%(\.\%(\*\|\d\+\)\)\=[hlL]\=[diouxXeEfFgGcrs%]"
 	\ contained containedin=pythonString,pythonRawString
+syn match _pythonImportedModule "\v((import|from) )@<=\w+"
 syn match _pythonSphinxField "\(^[\t ]*\)\@<=:[^:]\+:" containedin=Comment
 syn match _pythonSphinxStandardDomain "\.\. [^:]\+::" containedin=Comment
 syn match _pythonSphinxReference ":[^:]\+:`[^\t`]\+`" containedin=Comment
 syn match _pythonSphinxBold "\*\*[^\*]\+\*\*" containedin=Comment
 syn match _pythonMagic "__[a-zA-Z]\+__"
-syn region Comment start=/\("""\|'''\)/ end=/\("""\|'''\)/
 syn keyword _pythonKeyword self
+syn region Comment start=/\("""\|'''\)/ end=/\("""\|'''\)/
 
 hi _arithmetic_operator ctermfg=3
 hi _bitwise_operator ctermfg=1
@@ -26,6 +29,8 @@ hi _constant cterm=bold ctermfg=14
 hi _delimiter ctermfg=242
 hi _equality_operator ctermfg=4
 hi _surrounding_element ctermfg=2
+
+hi _pythonImportedModule ctermfg=6
 hi _pythonDocstringBrief cterm=bold ctermfg=10
 hi _pythonKeyword ctermfg=3
 hi _pythonMagic ctermfg=9

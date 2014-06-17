@@ -10,7 +10,7 @@ else
 	let g:synclude_matches_file = glob(g:synclude_matches_file)
 endif
 
-func! s:PopulateCommonSyntaxGroups()
+func! s:SyncludePopulateMatches()
 	" Read in syntax matches defined in 'groups.syn', and populate
 	" `g:synclude_matches`.
 
@@ -24,14 +24,26 @@ func! s:PopulateCommonSyntaxGroups()
 	endfor
 endfunc
 
-" Import a syntax match.
-"
-" Args:
-"   1 : The name of the match.
-com! -nargs=1 Synclude exe printf("syn match _%s %s", "<args>",
-	\g:synclude_matches["<args>"])
+func! SyncludeIncludeMatch(match_name)
+	" Import a syntax match.
+	"
+	" Args:
+	"   match_name : the name of a syntax group.
+
+	if has_key(g:synclude_matches, a:match_name)
+		exe printf(
+			\"syn match _%s %s", a:match_name, g:synclude_matches[a:match_name])
+	else
+		echom printf(
+			\"Synclude: syntax group '%s' not found in '%s'.", a:match_name,
+			\g:synclude_matches_file)
+	endif
+endfunc
+
+" See `SyncludeIncludeMatch()`.
+com! -nargs=1 Synclude call SyncludeIncludeMatch("<args>")
 
 " Open the matches file for editing.
 com! SyncludeEdit exe printf("norm! :vsp %s\<cr>", g:synclude_matches_file)
 
-call s:PopulateCommonSyntaxGroups()
+call s:SyncludePopulateMatches()
