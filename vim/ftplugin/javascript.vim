@@ -1,9 +1,9 @@
 Ftpackage curly_bracket
 
+Synclude constant cterm=bold ctermfg=70
+
 syn match _javascriptFunction "\(function \)\@<=[^ \t]\+\((.*){$\)\@="
 syn match _javascriptLibraryPrefix "\(\W\?\)\@<=[$]"
-
-hi _constant cterm=bold ctermfg=70
 
 hi _javascriptFunction ctermfg=4
 hi _javascriptLibraryPrefix ctermfg=1

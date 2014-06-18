@@ -1,11 +1,10 @@
 set noet softtabstop=0 ts=4 sw=4
 
-syn match _arithmetic_operator '[+\-%=*\/]'
-Synclude arithmetic_operator
-Synclude bitwise_operator
-Synclude constant
-Synclude equality_operator
-Synclude surrounding_element
+Synclude arithmetic_operator ctermfg=3
+Synclude bitwise_operator ctermfg=1
+Synclude constant cterm=bold ctermfg=14
+Synclude equality_operator ctermfg=4
+Synclude surrounding_element ctermfg=2
 syn match _delimiter "[,:.]"
 
 syn match pythonStrFormatting
@@ -14,7 +13,7 @@ syn match pythonStrFormatting
 syn match pythonStrFormatting
 	\ "%[-#0 +]*\%(\*\|\d\+\)\=\%(\.\%(\*\|\d\+\)\)\=[hlL]\=[diouxXeEfFgGcrs%]"
 	\ contained containedin=pythonString,pythonRawString
-syn match _pythonImportedModule "\v((import|from) )@<=\w+"
+syn match _pythonImportedModule "\v((import|from) )@<=\S+"
 syn match _pythonSphinxField "\(^[\t ]*\)\@<=:[^:]\+:" containedin=Comment
 syn match _pythonSphinxStandardDomain "\.\. [^:]\+::" containedin=Comment
 syn match _pythonSphinxReference ":[^:]\+:`[^\t`]\+`" containedin=Comment
@@ -23,13 +22,7 @@ syn match _pythonMagic "__[a-zA-Z]\+__"
 syn keyword _pythonKeyword self
 syn region Comment start=/\("""\|'''\)/ end=/\("""\|'''\)/
 
-hi _arithmetic_operator ctermfg=3
-hi _bitwise_operator ctermfg=1
-hi _constant cterm=bold ctermfg=14
 hi _delimiter ctermfg=242
-hi _equality_operator ctermfg=4
-hi _surrounding_element ctermfg=2
-
 hi _pythonImportedModule ctermfg=6
 hi _pythonDocstringBrief cterm=bold ctermfg=10
 hi _pythonKeyword ctermfg=3
@@ -43,7 +36,7 @@ hi pythonFunction ctermfg=4
 hi pythonStatement cterm=reverse,bold ctermfg=0 ctermbg=2
 hi pythonStrFormatting ctermfg=5
 
-nnorem <buffer>     <leader>d   :call SphinxComment()<cr>o
+nnorem <buffer> <leader>d :call SphinxComment()<cr>o
 inorem <buffer> __ ____<left><left>
 
 func! SphinxComment()

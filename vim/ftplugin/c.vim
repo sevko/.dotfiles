@@ -1,28 +1,23 @@
 Ftpackage curly_bracket
 
-Synclude constant
+Synclude constant cterm=bold ctermfg=70
 syn match _arithmetic_operator '[+\-%=*]\|[*\/]\@<!\/[*\/]\@!'
 syn match _delimiter "[,;]"
-Synclude ternary
-Synclude logic_operator
-Synclude equality_operator
-Synclude bitwise_operator
+Synclude ternary ctermfg=1
+Synclude logic_operator ctermfg=9
+Synclude equality_operator ctermfg=4
+Synclude bitwise_operator ctermfg=1
+Synclude surrounding_element ctermfg=2
 
 syn match _cAddressOperator "\(\W\@<=&[^ \t&]\@=\|\*\S\@=\|->\|\.\)"
 syn match _cGlobal "\([a-zA-Z0-9]\)\@<!g_[a-zA-Z0-9]\+\([a-zA-Z0-9]\)\@!"
-syn match _surrounding_element "[()[\]{}]"
 syn match _cStruct "\([a-zA-Z0-9]\)[a-zA-Z0-9]\+_t\([a-zA-Z0-9]\)\@!"
 syn match _cFunction "\(^[^# \t].\+ \*\=\)\@<=[^*]\+(\@="
 
 hi _arithmetic_operator ctermfg=3
-hi _bitwise_operator ctermfg=1
-hi _equality_operator ctermfg=4
-hi _logic_operator ctermfg=9
 hi _delimiter ctermfg=242
-hi _surrounding_element ctermfg=2
-hi _constant cterm=bold ctermfg=70
+
 hi _cAddressOperator ctermfg=5
-hi _ternary ctermfg=1
 hi _cGlobal ctermfg=1
 hi _cStruct ctermfg=6
 hi _cFunction ctermfg=4
