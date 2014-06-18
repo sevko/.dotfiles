@@ -24,24 +24,33 @@ func! s:SyncludePopulateMatches()
 	endfor
 endfunc
 
-func! SyncludeIncludeMatch(match_name)
-	" Import a syntax match.
+func! SyncludeIncludeMatch(arg_string)
+	" Import a syntax match, and apply highlighting.
 	"
 	" Args:
-	"   match_name : the name of a syntax group.
+	"   arg_string : the arg string, in the following format:
+	"           match_name [cterm=%s] [ctermfg=%s] [ctermbg=%s]
 
-	if has_key(g:synclude_matches, a:match_name)
+	let args = split(a:arg_string)
+	if has_key(g:synclude_matches, l:args[0])
+		let full_match_name = printf("_%s_%s", &ft, args[0])
 		exe printf(
-			\"syn match _%s %s", a:match_name, g:synclude_matches[a:match_name])
+				\"syn match %s %s", l:full_match_name,
+				\g:synclude_matches[l:args[0]])
+
+		if 1 < len(l:args)
+			exe printf("norm! :hi %s %s\<cr>", l:full_match_name,
+					\join(l:args[1:]))
+		endif
 	else
 		echom printf(
-			\"Synclude: syntax group '%s' not found in '%s'.", a:match_name,
-			\g:synclude_matches_file)
+				\"Synclude: syntax group '%s' not found in '%s'.", l:args[0],
+				\g:synclude_matches_file)
 	endif
 endfunc
 
 " See `SyncludeIncludeMatch()`.
-com! -nargs=1 Synclude call SyncludeIncludeMatch("<args>")
+com! -nargs=* Synclude call SyncludeIncludeMatch("<args>")
 
 " Open the matches file for editing.
 com! SyncludeEdit exe printf("norm! :vsp %s\<cr>", g:synclude_matches_file)
