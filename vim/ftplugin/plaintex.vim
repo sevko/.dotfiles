@@ -1,6 +1,6 @@
 setlocal spell spelllang=en_us
 
 iunmap {
-inorem { {}<left>
+inorem <buffer> { {}<left>
 
 so ~/.vimrc_after
