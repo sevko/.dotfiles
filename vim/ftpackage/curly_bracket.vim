@@ -1,12 +1,12 @@
 nnorem <buffer> <leader>;
 	\ :exe "norm! $" . ("{," =~ getline(".")[-1:]?"r":"a") . ";"<cr>
-nnorem { :call <SID>InsertBraces()<cr>
-nnorem } :call <SID>DeleteBraces()<cr>
+nnorem <buffer> { :call <SID>InsertBraces()<cr>
+nnorem <buffer> } :call <SID>DeleteBraces()<cr>
 
-inorem & <space>&&<space>
-inorem && &
-inorem \| <space>\|\|<space>
-inorem \|\| \|
+inorem <buffer> & <space>&&<space>
+inorem <buffer> && &
+inorem <buffer> \| <space>\|\|<space>
+inorem <buffer> \|\| \|
 
 func! s:DeleteBraces()
 	" Delete the braces encapsulating the block of code under the cursor.

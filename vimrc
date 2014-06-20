@@ -86,15 +86,13 @@
 		let g:NERDCustomDelimiters = {
 			\ 'c': { 'left': '//', 'right': '',
 				\ 'leftAlt': '/*','rightAlt': '*/' },
-			\ 'cpp': { 'left': '//', 'right': '',
-				\ 'leftAlt': '/*','rightAlt': '*/' },
 			\ "mdl" : { "left" : '//' }
 		\}
 
 	" emmet
 		imap <c-e> <c-y>,
 		let g:user_emmet_install_global = 0
-		autocmd FileType htmldjango,css EmmetInstall
+		autocmd FileType html,css EmmetInstall
 
 	" smart pasting
 		let &t_SI .= "\<esc>[?2004h"
@@ -163,8 +161,8 @@
 		au InsertLeave,WinEnter * silent! exe "norm! " . (&nu?":set rnu\<cr>":"")
 
 		au FileType modula2 set filetype=markdown
-		au FileType html set filetype=htmldjango
-		au FileType cpp set filetype=cpp.c
+		au FileType html set filetype=htmldjango.html
+		au FileType cpp set filetype=c
 
 		au bufnewfile * silent! call LoadTemplate()
 		au BufRead,BufNewFile *.json set filetype=javascript.json
@@ -172,16 +170,13 @@
 		au BufRead,BufNewFile *.mdl set filetype=mdl
 		au BufRead,BufRead *.supp set filetype=supp
 		au BufRead *.val set filetype=valgrind
+		au BufRead gitconfig set filetype=gitconfig
 		au BufReadPost ~/.vimrc exe "normal! zM"
 		au BufWritePost ~/.vimrc source ~/.vimrc
 	augroup END
 
 " commands
 
-	com! OpenFtpluginFile exe "normal! :tabe $HOME/.dotfiles/vim/ftplugin/" .
-		\ &ft . ".vim\<cr>"
-	com! OpenUltiSnipsFile exe "normal! :tabe $HOME/.dotfiles/vim/ultisnips/" .
-		\ &ft . ".snippets\<cr>"
 	com! ToggleUniversalFold :set foldmethod=indent <bar> exe "norm! " .
 			\(&foldlevel != 0?"zM":"zR")
 	com! -nargs=1 Ftpackage so ~/.dotfiles/vim/ftpackage/<args>.vim
@@ -198,9 +193,10 @@
 	" normal
 
 		nnorem <leader>ev :tabf $MYVIMRC<cr>
-		nnorem <leader>ef :OpenFtpluginFile<cr>
-		nnorem <leader>eu :OpenUltiSnipsFile<cr>
+		nnorem <leader>ef :call OpenFtpluginFile()<cr>
+		nnorem <leader>eu :call OpenUltiSnipsFile()<cr>
 
+		no <leader>ss :call SynStack()<cr>
 		nnorem <leader>w <esc>:w<cr>
 		nnorem <leader>q <esc>:q<cr>
 		nnorem <leader>wq <esc>:wq<cr>
@@ -283,18 +279,6 @@
 
 	" insert
 
-		" Map all alphanumeric keys to trigger the completion-menu popup in
-		" insert mode.
-			" let char_nums = range(char2nr("0"), char2nr("9"))
-			" let char_nums += range(char2nr("A"), char2nr("Z"))
-			" let char_nums += range(char2nr("a"), char2nr("z"))
-
-			" for char_num in char_nums
-				" let char = nr2char(char_num)
-				" silent! exec "inoremap <silent> " . char . " " . char .
-					" \ "<c-n><c-p>"
-			" endfor
-
 		inorem <special><expr> <esc>[200~ SmartPaste()
 		im <F2> <plug>NERDCommenterInsert
 
@@ -348,6 +332,22 @@
 		vnorem // y/<c-r>"<cr>
 
 " functions
+
+	func! OpenFtpluginFile()
+		for filetype in split(&ft, '\V.')
+			exe printf(
+					\"norm! :tabe $HOME/.dotfiles/vim/ftplugin/%s.vim\<cr>",
+					\l:filetype)
+		endfor
+	endfunc
+
+	func! OpenUltiSnipsFile()
+		for filetype in split(&ft, '\V.')
+			exe printf(
+					\"norm! :tabe $HOME/.dotfiles/vim/ultisnips/" .
+					\"%s.snippets\<cr>", l:filetype)
+		endfor
+	endfunc
 
 	func! VisualIndent()
 		" Indent a block of text in visual mode, then restore the visual
