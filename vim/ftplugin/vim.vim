@@ -2,7 +2,7 @@ Ftpackage curly_bracket
 
 set iskeyword+=:
 
-syn match _vimGlobal "g:\w\+" containedin=vimVar
+syn match _vimGlobal "g:\w\+" containedin=vimVar,vimOperParen
 
 hi vimGroupName cterm=bold
 hi _vimGlobal ctermfg=5

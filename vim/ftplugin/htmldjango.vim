@@ -1,5 +1,7 @@
 UltiSnipsAddFiletypes htmldjango.html
 
+setlocal iskeyword+=@
+
 syn region djangoTagBlock start="\(^[\t ]*\)=" end="$"
 	\ contains=djangoStatement,djangoFilter,djangoArgument,djangoTagError
 	\ display containedin=ALLBUT,@djangoBlocks

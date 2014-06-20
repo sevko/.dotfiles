@@ -19,7 +19,7 @@
 	template = /home/sevko/.dotfiles/git/gitcommit.tmp
 
 [color]
-	ui = always
+	ui = auto
 
 [color "branch"]
 	current = yellow

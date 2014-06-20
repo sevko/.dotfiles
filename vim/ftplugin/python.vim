@@ -1,4 +1,5 @@
 set noet softtabstop=0 ts=4 sw=4
+set iskeyword+=.,\
 
 Synclude arithmetic_operator ctermfg=3
 Synclude bitwise_operator ctermfg=1
