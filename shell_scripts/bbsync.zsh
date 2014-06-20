@@ -7,6 +7,12 @@
 
 blackberry_path="/media/sevko/BLACKBERRY1/home/user/music/Media Sync/"
 blackberry_path="${blackberry_path}Compilations/Single/music/"
+music_path="$HOME/msc"
+
+if [ ! -d  "$music_path" ]; then
+	echo "Music dir '$music_path' not found."
+	exit 1
+fi
 
 if [ ! -d "$blackberry_path" ]; then
 	echo "Blackberry not connected."
@@ -25,7 +31,7 @@ sync_dirs(){
 }
 
 echo "Syncing x1c with blackberry."
-sync_dirs "$blackberry_path" "$HOME/music"
+sync_dirs "$blackberry_path" "$music_path"
 
 echo "\nSyncing blackberry with x1c."
-sync_dirs "$HOME/music" "$blackberry_path"
+sync_dirs "$music_path" "$blackberry_path"
