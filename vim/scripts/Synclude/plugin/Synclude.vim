@@ -24,7 +24,7 @@ func! s:SyncludePopulateMatches()
 	endfor
 endfunc
 
-func! SyncludeIncludeMatch(arg_string)
+func! s:SyncludeIncludeMatch(arg_string)
 	" Import a syntax match, and apply highlighting.
 	"
 	" Args:
@@ -33,15 +33,29 @@ func! SyncludeIncludeMatch(arg_string)
 
 	let args = split(a:arg_string)
 	if has_key(g:synclude_matches, l:args[0])
-		let full_match_name = printf("_%s_%s", &ft, args[0])
-		exe printf(
-				\"syn match %s %s", l:full_match_name,
-				\g:synclude_matches[l:args[0]])
+		let full_match_name = printf(
+				\"_%s_%s", substitute(&ft, '\V.', "_", "g"), l:args[0])
 
+		let syntax_args = []
 		if 1 < len(l:args)
-			exe printf("norm! :hi %s %s\<cr>", l:full_match_name,
-					\join(l:args[1:]))
+			let highlight_args = []
+
+			for arg in l:args[1:]
+				call add(
+						\(l:arg =~ '\v^cterm([fb]g)=')?(l:highlight_args):
+						\(l:syntax_args), l:arg)
+			endfor
+
+			if 0 < len(l:highlight_args)
+				exe printf("norm! :hi %s %s\<cr>", l:full_match_name,
+						\join(l:highlight_args))
+			endif
 		endif
+
+		exe printf(
+				\"syn match %s %s %s", l:full_match_name,
+				\g:synclude_matches[l:args[0]], join(l:syntax_args))
+
 	else
 		echom printf(
 				\"Synclude: syntax group '%s' not found in '%s'.", l:args[0],
@@ -49,8 +63,22 @@ func! SyncludeIncludeMatch(arg_string)
 	endif
 endfunc
 
+func! s:SyncludeCommandCompletion(argLead, cmdLine, cursorPos)
+	" Completion function for the `Synclude` command.
+	"
+	" Args:
+	"   argLead, cmdLine, cursorPos : see `:h :command-completion-custom`.
+	"
+	" Return:
+	"   (str) All syntax group names as loaded from `g:synclude_matches_file`,
+	"   seperated by newlines.
+
+	return join(keys(g:synclude_matches), "\n")
+endfunc
+
 " See `SyncludeIncludeMatch()`.
-com! -nargs=* Synclude call SyncludeIncludeMatch("<args>")
+com! -complete=custom,<SID>SyncludeCommandCompletion -nargs=*
+		\ Synclude call <SID>SyncludeIncludeMatch("<args>")
 
 " Open the matches file for editing.
 com! SyncludeEdit exe printf("norm! :vsp %s\<cr>", g:synclude_matches_file)
