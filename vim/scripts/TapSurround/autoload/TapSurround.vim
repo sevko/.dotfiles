@@ -10,7 +10,7 @@ func! TapSurround#NormalInsertElementPair(open_delim, close_delim)
 
 	let l:original_cur_col = col(".")
 
-	if getline(".")[col(".") - 1] !~ '\w' || len(expand("<cword>")) == 1
+	if getline(".")[col(".") - 1] !~ '\k' || len(expand("<cword>")) == 1
 		exe printf("norm! i%s\<esc>la%s", a:open_delim, a:close_delim)
 	else
 		if col(".") == 1 || getline(".")[col(".") - 2] =~ '\W'
@@ -133,10 +133,12 @@ func! TapSurround#VisualInsertElementPair(open_delim, close_delim)
 	" Args:
 	"   See s:NormalInsertElementPair().
 
-	call cursor(line("."), col("'<"))
+	let close_offset = (line("'<") == line("'>"))?len(a:open_delim):0
+
+	call cursor(line("'<"), col("'<"))
 	exe "norm! i" . a:open_delim
-	call cursor(line("."), col("'>") + len(a:open_delim))
+	call cursor(line("'>"), col("'>") + l:close_offset)
 	exe "norm! a" . a:close_delim
 
-	call cursor(line("."), col("'<") + len(a:open_delim))
+	call cursor(line("."), col("'<") + l:close_offset)
 endfunc
