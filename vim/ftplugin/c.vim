@@ -21,8 +21,6 @@ hi _cAddressOperator ctermfg=5
 hi _cGlobal ctermfg=1
 hi _cStruct ctermfg=6
 hi _cFunction ctermfg=4
-hi _cDoxygenDirective cterm=bold ctermfg=10
-hi _cDoxygenReference cterm=bold ctermfg=10
 
 com! -nargs=1 OpenTwinFile :exe printf("norm! :%s %s.%s\<cr>", <args>,
 	\expand("%:p:r"), (expand("%:e") == "c")?"h":"c")
@@ -31,7 +29,7 @@ nnorem <buffer> <leader>ov :OpenTwinFile "vsplit"<cr>
 nnorem <buffer> <leader>os :OpenTwinFile "split"<cr>
 nnorem <buffer> <leader>gc :call <SID>GetFunctionHeaders()<cr>
 
-func! s:PrintTemplate()
+func! PrintTemplate()
 	" Echo my preferred order of declarations and definitions.
 
 	echo join(["#include lib", "#include system", "#include local", "",
