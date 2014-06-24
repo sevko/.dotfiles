@@ -1,0 +1,72 @@
+#! /bin/bash
+
+# Description:
+#   Create a Vim plugin's directory structure:
+#
+#       PLUGIN_NAME/
+#           plugin/
+#               PLUGIN_NAME.vim
+#           autoload/
+#               PLUGIN_NAME.vim
+#
+#           [the following are optional]
+#           ftdetect/
+#               PLUGIN_NAME.vim
+#           ftplugin/
+#           doc/
+#               PLUGIN_NAME.txt
+#
+# Use:
+#   init_vim_plugin PLUGIN_NAME
+#
+#   Args:
+#       PLUGIN_NAME (str): the name of the plugin.
+
+confirm_directory_creation(){
+	# Ask for confirmation before creating a directory and optional file inside
+	# it.
+	#
+	# Args:
+	#   $1 (str): The name of the directory.
+	#   $2 (str): The name of the file to create inside it. If empty, the file
+	#       is omitted.
+
+	read -p "Add \`$1/\`? [y/n] " -n 1 -r
+	echo
+
+	if [[ "$REPLY" =~ ^[Yy]$ ]]; then
+		mkdir "$1"
+		touch "$1/$2"
+	fi
+}
+
+create_plugin_directories(){
+	# Create the plugin's directory structure (see file-header comment for
+	# details).
+	#
+	# Args:
+	#   $1 (str): The plugin name.
+
+	mkdir $1
+	cd $1
+
+	touch README.md
+
+	mkdir plugin
+	touch "plugin/${1}.vim"
+
+	mkdir autoload
+	touch "autoload/${1}.vim"
+
+	confirm_directory_creation ftplugin
+	confirm_directory_creation ftdetect "${1}.vim"
+	confirm_directory_creation doc
+}
+
+main(){
+	echo "Begin initializing "$1"."
+	create_plugin_directories $1
+	echo "Initialization complete."
+}
+
+main $1
