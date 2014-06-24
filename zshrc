@@ -44,7 +44,7 @@
 	stty intr \^x
 	bindkey -v "^r" history-incremental-search-backward
 
-#aliases
+# aliases
 	alias bpy=bpython
 	alias ccat="pygmentize -O style=monokai -f terminal -g"
 	alias clip="xclip -select clipboard"
@@ -57,17 +57,19 @@
 		--num-callers=20 --track-fds=yes --track-origins=yes"
 	alias nyan="nc -v nyancat.dakko.us 23"
 	alias py=python
+	alias pylint="pylint --indent-string=''"
 	alias scan="command hp-scan --area=0,0,216,279"
 	alias sasw="sass --watch"
 	alias so=source
 	alias soz="source ~/.zshrc"
-	alias sudo="nocorrect sudo "
+	alias sudo="nocorrect sudo"
 	alias t="command tmux"
 	alias tmux="TERM=screen-256color-bce tmux"
 	alias v="vim -p"
 
 	# apt-get
-		alias agi="sudo apt-get install"
+		alias agi="sudo apt-get -y --force-yes install"
+		alias agu="sudo apt-get update"
 		alias agr="sudo apt-get remove"
 		alias agrp="sudo apt-get remove --purge"
 		alias acs="sudo apt-cache search"
@@ -92,13 +94,13 @@
 		alias gbd="git branch -d"
 		alias gbm="git branch --merged"
 		alias gbnm="git branch --no-merged"
-		alias gc="git commit --verbose"
+		alias gc="git commit --verbose && (git push || gpub)"
 		alias gcl="git clone"
 		alias gco="git checkout"
 		alias gcob="git checkout -b"
 		alias gd="git diff"
 		alias gf="git fetch"
-		alias gi="git init"
+		alias gi="git init && lolcommits --enable --stealth"
 		alias gm="git merge --no-ff"
 		alias gp="git pull"
 		alias gpu="git push"

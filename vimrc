@@ -37,7 +37,8 @@
 
 	set runtimepath+=~/.dotfiles/vim/
 	set timeoutlen=280
-	set colorcolumn=81
+	set colorcolumn=80
+	set textwidth=79
 	set scrolloff=25
 	set noshowmatch
 	set wildmenu wildmode=longest,list,full
@@ -166,7 +167,7 @@
 
 		au bufnewfile * silent! call LoadTemplate()
 		au BufRead,BufNewFile *.json set filetype=javascript.json
-		au BufRead,BufNewFile *.tmp set filetype=template
+		au BufRead,BufNewFile *.tmp exe "set ft=template." . expand("%:t:r")
 		au BufRead,BufNewFile *.mdl set filetype=mdl
 		au BufRead,BufRead *.supp set filetype=supp
 		au BufRead *.val set filetype=valgrind
@@ -195,6 +196,7 @@
 		nnorem <leader>ev :tabf $MYVIMRC<cr>
 		nnorem <leader>ef :call OpenFtpluginFile()<cr>
 		nnorem <leader>eu :call OpenUltiSnipsFile()<cr>
+		nnorem <leader>et :call OpenTemplateFile()<cr>
 
 		no <leader>ss :call SynStack()<cr>
 		nnorem <leader>w <esc>:w<cr>
@@ -337,6 +339,14 @@
 		for filetype in split(&ft, '\V.')
 			exe printf(
 					\"norm! :tabe $HOME/.dotfiles/vim/ftplugin/%s.vim\<cr>",
+					\l:filetype)
+		endfor
+	endfunc
+
+	func! OpenTemplateFile()
+		for filetype in split(&ft, '\V.')
+			exe printf(
+					\"norm! :tabe $HOME/.dotfiles/vim/templates/%s.tmp\<cr>",
 					\l:filetype)
 		endfor
 	endfunc
@@ -580,7 +590,7 @@
 
 		setl stl+=%3*%{b:gitBranchName} " branch name
 
-        " modified (note unicode space)
+		" modified (note unicode space)
 		setl stl+=%4*%{&modified?' +\ ':''}
 		setl stl+=%5*%= " right justify
 		setl stl+=%6*\ %{strlen(&ft)?&ft:'none'}\  " filetype
