@@ -159,13 +159,13 @@
 		au InsertEnter * set timeoutlen=140
 		au InsertLeave * set timeoutlen=280
 		au InsertLeave * hi _extraWhitespace ctermbg=88
-		au InsertLeave,WinEnter * silent! exe "norm! " . (&nu?":set rnu\<cr>":"")
+		au InsertLeave,WinEnter * silent! exe &nu?"set rnu":""
 
 		au FileType modula2 set filetype=markdown
 		au FileType html set filetype=htmldjango.html
 		au FileType cpp set filetype=c
 
-		au bufnewfile * silent! call LoadTemplate()
+		au bufnewfile * silent! call s:LoadTemplate()
 		au BufRead,BufNewFile *.json set filetype=javascript.json
 		au BufRead,BufNewFile *.tmp exe "set ft=template." .
 				\split(expand("%:t:r"), "_")[0]
@@ -513,21 +513,50 @@
 		return -1
 	endfunc
 
-	func! LoadTemplate()
-		func! LoadFiletypeTemplate(filetype)
+	func! s:LoadTemplate()
+		" Load a template for a new file.
+		"
+		" Read a template for a new file, if one exists, and perform flag
+		" substitution. Accounts for dotted filetypes (prioritizing templates
+		" by order of filetype).
+
+		func! s:ReadFiletypeTemplate(filetype)
+			" If a template for the current file exists, read it into the
+			" buffer.
+			"
+			" Template filenames can take the following format, in order of
+			" descending priority.
+			"
+			"   1. "%s_%s" % (filetype, file-extension)
+			"   2. "%s" % (filetype)
+			"
+			" Args:
+			"   filetype (str): The filetype to load a template for.
+			"
+			" Returns:
+			"   int: 1 if a file was found; 0 otherwise.
+
 			let templatesDir = "~/.dotfiles/vim/templates"
-			let templatePath = glob(printf("%s/%s_%s.tmp", l:templatesDir, a:filetype, expand("%:e")))
+			let templatePath = glob(printf(
+					\"%s/%s_%s.tmp", l:templatesDir, a:filetype,
+					\expand("%:e")))
 
 			if empty(l:templatePath)
-				let templatePath = glob(printf("%s/%s.tmp", l:templatesDir, a:filetype))
+				let templatePath = glob(printf(
+						\"%s/%s.tmp", l:templatesDir, a:filetype))
 				if empty(l:templatePath)
-					echo "None"
 					return 0
 				endif
 			endif
 
 			exe printf("read %s", l:templatePath)
 			0d
+
+			return 1
+		endfunc
+
+		func! s:SubstituteTemplateFlags()
+			" Perform flag substitution after a template file has been loaded.
 
 			let template_flags = {
 				\"__FILEBASE__" : expand("%:r")
@@ -537,13 +566,13 @@
 				exe printf("%%s/%s/%s/g", l:flag, l:template_flags[l:flag])
 			endfor
 
-			return 1
+			exe "norm! /__START__\<cr>9x"
+			startinsert!
 		endfunc
 
 		for filetype in split(&ft, '\V.')
-			if LoadFiletypeTemplate(l:filetype)
-				exe "norm! /__START__\<cr>9x"
-				startinsert!
+			if s:ReadFiletypeTemplate(l:filetype)
+				call s:SubstituteTemplateFlags()
 				return
 			endif
 		endfor
