@@ -167,7 +167,8 @@
 
 		au bufnewfile * silent! call LoadTemplate()
 		au BufRead,BufNewFile *.json set filetype=javascript.json
-		au BufRead,BufNewFile *.tmp exe "set ft=template." . expand("%:t:r")
+		au BufRead,BufNewFile *.tmp exe "set ft=template." .
+				\split(expand("%:t:r"), "_")[0]
 		au BufRead,BufNewFile *.mdl set filetype=mdl
 		au BufRead,BufRead *.supp set filetype=supp
 		au BufRead *.val set filetype=valgrind
@@ -513,35 +514,39 @@
 	endfunc
 
 	func! LoadTemplate()
-		" Load a filetype-specific template and perform any necessary template
-		" flag substitutions.
+		func! LoadFiletypeTemplate(filetype)
+			let templatesDir = "~/.dotfiles/vim/templates"
+			let templatePath = glob(printf("%s/%s_%s.tmp", l:templatesDir, a:filetype, expand("%:e")))
 
-		let templatesDir = glob("~/.dotfiles/vim/templates")
-		let templateFileName = printf("%s/%s.tmp", l:templatesDir, &ft)
-		let altTemplateFileName = printf(
-			"%s/%s_%s.tmp", l:templatesDir, &ft, expand("%:e"))
+			if empty(l:templatePath)
+				let templatePath = glob(printf("%s/%s.tmp", l:templatesDir, a:filetype))
+				if empty(l:templatePath)
+					echo "None"
+					return 0
+				endif
+			endif
 
-		if filereadable(l:templateFileName)
-			exe printf(":read %s", l:templateFileName)
-		elseif filereadable(l:altTemplateFileName)
-			exe printf(":read %s", l:altTemplateFileName)
-		else
-			return
-		endif
+			exe printf("read %s", l:templatePath)
+			0d
 
-		let templateFlags = {
-			\"fileBaseName" : "__FILEBASE__",
-			\"cursorStart" : "__START__"
-		\}
+			let template_flags = {
+				\"__FILEBASE__" : expand("%:r")
+			\}
 
-		if search(templateFlags["fileBaseName"]) > 0
-			exe "norm! :%s/" . templateFlags["fileBaseName"] .
-				\ "/" . expand("%:t:r") . "/g\<cr>"
-		endif
+			for flag in keys(l:template_flags)
+				exe printf("%%s/%s/%s/g", l:flag, l:template_flags[l:flag])
+			endfor
 
-		exe "norm! ggdd"
-		silent! exe "norm! /__START__\<cr>de"
-		startinsert!
+			return 1
+		endfunc
+
+		for filetype in split(&ft, '\V.')
+			if LoadFiletypeTemplate(l:filetype)
+				exe "norm! /__START__\<cr>9x"
+				startinsert!
+				return
+			endif
+		endfor
 	endfunc
 
 	func! EatSpace()
