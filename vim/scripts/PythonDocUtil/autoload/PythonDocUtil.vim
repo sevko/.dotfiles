@@ -32,7 +32,15 @@ func! PythonDocUtil#GenerateDocstring()
 endfunc
 
 func! s:InsertFunctionComment()
+	" Insert a function docstring.
+	"
+	" The docstring may contain the following specifiers: `Returns:`,
+	" `Yields:`, `Args:`, and `Raises:`.
+
 	func! s:DocumentArguments()
+		" Returns:
+		"   (str) A documentation section for the function's arguments.
+
 		let args = split(
 				\s:CaptureOutputInRegister("^/(\<cr>\"ay/)\<cr>")[1:], ", ")
 
@@ -45,6 +53,13 @@ func! s:InsertFunctionComment()
 	endfunc
 
 	func! s:DocumentReturnOrYieldValue(func_def)
+		" Args:
+		"   func_def (str): The function body, or definition.
+		"
+		" Returns:
+		"   (str) A documentation section for the function's `return`/`yield`
+		"   statements, if any.
+
 		let match = matchstr(a:func_def, '\v(\n\s*)@<=(return|yield) @=')
 		echom l:match
 		if !empty(l:match)
@@ -55,6 +70,13 @@ func! s:InsertFunctionComment()
 	endfunc
 
 	func! s:DocumentExceptions(func_def)
+		" Args:
+		"   func_def (str): The function body, or definition.
+		"
+		" Returns:
+		"   (str) A documentation section for the function's `raise`
+		"   statements.
+
 		let matches = []
 		for line in split(a:func_def, "\n")
 			let match = matchstr(l:line, '\v(^\s*raise )@<=\w+')
@@ -93,11 +115,17 @@ func! s:InsertModuleComment()
 endfunc
 
 func! s:GetPythonBlock()
+	" Returns:
+	"   (str) The Python block following the current line (indented an
+	"   additional level).
+
 	return s:CaptureOutputInRegister(printf(
 			\"\"ay/\\v^\t{,%d}\\S|%%$\<cr>", s:GetCurrentIndentLevel()))
 endfunc
 
 func! s:CaptureOutputInRegister(command_string)
+	" Wrapper for register-based value retrieval.
+	"
 	" Execute a vim command using the `a` register to store data, and return
 	" the register's contents; then, reset the register's value to whatever it
 	" was originally.
@@ -113,10 +141,20 @@ func! s:CaptureOutputInRegister(command_string)
 endfunc
 
 func! s:GetCurrentIndentLevel()
+	" Returns:
+	"   (int) The number of indents the line under the cursor contains.
+
 	return len(matchstr(getline("."), "^\t*"))
 endfunc
 
 func! s:InsertIndentedTextBelowCurrentLine(indent_level, text)
+	" Inserts text underneath the current line, with all formatting preserved
+	" and each line indented.
+	"
+	" Args:
+	"   indent_level (int): the number of indents in the line under the cursor
+	"   text (str): Text to be inserted.
+
 	let indented_lines = []
 	let tab_str = repeat("\t", a:indent_level + 1)
 	for line in split(a:text, "\n")
