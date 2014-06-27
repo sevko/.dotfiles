@@ -1,3 +1,9 @@
+" A plugin that generates Python Google-style docstrings.
+"
+" `PythonDocUtil.vim` supports function, class, and module header docstring
+" generation, parsing definition blocks to identify whether documentation for,
+" say, return values or instance variables is necessary.
+
 func! PythonDocUtil#GenerateDocstring()
 	" Generate a Google-style Python docstring for the line under the cursor.
 	"
@@ -46,7 +52,8 @@ func! s:InsertFunctionComment()
 
 		if !empty(l:args)
 			call remove(l:args, "self")
-			return "\nArgs:\n" . join(map(l:args, '"\t" . v:val . " (): \n"'))
+			return "\nArgs:\n" . join(
+					\map(l:args, '"\t" . v:val . " (): \n"'), "")
 		else
 			return ""
 		endif
@@ -130,14 +137,16 @@ func! s:InsertClassComment()
 	let instance_vars = s:GetClassInstanceVariables()
 	if !empty(l:instance_vars)
 		let comment_string .= "Attributes:\n" . join(
-				\map(l:instance_vars, "'\t ' . v:val . ' (): \n'"))
+				\map(l:instance_vars, "'\t' . v:val . ' (): \n'"), "")
 	endif
 	call s:InsertIndentedTextBelowCurrentLine(
 			\s:GetCurrentIndentLevel(), l:comment_string . '"""')
 endfunc
 
 func! s:InsertModuleComment()
-	echom "Comment inserted."
+	" Insert a module header docstring.
+
+	exe "norm! O\"\"\"\<cr>\<cr>\"\"\""
 endfunc
 
 func! s:GetPythonBlock()
