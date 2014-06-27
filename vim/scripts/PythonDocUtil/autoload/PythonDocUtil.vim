@@ -103,11 +103,37 @@ func! s:InsertFunctionComment()
 	exe "norm! /):$\<cr>"
 	call s:InsertIndentedTextBelowCurrentLine(
 			\s:GetCurrentIndentLevel(), l:comment_string)
-	call s:GetPythonBlock()
 endfunc
 
 func! s:InsertClassComment()
-	echom "Comment inserted."
+	" Insert a class docstring comment.
+	"
+	" May contain an `Attributes` specifier.
+
+	func! s:GetClassInstanceVariables()
+		" Returns:
+		"   (list of str) All of the instance variables belonging to the class
+		"   contained in the following Python block.
+
+		let instance_vars = []
+		for snippet in split(s:GetPythonBlock(), '\Vself.')[1:]
+			let member = matchstr(l:snippet, '\v^\w+.')
+			if l:member[-1:] != "(" && l:member !~ "__.*__" &&
+					\index(l:instance_vars, l:member[:-2]) == -1
+				call add(l:instance_vars, l:member[:-2])
+			endif
+		endfor
+		return l:instance_vars
+	endfunc
+
+	let comment_string = '"""' . "\n\n"
+	let instance_vars = s:GetClassInstanceVariables()
+	if !empty(l:instance_vars)
+		let comment_string .= "Attributes:\n" . join(
+				\map(l:instance_vars, "'\t ' . v:val . ' (): \n'"))
+	endif
+	call s:InsertIndentedTextBelowCurrentLine(
+			\s:GetCurrentIndentLevel(), l:comment_string . '"""')
 endfunc
 
 func! s:InsertModuleComment()
