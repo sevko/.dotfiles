@@ -15,9 +15,6 @@
 [push]
 	default = simple
 
-[commit]
-	template = /home/sevko/.dotfiles/git/gitcommit.tmp
-
 [color]
 	ui = auto
 
