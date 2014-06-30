@@ -1,5 +1,7 @@
 setl iskeyword+=@-@,$,#,.,-
 
+syn match Comment "\/\/.*$" containedin=ALL
+
 hi cssURL ctermfg=1
 hi sassClass ctermfg=14
 
