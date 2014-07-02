@@ -82,10 +82,10 @@ def link_files():
 
 	Create symlinks between existing files and directories, scattered across a
 	given filesystem, with their counterparts in `.dotfiles/`. The paths of
-	files to be linked are specified in `setup.json`.
+	files to be linked are specified in `res/setup.json`.
 	"""
 
-	JSON_SETUP_FILE = "setup.json"
+	JSON_SETUP_FILE = "res/setup.json"
 
 	print Shell.HEADER % "Creating dotfile symlinks."
 
