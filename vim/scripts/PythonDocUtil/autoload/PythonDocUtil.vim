@@ -50,8 +50,11 @@ func! s:InsertFunctionComment()
 		let args = split(
 				\s:CaptureOutputInRegister("^/(\<cr>\"ay/)\<cr>")[1:], ", ")
 
-		if !empty(l:args)
+		if -1 < index(l:args, "self")
 			call remove(l:args, "self")
+		endif
+
+		if !empty(l:args)
 			return "\nArgs:\n" . join(
 					\map(l:args, '"\t" . v:val . " (): \n"'), "")
 		else

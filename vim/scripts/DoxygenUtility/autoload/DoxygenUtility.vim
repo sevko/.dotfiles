@@ -81,7 +81,7 @@ func! s:InsertFunctionComment()
 		endfor
 	endif
 
-	if substitute(declaration, "^static ", "", "g") !~ '^void\s*[^*]'
+	if substitute(declaration, "^static ", "", "g") !~ '^void\s\+[^*]'
 		let doxygen_comment .= " *\n * @return \n"
 	endif
 
