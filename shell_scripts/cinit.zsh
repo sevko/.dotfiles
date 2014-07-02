@@ -37,8 +37,12 @@ create_source_files(){
 confirm_git_initialization(){
 	# Initialize git in the project, with the user's permission.
 
-	read -p "Init git? [y/n] " -n 1 -r
-	echo
+	while true; do
+		read -p "Init git? [y/n] " -n 1 -r
+		echo
+		[[ "$REPLY" =~ ^[YyNn]$ ]] && break
+		echo "Please enter 'y' or 'n'."
+	done
 
 	if [[ "$REPLY" =~ ^[Yy]$ ]]; then
 		git init > /dev/null

@@ -1,18 +1,23 @@
 PROJECT_NAME = __PROJECTNAME__
 FLAGS = -Wall -Wextra -I ./
-CC = gcc $(FLAGS)
+C_COMPILER = gcc $(FLAGS)
+CC = @echo "\tcc $@" && $(C_COMPILER)
 
 SRC = $(wildcard src/*.c)
-OBJ = $(patsubst %.c, bin/%.o, $(foreach srcFile, $(SRC), $(notdir $(srcFile))))
+OBJ = $(patsubst %.c, bin/%.o, $(foreach file, $(SRC), $(notdir $(file))))
 
-.PHONY: all run clean
+.PHONY: all debug run clean
 
-all: bin bin/$(PROJECT_NAME)
+all: FLAGS += -Ofast
+all: bin $(PROJECT_NAME)
+
+debug: FLAGS += -O0 -g3
+debug: bin $(PROJECT_NAME)
 
 run: all
-	bin/$(PROJECT_NAME)
+	./$(PROJECT_NAME)
 
-bin/$(PROJECT_NAME): $(OBJ)
+$(PROJECT_NAME): $(OBJ)
 	$(CC) -o $@ $^
 
 bin/%.o: src/%.c

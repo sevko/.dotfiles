@@ -31,8 +31,13 @@ confirm_directory_creation(){
 	#   $2 (str): The name of the file to create inside it. If empty, the file
 	#       is omitted.
 
-	read -p "Add \`$1/\`? [y/n] " -n 1 -r
-	echo
+	while true; do
+		read -p "Add \`$1/\`? [y/n] " -n 1 -r
+		echo
+		[[ "$REPLY" =~ ^[YyNn]$ ]] && break
+		echo "Please enter 'y' or 'n'."
+	done
+
 
 	if [[ "$REPLY" =~ ^[Yy]$ ]]; then
 		mkdir "$1"
