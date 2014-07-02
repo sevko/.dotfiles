@@ -21,7 +21,7 @@
 create_makefile(){
 	# Create the project's `makefile`.
 
-	cp ~/.dotfiles/shell_scripts/_cinit/make.tmp makefile
+	cp ~/.dotfiles/res/_cinit/make.tmp makefile
 	sed -i "s/__PROJECTNAME__/$projectName/g" makefile
 }
 
@@ -30,7 +30,7 @@ create_source_files(){
 
 	mkdir src
 	touch src/$projectName.h
-	cp ~/.dotfiles/shell_scripts/_cinit/c.tmp src/$projectName.c
+	cp ~/.dotfiles/res/_cinit/c.tmp src/$projectName.c
 	sed -i "s/__PROJECTNAME__/$projectName/g" src/$projectName.c
 }
 
