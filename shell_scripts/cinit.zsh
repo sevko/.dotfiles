@@ -1,4 +1,4 @@
-#! /usr/bin/zsh
+#! /bin/bash
 
 #   Description:
 #       cinit.zsh initializes a C project named PROJECT_NAME, with my
@@ -18,17 +18,51 @@
 #
 #       PROJECT_NAME -- name of the project
 
-projectName=$1
+create_makefile(){
+	# Create the project's `makefile`.
 
-mkdir $projectName
-cd $projectName
+	cp ~/.dotfiles/shell_scripts/_cinit/make.tmp makefile
+	sed -i "s/__PROJECTNAME__/$projectName/g" makefile
+}
 
-# create src/, and write main source/header files
-mkdir src
-touch src/$projectName.h
-cp ~/.dotfiles/shell_scripts/_cinit/c.tmp src/$projectName.c
-sed -i "s/__PROJECTNAME__/$projectName/g" src/$projectName.c
+create_source_files(){
+	# Create the `src/` directory, and the project's main source files.
 
-# write makefile
-cp ~/.dotfiles/shell_scripts/_cinit/make.tmp makefile
-sed -i "s/__PROJECTNAME__/$projectName/g" makefile
+	mkdir src
+	touch src/$projectName.h
+	cp ~/.dotfiles/shell_scripts/_cinit/c.tmp src/$projectName.c
+	sed -i "s/__PROJECTNAME__/$projectName/g" src/$projectName.c
+}
+
+confirm_git_initialization(){
+	# Initialize git in the project, with the user's permission.
+
+	read -p "Init git? [y/n] " -n 1 -r
+	echo
+
+	if [[ "$REPLY" =~ ^[Yy]$ ]]; then
+		git init > /dev/null
+		echo "$projectName" > .gitignore
+		echo "#$projectName" > README.md
+	fi
+}
+
+create_project(){
+	# Initialize all of the project's directories and files.
+
+	mkdir $projectName
+	cd $projectName
+
+	create_makefile
+	create_source_files
+	confirm_git_initialization
+}
+
+main(){
+	echo "Begin initializing "$1"."
+	projectName=$1
+	create_project
+	echo "Initialization complete."
+}
+
+main $1
