@@ -346,9 +346,14 @@
 
 	func! OpenTemplateFile()
 		for filetype in split(&ft, '\V.')
-			exe printf(
-					\"norm! :tabe $HOME/.dotfiles/vim/templates/%s.tmp\<cr>",
-					\l:filetype)
+			let filepath = glob(
+				\printf("$HOME/.dotfiles/vim/templates/%s_%s.tmp", &ft,
+				\expand("%:e")))
+			if empty(l:filepath)
+				let filepath = glob(
+					\printf("$HOME/.dotfiles/vim/templates/%s.tmp", &ft))
+			endif
+			exe printf("norm! :tabe %s\<cr>", l:filepath)
 		endfor
 	endfunc
 
