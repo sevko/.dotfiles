@@ -16,4 +16,16 @@ hi _gitcommitUncapitalized ctermfg=160
 hi _gitcommitBullet cterm=bold ctermfg=9
 hi _gitcommitInlineCode ctermfg=2
 
+func! s:InsertStagedPaths()
+	" Insert the paths of all files staged in `git`, beginning on the second
+	" line of the open buffer.
+
+	exe "norm! 0ggo\<cr>" . system("git diff --name-only --cached")
+endfunc
+
+if !exists("g:gitcommit_ftplugin_sourced")
+	let g:gitcommit_ftplugin_sourced = 1
+	call s:InsertStagedPaths()
+endif
+
 so ~/.vimrc_after

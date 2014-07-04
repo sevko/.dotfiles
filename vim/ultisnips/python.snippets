@@ -8,7 +8,7 @@ if $1 else $2
 endsnippet
 
 snippet for "" b
-for $1 in ${2:range(${3:len($4)})}:
+for $1 in ${2:xrange(${3:len($4)})}:
 	${5:pass}
 endsnippet
 
@@ -47,6 +47,10 @@ endsnippet
 
 snippet from
 from $1 import $2
+endsnippet
+
+snippet im "" b
+import 
 endsnippet
 
 snippet main
