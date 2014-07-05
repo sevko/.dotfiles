@@ -48,7 +48,7 @@ func! s:InsertFunctionComment()
 		"   (str) A documentation section for the function's arguments.
 
 		let args = split(
-				\s:CaptureOutputInRegister("^/(\<cr>\"ay/)\<cr>")[1:], ", ")
+				\s:CaptureOutputInRegister("^/(\<cr>y/)\<cr>")[1:], ", ")
 
 		if -1 < index(l:args, "self")
 			call remove(l:args, "self")
@@ -158,23 +158,23 @@ func! s:GetPythonBlock()
 	"   additional level).
 
 	return s:CaptureOutputInRegister(printf(
-			\"\"ay/\\v^\t{,%d}\\S|%%$\<cr>", s:GetCurrentIndentLevel()))
+			\"y/\\v^\t{,%d}\\S|%%$\<cr>", s:GetCurrentIndentLevel()))
 endfunc
 
 func! s:CaptureOutputInRegister(command_string)
 	" Wrapper for register-based value retrieval.
 	"
-	" Execute a vim command using the `a` register to store data, and return
-	" the register's contents; then, reset the register's value to whatever it
-	" was originally.
+	" Execute a vim command using the anonymous register to store data, and
+	" return the register's contents; then, reset the register's value to
+	" whatever it was originally.
 	"
 	" Args:
 	"   command_string : (str) The command to execute.
 
-	let currRegisterValue = @a
+	let currRegisterValue = @"
 	silent! exe "norm! " . a:command_string
-	let output = @a
-	let @a = l:currRegisterValue
+	let output = @"
+	let @" = l:currRegisterValue
 	return l:output
 endfunc
 

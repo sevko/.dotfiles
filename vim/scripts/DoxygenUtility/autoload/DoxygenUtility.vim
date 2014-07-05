@@ -30,7 +30,7 @@ func! s:IsOnFunction()
 	" Return a 1 if the user's cursor is on a line containing a function
 	" declaration; otherwise, return 0.
 
-	let declaration = s:CaptureOutputInRegister("0\"ay/;\<cr>") . ";"
+	let declaration = s:CaptureOutputInRegister("0y/;\<cr>") . ";"
 	return declaration =~ "^[^\\t\\n]*(\\([^)]*\\n\\?\\)*);"
 endfunc
 
@@ -69,7 +69,7 @@ func! s:InsertFunctionComment()
 
 	let doxygen_comment = "/*\n * @brief \n"
 
-	let declaration = s:CaptureOutputInRegister("0\"ay/;\<cr>")
+	let declaration = s:CaptureOutputInRegister("0y/;\<cr>")
 	let arg_string = matchstr(declaration, '(\@<=.*\()$\)\@=')
 
 	if 0 < len(arg_string) && arg_string != "void"
@@ -93,7 +93,7 @@ func! s:InsertStructComment()
 
 	exe "norm! O//\<esc>/{\<cr>"
 	let num_struct_lines = len(
-		\ split(s:CaptureOutputInRegister("\"ay/}\<cr>"), "\n")) - 1
+		\ split(s:CaptureOutputInRegister("y/}\<cr>"), "\n")) - 1
 	exe "norm! :.,+" . num_struct_lines . "s/;$/; \\/\\/ \<cr>"
 endfunc
 
@@ -105,17 +105,17 @@ func! s:InsertFileHeaderComment()
 endfunc
 
 func! s:CaptureOutputInRegister(command_string)
-	" Execute a vim command using the `a` register to store data, and return
-	" the register's contents; then, reset the register's value to whatever it
-	" was originally.
+	" Execute a vim command using the anonymous register to store data, and
+	" return the register's contents; then, reset the register's value to
+	" whatever it was originally.
 	"
 	" Args:
 	"   command_string : (str) The command to execute.
 
-	let currRegisterValue = @a
+	let currRegisterValue = @"
 	silent! exec "norm! " . a:command_string
-	let output = @a
-	let @a = currRegisterValue
+	let output = @"
+	let @" = currRegisterValue
 	return output
 endfunc
 
