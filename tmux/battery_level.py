@@ -1,27 +1,38 @@
 #! /usr/bin/python
 
 """
-A script that prints the computer's current battery level.
+A script that prints the computer's current battery level and status.
 """
 
-def battery_level():
+def battery_info():
 	"""
-	Return the current battery level.
+	Returns information about the computer's battery.
 
 	Returns:
-		(int) The current battery level [0-100], as read from the relevant
-		system device diagnostic files.
+		(str) The current battery level, and a Unicode "energy" symbol if it's
+		charging.
 	"""
-	max_energy = curr_energy = -1
+	level = (int(file_contents("energy_now")) * 100 /
+		int(file_contents("energy_full")))
+	status = file_contents("status")
+	charge_symbol = u" \u26a1"
+
+	return "%d%%%s" % (level, charge_symbol if status == "Charging" else "")
+
+def file_contents(filename):
+	"""
+	Return the contents of a battery status file.
+
+	Args:
+		path : (str) The path to a file inside `battery_dir`.
+
+	Return:
+		(str) The file's contents, with any trailing newlines removed.
+	"""
+
 	battery_dir = "/sys/class/power_supply/BAT0/"
-
-	with open("%s/energy_full" % battery_dir) as obj:
-		max_energy = int(obj.read().rstrip("\n"))
-
-	with open("%s/energy_now" % battery_dir) as obj:
-		curr_energy = int(obj.read().rstrip("\n"))
-
-	return curr_energy * 100 / max_energy
+	with open("%s/%s" % (battery_dir, filename)) as obj:
+		return obj.read().rstrip("\n")
 
 if __name__ == "__main__":
-	print battery_level()
+	print battery_info()
