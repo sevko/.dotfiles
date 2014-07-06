@@ -31,3 +31,6 @@
 [submodule "vim/bundle/valgrind-suppression-syntax"]
 	path = vim/bundle/valgrind-suppression-syntax
 	url = https://github.com/vim-scripts/supp.vim.git
+[submodule "vim/bundle/tmux-syntax"]
+	path = vim/bundle/tmux-syntax
+	url = https://github.com/Keithbsmiley/tmux.vim
