@@ -1,6 +1,7 @@
 {
 	"_comment" : "The names of files to create symbolic links between.",
 	"regular_files" : [
+		"~/.psqlrc",
 		"~/.bashrc",
 		"~/.gitconfig",
 		"~/.tmux.conf",
