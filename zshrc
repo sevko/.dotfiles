@@ -8,6 +8,7 @@
 
 		zstyle ":completion:*" menu select=2
 		zstyle ":completion:*:processes-names" command "ps -e -o comm="
+		zstyle ":completion:*:*:vim:*:*files" ignored-patterns "*.(o|pyc)"
 
 	zmodload zsh/zle
 	DOT=$HOME/.dotfiles/zsh/
@@ -57,13 +58,15 @@
 		--num-callers=20 --track-fds=yes --track-origins=yes"
 	alias nyan="nc -v nyancat.dakko.us 23"
 	alias py=python
-	alias pylint="pylint --indent-string=''"
-	alias scan="command hp-scan --area=0,0,216,279"
+	alias pylint="pylint --reports=n --indent-string='\t'\
+		--output-format=colorized"
+	alias scan="command hp-scan --area=0,0,216,279 -mode=color"
 	alias sasw="sass --watch"
 	alias so=source
 	alias soz="source ~/.zshrc"
-	alias sudo="nocorrect sudo"
+	alias sudo="nocorrect sudo "
 	alias t="command tmux"
+	alias tar="command tar -xzvf"
 	alias tmux="TERM=screen-256color-bce tmux"
 	alias v="vim -p"
 
@@ -94,13 +97,13 @@
 		alias gbd="git branch -d"
 		alias gbm="git branch --merged"
 		alias gbnm="git branch --no-merged"
-		alias gc="git commit --verbose && (git push || gpub)"
+		alias gc="git commit --verbose"
 		alias gcl="git clone"
 		alias gco="git checkout"
 		alias gcob="git checkout -b"
 		alias gd="git diff"
 		alias gf="git fetch"
-		alias gi="git init && lolcommits --enable --stealth"
+		alias gi="git init"
 		alias gm="git merge --no-ff"
 		alias gp="git pull"
 		alias gpu="git push"
@@ -223,6 +226,7 @@
 
 		compctl -K _gdsu_compl gdsu
 		compctl -K _gbda_compl gbda
+		compctl -K _eject_compl eject
 
 		_gdsu_compl(){
 			# Git submodule name completion for `gdsu()`.
@@ -236,6 +240,12 @@
 			# Git-branch name completion for `gbda()`.
 
 			reply=("${(f)$(git branch --no-color | tr -d "^*|  ")}")
+		}
+
+		_eject_compl(){
+			# "/media/$USER" sub-directory name completion for `eject`.
+			ejectable_devices="$(ls /media/$USER)"
+			reply="${(f)${ejectable_devices}}"
 		}
 
 # The following lines were added by zsh-newuser-install

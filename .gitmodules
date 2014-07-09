@@ -34,3 +34,6 @@
 [submodule "vim/bundle/tmux-syntax"]
 	path = vim/bundle/tmux-syntax
 	url = https://github.com/Keithbsmiley/tmux.vim
+[submodule "vim/bundle/pgsql-vim"]
+	path = vim/bundle/pgsql-vim
+	url = https://github.com/exu/pgsql.vim
