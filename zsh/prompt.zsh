@@ -1,31 +1,43 @@
 # dictionary of special font escape codes
 typeset -Ag font
 font=(
-	reset		"%{[00m%}"
-	bold		"%{[01m%}" no-bold		"%{[22m%}"
-	italic		"%{[03m%}" no-italic		"%{[23m%}"
-	underline	"%{[04m%}" no-underline	"%{[24m%}"
-	blink		"%{[05m%}" no-blink		"%{[25m%}"
-	reverse		"%{[07m%}" no-reverse		"%{[27m%}"
+	reset "%{[00m%}"
+	bold "%{[01m%}"
+	no-bold "%{[22m%}"
+	italic "%{[03m%}"
+	no-italic "%{[23m%}"
+	underline "%{[04m%}"
+	no-underline "%{[24m%}"
+	blink "%{[05m%}"
+	no-blink "%{[25m%}"
+	reverse "%{[07m%}"
+	no-reverse "%{[27m%}"
 )
 
-# return foreground color escape code, where color value is the first argument
 fg(){
+	# Return foreground color escape code, where color value is the first
+	# argument.
+
 	echo "%{[38;5;$1m%}"
 }
 
-# return background color escape code, where color value is the first argument
 bg(){
+	# Return background color escape code, where color value is the first
+	# argument.
+
 	echo "%{[48;5;$1m%}"
 }
 
-# indicate whether current directory is inside a git archive
 inside_git_archive(){
+	# Indicate whether current directory is inside a git archive.
+
 	[ -d .git ] || git rev-parse --is-inside-work-tree > /dev/null 2>&1
 }
 
-# if inside git archive, return current branch name and indicate whether dirty
 git_branch_status(){
+	# If inside git archive, return current branch name and indicate whether
+	# dirty.
+
 	if $(inside_git_archive)
 	then
 		branchName=$(git symbolic-ref --short HEAD 2> /dev/null \
@@ -36,8 +48,8 @@ git_branch_status(){
 	fi
 }
 
-# return formatted working directory path
 dir_path(){
+	# Return formatted working directory path.
 
 	# replace $HOME in $PWD with "~" character
 	if [[ "$PWD" =~ ^"$HOME"(/|$) ]]; then
@@ -60,8 +72,9 @@ dir_path(){
 	echo -n $workingDir
 }
 
-# indi cate username and hostname if controlled over ssh
 ssh_info(){
+	# Indicate username and hostname if controlled over ssh.
+
 	if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
 		echo "$(fg 2)$USERNAME$font[reset]$(fg 14)/$HOST "
 	fi
@@ -83,4 +96,4 @@ exit_status="%(?..$(fg 160)$font[bold] ✘ %?)"
 setopt PROMPT_SUBST
 PROMPT='$(ssh_info)$(dir_path)$prompt_head'
 
-PS2="  $font[bold]$(fg 1)%_$(fg 1)$font[reset] $(fg 2)→$font[reset] "
+PS2="  $font[bold]$(fg 1)%_$(fg 1)$font[reset] $(fg 2)→$font[reset]"
