@@ -1,5 +1,5 @@
 set noet softtabstop=0 ts=4 sw=4
-set iskeyword+=.,\
+set iskeyword+=\
 
 Synclude arithmetic_operator ctermfg=3
 Synclude bitwise_operator ctermfg=1
@@ -16,13 +16,13 @@ syn match pythonStrFormatting
 	\ contained containedin=pythonString,pythonRawString
 syn match _pythonImportedModule "\v((import|from) )@<=\S+"
 syn match _pythonMagic "__[a-zA-Z]\+__"
-syn match _pythonKeyword "self"
+syn keyword _pythonBuiltin self cls
 syn region Comment start=/"""/ end=/"""/
 
 hi _delimiter ctermfg=242
+hi _pythonBuiltin ctermfg=3
 hi _pythonImportedModule ctermfg=6
 hi _pythonDocstringBrief cterm=bold ctermfg=10
-hi _pythonKeyword ctermfg=3
 hi _pythonMagic ctermfg=9
 hi _pythonSphinxField cterm=bold ctermfg=10
 hi _pythonSphinxStandardDomain cterm=bold ctermfg=10

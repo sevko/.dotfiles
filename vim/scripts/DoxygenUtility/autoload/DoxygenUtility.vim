@@ -100,7 +100,7 @@ endfunc
 func! s:InsertFileHeaderComment()
 	" Insert a Doxygen comment for a file header.
 
-	let doxygen_comment = "/*\n * @file\n * @brief \n*/"
+	let doxygen_comment = "/*\n * @brief \n*/"
 	call s:InsertStringAboveCurrentLine(doxygen_comment)
 endfunc
 

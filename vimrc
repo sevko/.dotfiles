@@ -164,6 +164,7 @@
 		au FileType modula2 set filetype=markdown
 		au FileType html set filetype=htmldjango.html
 		au FileType cpp set filetype=c
+		au FileType sql set filetype=pgsql
 
 		au bufnewfile * silent! call s:LoadTemplate()
 		au BufRead,BufNewFile *.json set filetype=javascript.json
@@ -173,8 +174,9 @@
 		au BufRead,BufRead *.supp set filetype=supp
 		au BufRead *.val set filetype=valgrind
 		au BufRead gitconfig set filetype=gitconfig
+		au BufRead psqlrc set filetype=pgsql
+		au BufRead .psqlrc set filetype=pgsql
 		au BufReadPost ~/.vimrc exe "normal! zM"
-		au BufWritePost ~/.vimrc source ~/.vimrc
 	augroup END
 
 " commands
@@ -568,7 +570,9 @@
 			\}
 
 			for flag in keys(l:template_flags)
-				exe printf("%%s/%s/%s/g", l:flag, l:template_flags[l:flag])
+				exe printf(
+					\"%%s/%s/%s/g", l:flag,
+					\substitute(l:template_flags[l:flag], "/", '\\/', "g"))
 			endfor
 
 			exe "norm! /__START__\<cr>9x"

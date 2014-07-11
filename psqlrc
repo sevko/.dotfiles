@@ -4,3 +4,4 @@
 \set PROMPT1 '%n → '
 \set PROMPT1 '%001%[%033[1m%]%002%/ → %001%[%033[00m%]%002'
 \timing
+\unset QUIET
