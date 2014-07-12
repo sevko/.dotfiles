@@ -6,7 +6,6 @@ critical levels (high when charging, low when discharging).
 """
 
 import json
-import logging
 import os
 import pyglet
 import time
@@ -24,7 +23,6 @@ def battery_checker():
 	pyglet.resource.reindex()
 
 	prev_level = -1
-	logging.info("Battery-checker started.")
 	while True:
 		curr_level = battery_level()
 		if int(curr_level) != prev_level:
@@ -51,7 +49,6 @@ def warning(msg, level):
 	os.system(
 		"xmessage -default Acknowledge -button Acknowledge -center "
 		"'Battery %s' 'at %s%%'" % (msg, level))
-	logging.info("Message emitted. Battery: %-3s, Msg: %s", level, msg)
 
 def battery_level():
 	"""
@@ -79,17 +76,6 @@ def file_contents(path):
 	with open("%s%s" % (battery_dir, path)) as obj:
 		return obj.read().rstrip("\n")
 
-def configure_logging():
-	"""
-	Configure the `logging` module.
-	"""
-
-	logging.basicConfig(
-		filename=os.path.expanduser("~/.battery_warningd.log"),
-		format="%(asctime)s: %(process)d: %(message)s",
-		datefmt="%y.%m.%d %H.%M.%S",
-		level=logging.INFO)
-
 def load_config():
 	"""
 	Load the script's settings.
@@ -107,5 +93,4 @@ def load_config():
 
 if __name__ == "__main__":
 	load_config()
-	configure_logging()
 	battery_checker()
