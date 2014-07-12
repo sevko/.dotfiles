@@ -7,6 +7,7 @@ critical levels (high when charging, low when discharging).
 
 import logging
 import os
+import pyglet
 import time
 
 BATTERY_CHECK_INTERVAL = 5 # seconds between each poll
@@ -17,6 +18,9 @@ def battery_checker():
 	"""
 	Emits a warning whenever the computer's battery hits critical levels.
 	"""
+
+	pyglet.resource.path = [os.path.expanduser("~/.dotfiles/res")]
+	pyglet.resource.reindex()
 
 	prev_level = -1
 	logging.info("Battery-checker started.")
@@ -44,9 +48,7 @@ def warning(msg, level):
 
 	logging.info("Message emitted. Battery: %-3s, Msg: %s", level, msg)
 	os.system("notify-send -u critical 'Battery %s' 'at %s%%'" % (msg, level))
-	os.system(
-			"play %s/.dotfiles/res/battery_warning.wav" %
-			os.path.expanduser("~"))
+	pyglet.resource.media("battery_warning.wav").play()
 
 def battery_level():
 	"""
@@ -77,7 +79,7 @@ def file_contents(path):
 def configure_logging():
 	logging.basicConfig(
 		filename=os.path.expanduser("~/.battery_warningd.log"),
-		format="%(asctime)s %(message)s",
+		format="%(asctime)s: %(process)d: %(message)s",
 		datefmt="%y.%m.%d %H.%M.%S",
 		level=logging.INFO)
 

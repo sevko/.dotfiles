@@ -9,8 +9,10 @@
 #   * * * * * ~/.dotfiles/shell_scripts/battery_warning_init.sh
 
 init_battery_warningd(){
-	local processes=$(ps -ef)
-	if [[ $processes != *battery_warningd.py* ]]; then
+	local processes="$(ps -ef)"
+	local process_regex="python [^ ]*battery_warningd\.py"
+
+	if [[ ! "$processes" =~ $process_regex ]]; then
 		export DISPLAY=:0.0
 		export XAUTHORITY=~/.Xauthority
 		python ~/.dotfiles/shell_scripts/battery_warningd.py &
