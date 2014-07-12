@@ -1,4 +1,4 @@
-PROJECT_NAME = __PROJECTNAME__
+PROJECT_EXECUTABLE = __PROJECTNAME__
 FLAGS = -Wall -Wextra -I ./
 C_COMPILER = gcc $(FLAGS)
 CC = @echo "\tcc $@" && $(C_COMPILER)
@@ -9,15 +9,15 @@ OBJ = $(patsubst %.c, bin/%.o, $(foreach file, $(SRC), $(notdir $(file))))
 .PHONY: all debug run clean
 
 all: FLAGS += -Ofast
-all: bin $(PROJECT_NAME)
+all: bin $(PROJECT_EXECUTABLE)
 
 debug: FLAGS += -O0 -g3
-debug: bin $(PROJECT_NAME)
+debug: bin $(PROJECT_EXECUTABLE)
 
 run: all
-	./$(PROJECT_NAME)
+	./$(PROJECT_EXECUTABLE)
 
-$(PROJECT_NAME): $(OBJ)
+$(PROJECT_EXECUTABLE): $(OBJ)
 	$(CC) -o $@ $^
 
 bin/%.o: src/%.c
@@ -27,4 +27,4 @@ bin:
 	@mkdir bin
 
 clean:
-	@rm -rf bin
+	@rm -rf bin $(PROJECT_EXECUTABLE)
