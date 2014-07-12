@@ -1,0 +1,6 @@
+{
+	"_comment" : "Configuration file for the battery_warning script.",
+	"interval" : 5,
+	"lower_levels" : [5, 10, 15, 20],
+	"upper_levels" : [90, 95, 97]
+}
