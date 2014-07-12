@@ -5,37 +5,36 @@ A daemonized script that emits warnings whenever the computer's battery hits
 critical levels (high when charging, low when discharging).
 """
 
-import logging
+import json
 import os
 import pyglet
 import time
 
-BATTERY_CHECK_INTERVAL = 5 # seconds between each poll
-LOWER_LEVELS = [5, 10, 15, 20] # lower critical levels
-UPPER_LEVELS = [90, 95, 97] # higher critical levels
+config = {} # see `load_config()`
 
 def battery_checker():
 	"""
 	Emits a warning whenever the computer's battery hits critical levels.
 	"""
 
-	pyglet.resource.path = [os.path.expanduser("~/.dotfiles/res")]
+	pyglet.resource.path = [
+		os.path.expanduser("~/.dotfiles/res/battery_warning/")
+	]
 	pyglet.resource.reindex()
 
 	prev_level = -1
-	logging.info("Battery-checker started.")
 	while True:
 		curr_level = battery_level()
 		if int(curr_level) != prev_level:
 			if file_contents("status") == "Charging":
-				if curr_level in UPPER_LEVELS:
+				if curr_level in config["upper_levels"]:
 					warning("overcharging", curr_level)
-			elif curr_level in LOWER_LEVELS:
+			elif curr_level in config["lower_levels"]:
 				warning("low", curr_level)
 
 			prev_level = int(curr_level)
 
-		time.sleep(BATTERY_CHECK_INTERVAL)
+		time.sleep(config["interval"])
 
 def warning(msg, level):
 	"""
@@ -46,9 +45,10 @@ def warning(msg, level):
 		level : (int) The current battery level.
 	"""
 
-	logging.info("Message emitted. Battery: %-3s, Msg: %s", level, msg)
-	os.system("notify-send -u critical 'Battery %s' 'at %s%%'" % (msg, level))
-	pyglet.resource.media("battery_warning.wav").play()
+	pyglet.resource.media("warning.wav").play()
+	os.system(
+		"xmessage -default Acknowledge -button Acknowledge -center "
+		"'Battery %s' 'at %s%%'" % (msg, level))
 
 def battery_level():
 	"""
@@ -76,13 +76,21 @@ def file_contents(path):
 	with open("%s%s" % (battery_dir, path)) as obj:
 		return obj.read().rstrip("\n")
 
-def configure_logging():
-	logging.basicConfig(
-		filename=os.path.expanduser("~/.battery_warningd.log"),
-		format="%(asctime)s: %(process)d: %(message)s",
-		datefmt="%y.%m.%d %H.%M.%S",
-		level=logging.INFO)
+def load_config():
+	"""
+	Load the script's settings.
+
+	The script stores configurable setting values in a JSON file
+	(`res/battery_warning/config.json`)
+	"""
+
+	global config
+
+	json_config_file = os.path.expanduser(
+		"~/.dotfiles/res/battery_warning/config.json")
+	with open(json_config_file) as setup_file:
+		config = json.loads(setup_file.read())
 
 if __name__ == "__main__":
-	configure_logging()
+	load_config()
 	battery_checker()
