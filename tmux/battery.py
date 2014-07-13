@@ -12,10 +12,14 @@ def battery_info():
 		(str) The current battery level, and a Unicode "energy" symbol if it's
 		charging.
 	"""
-	level = (int(file_contents("energy_now")) * 100 /
-		int(file_contents("energy_full")))
-	status = file_contents("status")
-	charge_symbol = u" \u26a1"
+
+	try:
+		level = (int(file_contents("energy_now")) * 100 /
+			int(file_contents("energy_full")))
+		status = file_contents("status")
+	except:
+		return "N/A"
+	charge_symbol = u" \u26a1".encode("utf-8")
 
 	return "%d%%%s" % (level, charge_symbol if status == "Charging" else "")
 
