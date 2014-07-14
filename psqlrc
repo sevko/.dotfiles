@@ -1,7 +1,8 @@
 \set QUIET 1
-\pset border 2
-\pset null 'NULL'
+\set HISTSIZE 10000
 \set PROMPT1 '%n → '
 \set PROMPT1 '%001%[%033[1m%]%002%/ → %001%[%033[00m%]%002'
+\pset border 2
+\pset null 'NULL'
 \timing
 \unset QUIET
