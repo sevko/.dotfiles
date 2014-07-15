@@ -15,6 +15,7 @@ hi _gitcommitSubjectLine ctermfg=3
 hi _gitcommitUncapitalized ctermfg=160
 hi _gitcommitBullet cterm=bold ctermfg=9
 hi _gitcommitInlineCode ctermfg=2
+hi diffAdded ctermfg=2
 
 func! s:InsertStagedPaths()
 	" Insert the paths of all files staged in `git`, beginning on the second

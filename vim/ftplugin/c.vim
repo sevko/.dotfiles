@@ -22,7 +22,7 @@ hi _cGlobal ctermfg=1
 hi _cStruct ctermfg=6
 hi _cFunction ctermfg=4
 
-com! -nargs=1 OpenTwinFile :exe printf("norm! :%s %s.%s\<cr>", <args>,
+com! -nargs=1 OpenTwinFile :silent! exe printf("norm! :%s %s.%s\<cr>", <args>,
 	\expand("%:p:r"), (expand("%:e") == "c")?"h":"c")
 
 nnorem <buffer> <leader>ov :OpenTwinFile "vsplit"<cr>

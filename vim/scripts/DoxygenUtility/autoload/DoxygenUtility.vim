@@ -44,7 +44,7 @@ endfunc
 func! s:IsOnFileHeader()
 	" Return a 1 if the user's cursor is on a blank line at the top of a file.
 
-	return line(".") == 1 && len(getline(".")) == 0
+	return line(".") == 1
 endfunc
 
 func! s:InsertMacroComment()
@@ -81,7 +81,7 @@ func! s:InsertFunctionComment()
 		endfor
 	endif
 
-	if substitute(declaration, "^static ", "", "g") !~ '^void\s\+[^*]'
+	if substitute(declaration, '\v^(static )=(inline )=', "", "g") !~ '^void\s\+[^*]'
 		let doxygen_comment .= " *\n * @return \n"
 	endif
 
@@ -101,6 +101,9 @@ func! s:InsertFileHeaderComment()
 	" Insert a Doxygen comment for a file header.
 
 	let doxygen_comment = "/*\n * @brief \n*/"
+	if 0 < len(getline("."))
+		exe "norm! O"
+	endif
 	call s:InsertStringAboveCurrentLine(doxygen_comment)
 endfunc
 
