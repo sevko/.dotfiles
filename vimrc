@@ -47,6 +47,7 @@
 	set laststatus=2
 	set t_Co=256
 	set pumheight=10
+	set path-=/usr/include
 
 	set list lcs=tab:\·\ 
 
@@ -85,10 +86,24 @@
 	" NERDCommenter
 		let NERDSpaceDelims = 1
 		let g:NERDCustomDelimiters = {
-			\ 'c': { 'left': '//', 'right': '',
-				\ 'leftAlt': '/*','rightAlt': '*/' },
-			\ "mdl" : { "left" : '//' }
+			\ "c": { "left": "//", "right": "",
+				\ "leftAlt": "/*","rightAlt": "*/" },
+			\ "mdl" : { "left" : "//" },
+			\ "pgsql" : { "left" : "--"}
 		\}
+
+	" NERDTree
+		" key-maps
+		let NERDTreeMapOpenSplit="s"
+		let NERDTreeMapOpenVSplit="v"
+
+		let NERDTreeMapActivateNode="h"
+		let NERDTreeMapToggleHidden="<c-h>"
+
+		let NERDTreeMapJumpFirstChild="<leader>k"
+		let NERDTreeMapJumpLastChild="<leader>j"
+
+		let NERDTreeWinSize=24
 
 	" emmet
 		imap <c-e> <c-y>,
@@ -152,6 +167,7 @@
 	augroup miscellaneous
 		au!
 		au WinEnter,BufRead,BufNewFile * silent! call StatusLine()
+		au WinEnter * call NERDTreeQuit()
 		au WinLeave * silent! call StatusLineNC()
 
 		au InsertEnter * hi _extraWhitespace ctermbg=8
@@ -196,6 +212,7 @@
 
 	" normal
 
+		norem <f1> :NERDTreeToggle<cr>
 		nnorem <leader>ev :tabf $MYVIMRC<cr>
 		nnorem <leader>ef :call OpenFtpluginFile()<cr>
 		nnorem <leader>eu :call OpenUltiSnipsFile()<cr>
@@ -337,6 +354,30 @@
 		vnorem // y/<c-r>"<cr>
 
 " functions
+
+	func! NERDTreeQuit()
+		" If any NERDTree buffers are open, close them.
+
+		redir => buffersoutput
+		silent buffers
+		redir END
+		let pattern = '^\s*\(\d\+\)\(.....\) "\(.*\)"\s\+line \(\d\+\)$'
+		let windowfound = 0
+
+		for bline in split(buffersoutput, "\n")
+			let m = matchlist(bline, pattern)
+
+			if (len(m) > 0)
+				if (m[2] =~ '..a..')
+					let windowfound = 1
+				endif
+			endif
+		endfor
+
+		if (!windowfound)
+			quitall
+		endif
+	endfunc
 
 	func! OpenFtpluginFile()
 		for filetype in split(&ft, '\V.')
