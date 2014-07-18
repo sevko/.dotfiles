@@ -7,8 +7,10 @@
 		compinit
 
 		zstyle ":completion:*" menu select=2
+		zstyle ":completion:*" verbose yes
 		zstyle ":completion:*:processes-names" command "ps -e -o comm="
-		zstyle ":completion:*:*:vim:*:*files" ignored-patterns "*.(o|pyc)"
+		zstyle ":completion:*:*:vim:*" ignored-patterns "*.(o|pyc)"
+		zstyle ":completion:*:*:pylint:*" file-patterns "*.py"
 
 	zmodload zsh/zle
 	DOT=$HOME/.dotfiles/zsh/
@@ -121,6 +123,9 @@
 # variables
 	export EDITOR=vim
 	export PROMPT_DIRTRIM=3
+	export SDCV_PAGER=less
+	export PAGER=less
+	export LESS="-RSc"
 
 # functions & conditionals
 	fgrep(){
@@ -211,7 +216,29 @@
 		#   HOSTNAME : The IP address/hostname of the server.
 		#   USER : The user's account username on HOSTNAME.
 
-		echo "\nHost $1\n\tHostname $2\n\tUser $3" >> ~/.ssh/config
+		if [[ $# != 3 ]]; then
+			echo "add_host HOST HOSTNAME USER"
+		else
+			echo "\nHost $1\n\tHostname $2\n\tUser $3" >> ~/.ssh/config
+		fi
+	}
+
+	def(){
+		# Wrapper for `sdcv` that colorizes its output.
+		#
+		# use: def WORD
+		#   WORD (str) : The word to search for with `sdcv`.
+
+		if [[ $# != 1 ]]; then
+			echo "Missing argument."
+		else
+			if [[ "$(sdcv -n $1)" =~ '^Nothing similar to ' ]]; then
+				echo "No match for '$1' found."
+			else
+				sdcv -n $1 | remark ~/.dotfiles/zsh/remark_syntax/sdcv.remark \
+					| less
+			fi
+		fi
 	}
 
 	if [[ -s "/etc/zsh_command_not_found" ]]; then
