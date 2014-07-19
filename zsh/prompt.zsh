@@ -72,10 +72,11 @@ dir_path(){
 	echo -n $workingDir
 }
 
-ssh_info(){
-	# Indicate username and hostname if controlled over ssh.
+user_info(){
+	# Indicate username and hostname if not the same as those of my standard
+	# account.
 
-	if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
+	if [ "$USERNAME" != "sevko" ] || [ "$HOST" != "saturn" ]; then
 		echo "$(fg 2)$USERNAME$font[reset]$(fg 14)/$HOST "
 	fi
 }
@@ -94,6 +95,6 @@ prompt_head="$(fg 202) λ $font[reset]"
 exit_status="%(?..$(fg 160)$font[bold] ✘ %?)"
 
 setopt PROMPT_SUBST
-PROMPT='$(ssh_info)$(dir_path)$prompt_head'
+PROMPT='$(user_info)$(dir_path)$prompt_head'
 
 PS2="  $font[bold]$(fg 1)%_$(fg 1)$font[reset] $(fg 2)→$font[reset]"
