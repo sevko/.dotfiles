@@ -7,6 +7,8 @@
 # Use:
 #   ./music.sh
 
+cmus_info="$(cmus-remote -Q 2>&1)"
+
 get_audio_level(){
 	# Output the current audio level.
 	#
@@ -20,7 +22,7 @@ get_audio_level(){
 	echo "($audio_percentage%)"
 }
 
-format_seconds(){
+fmt_seconds(){
 	# Output seconds formatted as minutes/seconds.
 	#
 	# Args:
@@ -32,6 +34,18 @@ format_seconds(){
 	echo "$(expr $1 / 60):$(printf "%02d" $(expr $1 % 60))"
 }
 
+parse_cmus(){
+	# Parse `$cmus_info`.
+	#
+	# Args:
+	#   $1 (str): A Perl regular expression for `grep`.
+	#
+	# Return
+	#   Any string in `$cmus_info` that matches `$1`.
+
+	echo "$cmus_info" | grep -oP "$1"
+}
+
 cmus_info(){
 	# Construct the music statusline segment.
 	#
@@ -39,32 +53,32 @@ cmus_info(){
 	#   (str) A formatted `tmux` statusline snippet containing the currently
 	#   playing song's time, total length, audio level artist name, and title.
 
-	local cmus_info;
-	cmus_info="$(cmus-remote -Q 2>&1)"
-
+	# Check exit-status of global `$cmus_info` assignment.
 	if [[ $? == 0 ]]; then
-		local status="$(echo "$cmus_info" | grep -oP "(?<=status ).*")"
+		local status=$(parse_cmus "(?<=status ).*")
 
+		# Check whether a song is currently loaded (whether it's playing or
+		# paused).
 		if [ ! "$status" = "stopped" ]; then
-			local artist=$(echo "$cmus_info" | grep -oP "(?<=tag artist ).*$")
-			local artist=${artist%% }
-			local song=$(echo "$cmus_info" | grep -oP "(?<=tag title ).*$")
+			local artist=$(parse_cmus "(?<=tag artist ).*$")
+			local song=$(parse_cmus "(?<=tag title ).*$")
+
+			# Check whether the current track has id3 tags.
+			local music;
+			if [[ $song ]] || [[ $artist ]]; then
+				music="${artist%% } - $song"
+			else
+				local song=$(basename "$(parse_cmus "(?<=file ).*")")
+				music="${song%%.*}"
+			fi
+
 			case $status in
 				"paused") local symbol="■";;
 				"playing") local symbol="▶";;
 			esac
 
-			local curr_time=$(
-				format_seconds "$(
-					echo "$cmus_info" | grep -oP "(?<=^position ).*"
-				)"
-			)
-			local total_time=$(
-				format_seconds "$(
-					echo "$cmus_info" | grep -oP "(?<=^duration ).*"
-				)"
-			)
-			local music="$artist - $song"
+			local curr_time=$(fmt_seconds "$(parse_cmus "(?<=^position ).*")")
+			local total_time=$(fmt_seconds "$(parse_cmus "(?<=^duration ).*")")
 		else
 			local symbol="×"
 			local curr_time="00:00"
@@ -72,6 +86,7 @@ cmus_info(){
 			local music="none"
 		fi
 
+		# Print formatted tmux statusline-segment (with color/text specifiers).
 		local output="#[fg=colour232,bg=colour2] $symbol"
 		output="$output #[bold]$curr_time#[nobold]/$total_time"
 		echo "$output $(get_audio_level) #[italics]$music#[noitalics] "
