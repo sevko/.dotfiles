@@ -8,8 +8,8 @@
 #   ./cpu_temperature.sh
 
 main(){
-	printf "#[bg=colour4,bold] CPU:#[nobold] %s° #[fg=colour232]" \
-		"$(acpi -t | grep -oP "[^ ]*(?= degrees)")"
+	local temp="$(acpi -t | grep -oP "[^ ]*(?= degrees)")"
+	printf "#[bg=colour4,bold] CPU:#[nobold] %s° #[fg=colour232]" ${temp%%.*}
 }
 
 main

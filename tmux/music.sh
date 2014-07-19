@@ -73,21 +73,20 @@ cmus_info(){
 			fi
 
 			case $status in
-				"paused") local symbol="■";;
-				"playing") local symbol="▶";;
+				"paused") local symbol=" ■";;
+				"playing") local symbol=" ▶";;
 			esac
 
 			local curr_time=$(fmt_seconds "$(parse_cmus "(?<=^position ).*")")
 			local total_time=$(fmt_seconds "$(parse_cmus "(?<=^duration ).*")")
 		else
-			local symbol="×"
 			local curr_time="00:00"
 			local total_time="00:00"
 			local music="none"
 		fi
 
 		# Print formatted tmux statusline-segment (with color/text specifiers).
-		local output="#[fg=colour232,bg=colour2] $symbol"
+		local output="#[fg=colour232,bg=colour2]$symbol"
 		output="$output #[bold]$curr_time#[nobold]/$total_time"
 		echo "$output $(get_audio_level) #[italics]$music#[noitalics] "
 	fi
