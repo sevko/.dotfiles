@@ -7,7 +7,7 @@
 # Use:
 #   ./music.sh
 
-cmus_info="$(cmus-remote -Q 2>&1)"
+cmus_info=""
 
 get_audio_level(){
 	# Output the current audio level.
@@ -53,7 +53,7 @@ cmus_info(){
 	#   (str) A formatted `tmux` statusline snippet containing the currently
 	#   playing song's time, total length, audio level artist name, and title.
 
-	# Check exit-status of global `$cmus_info` assignment.
+	cmus_info="$(cmus-remote -Q 2>&1)"
 	if [[ $? == 0 ]]; then
 		local status=$(parse_cmus "(?<=status ).*")
 
@@ -66,7 +66,7 @@ cmus_info(){
 			# Check whether the current track has id3 tags.
 			local music;
 			if [[ $song ]] || [[ $artist ]]; then
-				music="${artist%% } - $song"
+				music="#[bold]${artist%% }#[nobold] - $song"
 			else
 				local song=$(basename "$(parse_cmus "(?<=file ).*")")
 				music="${song%%.*}"
@@ -80,6 +80,7 @@ cmus_info(){
 			local curr_time=$(fmt_seconds "$(parse_cmus "(?<=^position ).*")")
 			local total_time=$(fmt_seconds "$(parse_cmus "(?<=^duration ).*")")
 		else
+			local symbol=""
 			local curr_time="00:00"
 			local total_time="00:00"
 			local music="none"

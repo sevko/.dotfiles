@@ -9,7 +9,7 @@
 
 main(){
 	local temp="$(acpi -t | grep -oP "[^ ]*(?= degrees)")"
-	printf "#[bg=colour4,bold] CPU:#[nobold] %s° #[fg=colour232]" ${temp%%.*}
+	printf "#[bg=colour4,bold]#[nobold] %s° #[fg=colour232]" ${temp%%.*}
 }
 
 main
