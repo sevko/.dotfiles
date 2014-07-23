@@ -10,7 +10,7 @@ import os
 import requests
 import time
 
-CHECK_INTERVAL = 10 * 60
+CHECK_INTERVAL = 5 * 60
 CACHE_FILE = os.path.expanduser("~/.tmux_cache/weather.csv")
 
 def get_weather():
@@ -27,7 +27,7 @@ def get_weather():
 
 	curr_time = int(time.time())
 	diff_cache_mod_time = curr_time - int(os.path.getmtime(CACHE_FILE))
-	if curr_time % CHECK_INTERVAL == 0 or \
+	if curr_time % CHECK_INTERVAL < 5 or \
 		diff_cache_mod_time > (CHECK_INTERVAL * 1.1):
 		api_url = "https://api.forecast.io/forecast/%s/%f,%f" % (
 			file_contents("~/.sensitive/forecast_io_key.csv"), 40.7903,

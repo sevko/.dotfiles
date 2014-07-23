@@ -5,3 +5,4 @@ logic_operator "&&\|||\|!"
 ternary "[?:]"
 surrounding_element "[()[\]{}]"
 arithmetic_operator '[+\-%=*\/]'
+delimiter "[,:.]"

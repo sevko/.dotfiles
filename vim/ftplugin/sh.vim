@@ -1,3 +1,5 @@
+set iskeyword+=$
+set formatoptions+=or
 Ftpackage curly_bracket
 
 syn match _shfunction "^.*\((){$\)\@="
