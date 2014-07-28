@@ -6,3 +6,4 @@ ternary "[?:]"
 surrounding_element "[()[\]{}]"
 arithmetic_operator '[+\-%=*\/]'
 delimiter "[,:.]"
+shell_script_path "\~\=\(/[a-zA-Z0-9_.$-]\+\)\+/\="

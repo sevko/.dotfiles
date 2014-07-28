@@ -2,6 +2,8 @@ set iskeyword+=$
 set formatoptions+=or
 Ftpackage curly_bracket
 
+Synclude shell_script_path ctermfg=6
+
 syn match _shfunction "^.*\((){$\)\@="
 
 hi _shfunction ctermfg=4
