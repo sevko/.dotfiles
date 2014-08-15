@@ -50,14 +50,14 @@ endfunc
 func! s:InsertMacroComment()
 	" Inserts a Doxygen comment for a function-like macro.
 
-	let doxygen_comment = "/*\n * @brief \n"
+	let doxygen_comment = "/*\n\t@brief \n"
 
 	let arg_string = matchstr(getline("."),
 		\ '\(^\s*#define \S\+(\)\@<=[^)]*)\@=')
 	if 0 < len(arg_string)
-		let doxygen_comment .= " *\n"
+		let doxygen_comment .= "\n"
 		for arg in split(substitute(arg_string, " ", "", "g"), ",")
-			let doxygen_comment .= printf(" * @param %s () \n", arg)
+			let doxygen_comment .= printf("\t@param %s () \n", arg)
 		endfor
 	endif
 
@@ -67,22 +67,23 @@ endfunc
 func! s:InsertFunctionComment()
 	" Insert a Doxygen comment for a function.
 
-	let doxygen_comment = "/*\n * @brief \n"
+	let doxygen_comment = "/*\n\t@brief \n"
 
 	let declaration = s:CaptureOutputInRegister("0y/;\<cr>")
 	let arg_string = matchstr(declaration, '(\@<=.*\()$\)\@=')
 
 	if 0 < len(arg_string) && arg_string != "void"
-		let doxygen_comment .= " *\n"
+		let doxygen_comment .= "\n"
 		for arg in split(arg_string, ",")
 			let arg_name = split(arg)[-1]
-			let doxygen_comment .= printf(" * @param %s \n",
+			let doxygen_comment .= printf("\t@param %s \n",
 				\(l:arg_name[0] != "*")?(l:arg_name):(l:arg_name[1:]))
 		endfor
 	endif
 
-	if substitute(declaration, '\v^(static )=(inline )=', "", "g") !~ '^void\s\+[^*]'
-		let doxygen_comment .= " *\n * @return \n"
+	if substitute(
+		\declaration, '\v^(static )=(inline )=', "", "g") !~ '^void\s\+[^*]'
+		let doxygen_comment .= "\n\t@return \n"
 	endif
 
 	call s:InsertStringAboveCurrentLine(doxygen_comment . "*/")
@@ -100,7 +101,7 @@ endfunc
 func! s:InsertFileHeaderComment()
 	" Insert a Doxygen comment for a file header.
 
-	let doxygen_comment = "/*\n * @brief \n*/"
+	let doxygen_comment = "/*\n\t@brief \n*/"
 	if 0 < len(getline("."))
 		exe "norm! O"
 	endif

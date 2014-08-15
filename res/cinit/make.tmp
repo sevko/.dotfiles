@@ -1,5 +1,5 @@
 PROJECT_EXECUTABLE = __PROJECTNAME__
-FLAGS = -Wall -Wextra -I ./
+FLAGS = -Wall -Wextra -I ./ -std=c99
 C_COMPILER = gcc $(FLAGS)
 CC = @echo "\tcc $@" && $(C_COMPILER)
 

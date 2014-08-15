@@ -60,4 +60,4 @@ def file_contents(filename):
 		return obj.read().rstrip("\n")
 
 if __name__ == "__main__":
-	print get_weather()
+	print "#[fg=colour255,bg=colour0] %s " % get_weather()

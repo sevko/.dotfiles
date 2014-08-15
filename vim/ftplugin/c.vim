@@ -1,3 +1,5 @@
+set formatoptions+=t
+
 Ftpackage curly_bracket
 
 Synclude constant cterm=bold ctermfg=70
@@ -25,6 +27,7 @@ hi _cFunction ctermfg=4
 com! -nargs=1 OpenTwinFile :silent! exe printf("norm! :%s %s.%s\<cr>", <args>,
 	\expand("%:p:r"), (expand("%:e") == "c")?"h":"c")
 
+nm <buffer> <leader>{ $a<bs>{
 nnorem <buffer> <leader>ov :OpenTwinFile "vsplit"<cr>
 nnorem <buffer> <leader>os :OpenTwinFile "split"<cr>
 nnorem <buffer> <leader>gc :call <SID>GetFunctionHeaders()<cr>
