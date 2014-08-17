@@ -70,8 +70,12 @@ func! s:InsertFunctionComment()
 		"   (str) A documentation section for the function's `return`/`yield`
 		"   statements, if any.
 
-		let match = matchstr(a:func_def, '\v(\n\s*)@<=(return|yield) @=')
-		echom l:match
+		" Disregard nested functions with return/yield statements.
+		let tab_str = repeat("\t", s:GetCurrentIndentLevel() + 1)
+		let match = matchstr(
+			\a:func_def, '\v(\n' . l:tab_str . ')@<=(return|yield) @='
+		\)
+
 		if !empty(l:match)
 			return printf("\n%s%ss:\n\t\n", toupper(l:match[0]), l:match[1:])
 		else
