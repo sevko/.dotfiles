@@ -26,7 +26,9 @@ def get_weather():
 	"""
 
 	curr_time = int(time.time())
-	diff_cache_mod_time = curr_time - int(os.path.getmtime(CACHE_FILE))
+	diff_cache_mod_time = curr_time - int(os.path.getmtime(CACHE_FILE)) if \
+		os.path.isfile(CACHE_FILE) else \
+		CACHE_FILE * 2
 	if curr_time % CHECK_INTERVAL < 5 or \
 		diff_cache_mod_time > (CHECK_INTERVAL * 1.1):
 		api_url = "https://api.forecast.io/forecast/%s/%f,%f" % (

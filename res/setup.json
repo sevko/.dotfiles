@@ -16,5 +16,8 @@
 		"~/.vim/after/ftplugin" : "vim/ftplugin",
 		"~/.vim/autoload/pathogen.vim" : "vim/bundle/pathogen/autoload/pathogen.vim",
 		"~/.vim/bundle" : "vim/bundle"
-	}
+	},
+	"create_directories" : [
+		"~/.tmux_cache"
+	]
 }

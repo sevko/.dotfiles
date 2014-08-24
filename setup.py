@@ -78,11 +78,12 @@ def create_symlink(link_name, target=None):
 
 def link_files():
 	"""
-	Create symlinks to `.dotfiles/`.
+	Create symlinks to `.dotfiles/`, and directories.
 
 	Create symlinks between existing files and directories, scattered across a
 	given filesystem, with their counterparts in `.dotfiles/`. The paths of
-	files to be linked are specified in `res/setup.json`.
+	files to be linked are specified in `res/setup.json`. Also create certain
+	directories.
 	"""
 
 	JSON_SETUP_FILE = "res/setup.json"
@@ -93,7 +94,9 @@ def link_files():
 		with open(JSON_SETUP_FILE) as setup_file:
 			files = json.loads(setup_file.read())
 	except IOError as exception:
-		print "%s: Failed to open %s for reading" % (exception, JSON_SETUP_FILE)
+		print "%s: Failed to open %s for reading" % (
+			exception, JSON_SETUP_FILE
+		)
 		return
 
 	for link_name in files["regular_files"]:
@@ -101,6 +104,9 @@ def link_files():
 
 	for link_name in files["special_files"].keys():
 		create_symlink(link_name, target=files["special_files"][link_name])
+
+	for dir_name in files["create_directories"]:
+		os.makedirs(os.path.expanduser(dir_name))
 
 def update_git_submodules():
 	"""
