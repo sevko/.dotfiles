@@ -28,11 +28,6 @@
 			source $ZSH/oh-my-zsh.sh
 		fi
 
-		export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:
-		/bin:/usr/games:/usr/local/games:/home/sevko/.local/bin:/usr/local/sbin:
-		/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:
-		/usr/local/games"
-
 	source $DOT/prompt.zsh
 	eval $(dircolors $DOT/dircolors)
 
@@ -48,12 +43,16 @@
 	bindkey -v "^r" history-incremental-search-backward
 
 # aliases
+	alias workflowy="/opt/google/chrome/google-chrome \
+		--profile-directory=Default --app-id=koegeopamaoljbmhnfjbclbocehhgmkm"
 	alias bpy=bpython
 	alias ccat="pygmentize -O style=monokai -f terminal -g"
 	alias clip="xclip -select clipboard"
+	alias com=command
 	alias ev=evince
 	alias gcc="gcc -Wall -Wextra"
 	alias gth=gthumb
+	alias jsw="jekyll serve --watch"
 	alias ka=killall
 	alias keepass="keepassx ~/.keepassx/.passwords.kdb"
 	alias memcheck="valgrind --leak-check=yes --show-reachable=yes\
@@ -64,16 +63,17 @@
 		--output-format=colorized"
 	alias scan="command hp-scan --area=0,0,216,279 -mode=color"
 	alias sasw="sass --watch"
+	alias sdcv="sdcv --data-dir ~/.stardict"
 	alias so=source
 	alias soz="source ~/.zshrc"
 	alias sudo="nocorrect sudo "
 	alias t="command tmux"
-	alias tar="command tar -xzvf"
 	alias tmux="TERM=screen-256color-bce tmux"
+	alias uz=unzip
 	alias v="vim -p"
 
 	# apt-get
-		alias agi="sudo apt-get -y --force-yes install"
+		alias agi="sudo apt-get -y install"
 		alias agu="sudo apt-get update"
 		alias agr="sudo apt-get remove"
 		alias agrp="sudo apt-get remove --purge"
@@ -128,17 +128,6 @@
 	export LESS="-RSc"
 
 # functions & conditionals
-	fgrep(){
-		# Recursively `grep` a directory for a string.
-		#
-		# use: fgrep *DIR_NAMES STRING
-		# args:
-		#   *DIR_NAMES : The name of the directories to search.
-		#   STRING : The string for `grep` to match.
-
-		find ${*[1,-2]} -type f -print0 | xargs -0 grep ${*[-1]}
-	}
-
 	gdsu(){
 		# Delete a git submodule's files and metadata.
 		#
@@ -250,10 +239,11 @@
 	fi
 
 	# completion
-
 		compctl -K _gdsu_compl gdsu
-		compctl -K _gbda_compl gbda
+		compctl -K _git_branch_compl gbda
+		compctl -K _git_branch_compl gbd
 		compctl -K _eject_compl eject
+		compctl -K _gco_compl gco
 
 		_gdsu_compl(){
 			# Git submodule name completion for `gdsu()`.
@@ -263,16 +253,32 @@
 			reply=("${(f)${submodules}}")
 		}
 
-		_gbda_compl(){
-			# Git-branch name completion for `gbda()`.
-
-			reply=("${(f)$(git branch --no-color | tr -d "^*|  ")}")
-		}
-
 		_eject_compl(){
 			# "/media/$USER" sub-directory name completion for `eject`.
+
 			ejectable_devices="$(ls /media/$USER)"
-			reply="${(f)${ejectable_devices}}"
+			reply=("${(f)${ejectable_devices}}")
+		}
+
+		_gco_compl(){
+			# Git branch-name and modified file-path completion for `gco`.
+
+			_git_branch_compl
+
+			modified_files=(
+				"${(f)$(git status --porcelain |\
+				sed "/^ M /!d" |\
+				sed "s/^ M //g")}"
+			)
+			reply=($reply $modified_files)
+		}
+
+		_git_branch_compl(){
+			# Git branch-name completion.
+
+			reply=(
+				"${(f)$(git branch --no-color | sed "/^* .*/d" | tr -d "^  ")}"
+			)
 		}
 
 # The following lines were added by zsh-newuser-install

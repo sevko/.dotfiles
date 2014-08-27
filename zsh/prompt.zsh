@@ -14,14 +14,14 @@ font=(
 	no-reverse "%{[27m%}"
 )
 
-fg(){
+fgCol(){
 	# Return foreground color escape code, where color value is the first
 	# argument.
 
 	echo "%{[38;5;$1m%}"
 }
 
-bg(){
+bgCol(){
 	# Return background color escape code, where color value is the first
 	# argument.
 
@@ -43,8 +43,8 @@ git_branch_status(){
 		branchName=$(git symbolic-ref --short HEAD 2> /dev/null \
 			|| git rev-parse HEAD | cut -b-10) # branch name
 		git diff --quiet --ignore-submodules HEAD &>/dev/null	# whether dirty
-		branchStatus=$([ "$?" = 1 ] && echo "$(fg 196)± ")
-		echo "$(fg 40) $branchStatus$(fg 73)$branchName$font[reset]"
+		branchStatus=$([ "$?" = 1 ] && echo "$(fgCol 196)± ")
+		echo "$(fgCol 40) $branchStatus$(fgCol 73)$branchName$font[reset]"
 	fi
 }
 
@@ -53,9 +53,9 @@ dir_path(){
 
 	# replace $HOME in $PWD with "~" character
 	if [[ "$PWD" =~ ^"$HOME"(/|$) ]]; then
-		workingDir="$(fg 38)~${PWD#$HOME}"
+		workingDir="$(fgCol 38)~${PWD#$HOME}"
 	else
-		workingDir="$(fg 38)$PWD"
+		workingDir="$(fgCol 38)$PWD"
 	fi
 
 	# if current directory is part of a git archive, highlight any directories
@@ -65,10 +65,10 @@ dir_path(){
 		gitRootPre=${workingDir%$gitRootDir*}
 		gitRootPost=${gitRootDir##*/}${workingDir#*$gitRootDir}
 
-		workingDir="$gitRootPre$(fg 43)$font[bold]$gitRootPost$font[reset]"
+		workingDir="$gitRootPre$(fgCol 43)$font[bold]$gitRootPost$font[reset]"
 	fi
 
-	[[ ! -w $PWD ]] && workingDir="$workingDir$(fg 196) "
+	[[ ! -w $PWD ]] && workingDir="$workingDir$(fgCol 196) "
 	echo -n $workingDir
 }
 
@@ -77,12 +77,12 @@ user_info(){
 	# account.
 
 	if [ "$USERNAME" != "sevko" ] || [ "$HOST" != "saturn" ]; then
-		echo "$(fg 2)$USERNAME$font[reset]$(fg 14)/$HOST "
+		echo "$(fgCol 2)$USERNAME$font[reset]$(fgCol 14)/$HOST "
 	fi
 }
 
 function zle-line-init zle-keymap-select {
-	VIM_PROMPT="$(fg 1)[% NORMAL]% %{$reset_color%}"
+	VIM_PROMPT="$(fgCol 1)[% NORMAL]% %{$reset_color%}"
 	RPS1_BODY='$(git_branch_status)$exit_status$font[reset]'
 	RPS1="${${KEYMAP/vicmd/$VIM_PROMPT }/(main|viins)/}$RPS1_BODY"
 	zle reset-prompt
@@ -91,10 +91,11 @@ function zle-line-init zle-keymap-select {
 zle -N zle-line-init
 zle -N zle-keymap-select
 
-prompt_head="$(fg 202) λ $font[reset]"
-exit_status="%(?..$(fg 160)$font[bold] ✘ %?)"
+prompt_head="$(fgCol 202) λ $font[reset]"
+exit_status="%(?..$(fgCol 160)$font[bold] ✘ %?)"
 
 setopt PROMPT_SUBST
 PROMPT='$(user_info)$(dir_path)$prompt_head'
 
-PS2="  $font[bold]$(fg 1)%_$(fg 1)$font[reset] $(fg 2)→$font[reset]"
+PS2="  $font[bold]$(fgCol 1)%_$(fgCol 1)$font[reset]"
+PS2="$PS2 $(fgCol 2)→$font[reset]"
