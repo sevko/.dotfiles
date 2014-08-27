@@ -18,7 +18,10 @@
 #   "{YOUTUBE_VIDEO_ID}-{GENRE}-{ARTIST}-{SONG_NAME}.mp3", with any
 #   non-alphanumeric characters in each argument replaced with a "_".
 
-HELP="Help info"
+HELP=$(cat << EOF
+Use: youtube_mp3 YOUTUBE_VIDEO_ID GENRE ARTIST SONG_NAME
+EOF
+)
 
 escape(){
 	# Filter mp3 metadata strings for use in the filename.
@@ -34,7 +37,7 @@ escape(){
 
 main(){
 	if [ "$#" -ne "4" ]; then
-		echo $HELP
+		echo "$HELP"
 	else
 		echo "Downloading video and extracting audio."
 		youtube-dl --extract-audio --audio-format mp3 --audio-quality 0 \
