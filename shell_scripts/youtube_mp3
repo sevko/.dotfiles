@@ -1,0 +1,50 @@
+#! /bin/bash
+
+# Description:
+#   A script that automates the process of scraping songs from youtube and
+#   editing their id3 tags.
+#
+# Use:
+#   youtube_mp3 YOUTUBE_VIDEO_ID GENRE ARTIST SONG_NAME
+#
+#   YOUTUBE_VIDEO_ID : The numeric id of the youtube video to download, as
+#       contained in the video's URL. The id of the URL
+#       "https://www.youtube.com/watch?v=ecm5w1P9DVo" is "ecm5w1P9DVo".
+#   GENRE : The genre of the song.
+#   ARTIST : The band.
+#   SONG NAME : The song's name.
+#
+#   The mp3 will be saved with the filename
+#   "{YOUTUBE_VIDEO_ID}-{GENRE}-{ARTIST}-{SONG_NAME}.mp3", with any
+#   non-alphanumeric characters in each argument replaced with a "_".
+
+HELP="Help info"
+
+escape(){
+	# Filter mp3 metadata strings for use in the filename.
+	#
+	# Args:
+	#   $1 : A string.
+	#
+	# Return:
+	#   `$!`, but with all non-alphanumeric characters replaced with "_".
+
+	echo -n "$1" | tr -c "[:alnum:]" "_"
+}
+
+main(){
+	if [ "$#" -ne "4" ]; then
+		echo $HELP
+	else
+		echo "Downloading video and extracting audio."
+		youtube-dl --extract-audio --audio-format mp3 --audio-quality 0 \
+			-o "%(id)s.%(ext)s" $1 > /dev/null
+		local filename=$(escape "$2")-$(escape "$3")-$(escape "$4").mp3
+		mv $1.mp3 $filename
+		echo "Editing tags."
+		mid3v2 --album=single --genre="$2" --artist="$3" --song="$4" $filename
+		echo "Saved to: $filename."
+	fi
+}
+
+main "$@"
