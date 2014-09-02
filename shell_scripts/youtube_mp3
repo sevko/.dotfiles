@@ -5,21 +5,24 @@
 #   editing their id3 tags.
 #
 # Use:
-#   youtube_mp3 YOUTUBE_VIDEO_ID GENRE ARTIST SONG_NAME
+#   youtube_mp3 YOUTUBE_VIDEO_LINK GENRE ARTIST SONG_NAME
 #
-#   YOUTUBE_VIDEO_ID : The numeric id of the youtube video to download, as
-#       contained in the video's URL. The id of the URL
-#       "https://www.youtube.com/watch?v=ecm5w1P9DVo" is "ecm5w1P9DVo".
+#   YOUTUBE_VIDEO_LINK : Either the full URL or numeric id of the youtube video
+#       to download. Both of the following are valid:
+#
+#           "https://www.youtube.com/watch?v=ecm5w1P9DVo"
+#           "ecm5w1P9DVo"
+#
 #   GENRE : The genre of the song.
 #   ARTIST : The band.
-#   SONG NAME : The song's name.
+#   SONG_NAME : The song's name.
 #
 #   The mp3 will be saved with the filename
 #   "{YOUTUBE_VIDEO_ID}-{GENRE}-{ARTIST}-{SONG_NAME}.mp3", with any
 #   non-alphanumeric characters in each argument replaced with a "_".
 
 HELP=$(cat << EOF
-Use: youtube_mp3 YOUTUBE_VIDEO_ID GENRE ARTIST SONG_NAME
+Use: youtube_mp3 YOUTUBE_VIDEO_LINK GENRE ARTIST SONG_NAME
 EOF
 )
 
@@ -39,11 +42,23 @@ main(){
 	if [ "$#" -ne "4" ]; then
 		echo "$HELP"
 	else
+		if [[ "$1" =~ ^https://www.youtube.com ]]; then
+			id=$(echo "$1" | grep -Po "(?<=watch\?v=).*")
+		else
+			id=$1
+		fi
+
 		echo "Downloading video and extracting audio."
 		youtube-dl --extract-audio --audio-format mp3 --audio-quality 0 \
-			-o "%(id)s.%(ext)s" $1 > /dev/null
+			-o "%(id)s.%(ext)s" $id > /dev/null
+
+		echo "Adding album art."
 		local filename=$(escape "$2")-$(escape "$3")-$(escape "$4").mp3
-		mv $1.mp3 $filename
+		lame --quiet --ti $(find ~/pic/album_art | sort -R | head -n 1) \
+			$id.mp3 $filename
+
+		rm $id.mp3
+
 		echo "Editing tags."
 		mid3v2 --album=single --genre="$2" --artist="$3" --song="$4" $filename
 		echo "Saved to: $filename."

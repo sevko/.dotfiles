@@ -9,3 +9,7 @@ Host cstuy
 Host bitshift
 	Hostname 107.170.78.213
 	User sevko
+
+Host mapzen
+	Hostname 54.164.209.32
+	User severyn
