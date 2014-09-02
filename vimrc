@@ -126,7 +126,7 @@
 " highlighting/syntax
 
 	hi cursorlinenr ctermfg=red ctermbg=0
-	hi folded ctermbg=2 ctermfg=black
+	hi folded cterm=none,bold ctermbg=2 ctermfg=black
 	hi wildmenu cterm=none ctermfg=232 ctermbg=2
 	hi specialkey cterm=none ctermfg=darkgrey ctermbg=none
 	hi nontext ctermfg=red
@@ -162,6 +162,8 @@
 		hi User6 ctermfg=231 ctermbg=31
 		hi User7 cterm=bold ctermfg=234 ctermbg=253
 
+	match _extraWhitespace /\s\+$/
+
 " autocommands
 
 	augroup miscellaneous
@@ -177,10 +179,9 @@
 		au InsertLeave * hi _extraWhitespace ctermbg=88
 		au InsertLeave,WinEnter * silent! exe &nu?"set rnu":""
 
-		au FileType modula2 set filetype=markdown
-		au FileType html set filetype=htmldjango.html
+		au FileType modula2 :call SetFiletypeToMarkdown()
 		au FileType cpp set filetype=c
-		au FileType sql set filetype=pgsql
+		au FileType sql set filetype=pgsql.sql
 
 		au bufnewfile * silent! call s:LoadTemplate()
 		au BufRead,BufNewFile *.json set filetype=javascript.json
@@ -687,4 +688,14 @@
 		setl statusline=%1*\ %t\  " filename
 		setl stl+=%4*%{&modified?'\ +\ ':''} " modified
 		setl stl+=%5*%= " right justify
+	endfunc
+
+	func! SetFiletypeToMarkdown()
+		" Set the filetype to "markdown", and initilize
+		" `g:markdown_fenced_languages` (`g:markdown_fenced_languages` must be
+		" set before the "markdown" ftplugin files are loaded). A function is
+		" the cleanest way to bundle them together.
+
+		let g:markdown_fenced_languages = ["c", "python", "javascript"]
+		set filetype=markdown
 	endfunc
