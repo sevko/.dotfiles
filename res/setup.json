@@ -1,6 +1,7 @@
 {
 	"_comment" : "The names of files to create symbolic links between.",
 	"regular_files" : [
+		"~/.Xresources",
 		"~/.inputrc",
 		"~/.psqlrc",
 		"~/.bashrc",
@@ -12,7 +13,6 @@
 	],
 	"special_files" : {
 		"~/.ssh/config" : "sshconfig",
-		"~/.gconf/apps/gnome-terminal" : "gnome_terminal",
 		"~/.vim/after/ftplugin" : "vim/ftplugin",
 		"~/.vim/autoload/pathogen.vim" : "vim/bundle/pathogen/autoload/pathogen.vim",
 		"~/.vim/bundle" : "vim/bundle"

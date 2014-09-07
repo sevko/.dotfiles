@@ -1,0 +1,34 @@
+xterm*faceName: DejaVu Sans Mono derivative Powerline
+xterm*locale: true
+xterm*faceSize: 8
+xterm*fullscreen: true
+xterm*internalBorder: 0
+xterm*selectToClipboard: true
+xterm*VT100.Translations: #override \
+	Ctrl <Key>v: insert-selection(CLIPBOARD, CUT_BUFFER0) \n\
+	Ctrl <Key>c: select-end(CLIPBOARD, CUT_BUFFER0) \n\
+
+xterm*foreground: #8AE234
+xterm*background: #000000
+xterm*cursorColor: #DC322F
+xterm*cursorBlink: true
+xterm*pointerColorBackground: #586e75
+xterm*pointerColorForeground: #8AE234
+
+! Specify Solarized Dark palette colors.
+xterm*color0: #073642
+xterm*color1: #dc322f
+xterm*color2: #859900
+xterm*color3: #b58900
+xterm*color4: #268bd2
+xterm*color5: #d33682
+xterm*color6: #2aa198
+xterm*color7: #eee8d5
+xterm*color8: #002b36
+xterm*color9: #cb4b16
+xterm*color10: #586e75
+xterm*color11: #657b83
+xterm*color12: #002b36
+xterm*color13: #6c71c4
+xterm*color14: #93a1a1
+xterm*color15: #fdf6e3
