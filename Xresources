@@ -1,4 +1,4 @@
-xterm*faceName: DejaVu Sans Mono
+xterm*faceName: DejaVu Sans Mono for Powerline
 xterm*locale: true
 xterm*utf8: true
 xterm*faceSize: 8
@@ -16,14 +16,14 @@ xterm*cursorBlink: true
 xterm*pointerColorBackground: #586e75
 xterm*pointerColorForeground: #8AE234
 
-XTerm*colorBD: white
-XTerm*colorUL: #dc322f
-XTerm*colorBDMode: on
-XTerm*colorULMode: on
-xterm*veryBoldColor: 7
+xterm*colorBDMode: true
+xterm*colorBD: #dc322f
+xterm*boldMode: true
+xterm*veryBoldColors: 7
+xterm*italicULMode: true
 
 ! Specify Solarized Dark palette colors.
-xterm*color0: #073642
+xterm*color0: #06313C
 xterm*color1: #dc322f
 xterm*color2: #859900
 xterm*color3: #b58900
@@ -35,8 +35,6 @@ xterm*color8: #002b36
 xterm*color9: #cb4b16
 xterm*color10: #586e75
 xterm*color11: #657b83
-xterm*color12: #fff
-! xterm*color12: #002b36
-xterm*color13: #6c71c4
+xterm*color12: #889494
 xterm*color14: #93a1a1
-xterm*color15: #fdf6e3
+xterm*color15: #031D24
