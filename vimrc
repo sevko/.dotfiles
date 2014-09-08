@@ -73,7 +73,7 @@
 		set nofoldenable foldlevel=1
 
 	" italic comments
-		highlight Comment cterm=italic
+		highlight Comment cterm=underline
 		set t_ZH=[3m
 		set t_ZR=[23m
 
