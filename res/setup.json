@@ -13,9 +13,7 @@
 	],
 	"special_files" : {
 		"~/.ssh/config" : "sshconfig",
-		"~/.vim/after/ftplugin" : "vim/ftplugin",
-		"~/.vim/autoload/pathogen.vim" : "vim/bundle/pathogen/autoload/pathogen.vim",
-		"~/.vim/bundle" : "vim/bundle"
+		"~/.vim" : "vim"
 	},
 	"create_directories" : [
 		"~/.tmux_cache"
