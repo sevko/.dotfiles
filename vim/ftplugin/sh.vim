@@ -1,4 +1,4 @@
-set iskeyword+=$
+set iskeyword-=.
 set formatoptions+=or
 Ftpackage curly_bracket
 

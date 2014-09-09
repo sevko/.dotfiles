@@ -1,3 +1,4 @@
+let &l:include = "^import "
 set noet softtabstop=0 ts=4 sw=4
 set iskeyword+=\
 
@@ -6,7 +7,7 @@ Synclude bitwise_operator ctermfg=1
 Synclude constant cterm=bold ctermfg=14
 Synclude equality_operator ctermfg=4
 Synclude surrounding_element ctermfg=2
-syn match _delimiter "[,:.]"
+Synclude delimiter ctermfg=242
 
 syn match pythonStrFormatting
 	\ "%\%(([^)]\+)\)\=[-#0 +]*\d*\%(\.\d\+\)\=[hlL]\=[diouxXeEfFgGcrs%]"

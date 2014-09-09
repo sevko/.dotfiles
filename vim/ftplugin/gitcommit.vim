@@ -1,3 +1,4 @@
+setlocal sw=8
 setlocal tw=72
 setlocal colorcolumn=73
 setlocal spell spelllang=en_us
