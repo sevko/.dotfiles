@@ -5,7 +5,10 @@ Links existing dotfiles to their counterparts in `.dotfiles/`, initializes
 the repository's Git submodules, and performs other vital setup.
 """
 
-import json, os, shutil, subprocess
+import json
+import os
+import shutil
+import subprocess
 
 class Shell:
 	"""
@@ -37,9 +40,7 @@ def command(cmd):
 	with open(os.devnull, "w") as devnull:
 		exit_status = Shell.SUCCESS if subprocess.call(cmd,
 				stdout=devnull, stderr=devnull) == 0 else Shell.FAILURE
-	trimmed_cmd = " ".join(cmd[:Shell.MAX_LINE_LEN - 1]).ljust(
-			Shell.MAX_LINE_LEN - 1)
-	print "%s%s" % (trimmed_cmd, exit_status)
+	print " %s %s" % (exit_status, " ".join(cmd))
 
 def create_symlink(link_name, target=None):
 	"""
@@ -86,16 +87,16 @@ def link_files():
 	directories.
 	"""
 
-	JSON_SETUP_FILE = "res/setup.json"
+	json_setup_file = "res/setup.json"
 
 	print Shell.HEADER % "Creating dotfile symlinks."
 
 	try:
-		with open(JSON_SETUP_FILE) as setup_file:
+		with open(json_setup_file) as setup_file:
 			files = json.loads(setup_file.read())
 	except IOError as exception:
 		print "%s: Failed to open %s for reading" % (
-			exception, JSON_SETUP_FILE
+			exception, json_setup_file
 		)
 		return
 
@@ -106,7 +107,9 @@ def link_files():
 		create_symlink(link_name, target=files["special_files"][link_name])
 
 	for dir_name in files["create_directories"]:
-		os.makedirs(os.path.expanduser(dir_name))
+		expanded_name = os.path.expanduser(dir_name)
+		if not os.path.isdir(expanded_name):
+			os.makedirs(expanded_name)
 
 def update_git_submodules():
 	"""
