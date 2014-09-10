@@ -2,6 +2,6 @@
 	alias tmux="TERM=screen-256color-bce tmux"
 
 # functions/conditionals
-	if [ "$TMUX" = "" ]
+	if [ "$(ps -al | grep tmux )" = "" ]
 		then tmux attach || tmux new
 	fi

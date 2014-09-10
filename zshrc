@@ -61,7 +61,7 @@
 	alias py=python
 	alias pylint="pylint --reports=n --indent-string='\t'\
 		--output-format=colorized"
-	alias scan="command hp-scan --area=0,0,216,279 -mode=color"
+	alias scan="command hp-scan --area=0,0,216,279 --mode=color"
 	alias sasw="sass --watch"
 	alias sdcv="sdcv --data-dir ~/.stardict"
 	alias so=source
@@ -122,6 +122,7 @@
 
 # variables
 	export EDITOR=vim
+	export TMPDIR=/tmp
 	export PROMPT_DIRTRIM=3
 	export SDCV_PAGER=less
 	export PAGER=less
@@ -234,7 +235,7 @@
 		source "/etc/zsh_command_not_found"
 	fi
 
-	if [ "$TMUX" = "" ]
+	if [ "$(ps -al | grep tmux )" = "" ]
 		then tmux attach || tmux new
 	fi
 
