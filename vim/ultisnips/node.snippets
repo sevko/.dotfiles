@@ -1,0 +1,15 @@
+snippet req
+var $1 = require("$1");
+endsnippet
+
+snippet err
+console.error($1);
+endsnippet
+
+snippet read "" i
+fs.createReadStream($1)
+endsnippet
+
+snippet write "" i
+fs.createWriteStream($1)
+endsnippet
