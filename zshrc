@@ -1,6 +1,7 @@
 # settings
 	setopt extendedglob
 	setopt GLOB_COMPLETE
+	setopt braceccl
 
 	# completion
 		autoload -Uz compinit
@@ -120,13 +121,36 @@
 		alias gsu="git submodule"
 		alias gu="git up"
 
+	# background
+		alias_bg(){
+			# Wrapper for `alias` for processes meant to be run in the
+			# background.
+			#
+			# use: alias_bg ALIAS_NAME [ALIAS_CONTENTS ...]
+			#   ALIAS_NAME (str) : The name of the alias, as passed to `alias`.
+			#   ALIAS_CONTENTS (str) : The contents of the alias, as passed to
+			#       `alias`. Will be wrapped in `command nohup`, and standaroud
+			#       streams will be redirected to `/dev/null`. If no
+			#       argument(s) is/are given, `ALIAS_NAME` will be used as
+			#       `ALIAS_CONTENTS`.
+
+			local cmd=""
+			[ $# -eq 1 ] && cmd="$1" || cmd="${@[2, -1]}"
+			alias "$1"="command nohup $cmd > /dev/null 2>&1"
+		}
+
+		alias_bg chrome google-chrome
+		alias_bg libre libreoffice
+		alias_bg ev
+		alias_bg gimp
+
 # variables
 	export EDITOR=vim
 	export TMPDIR=/tmp
 	export PROMPT_DIRTRIM=3
 	export SDCV_PAGER=less
 	export PAGER=less
-	export LESS="-RSc"
+	export LESS=-RSc
 
 # functions & conditionals
 	gdsu(){
