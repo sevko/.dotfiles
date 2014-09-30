@@ -5,5 +5,5 @@ logic_operator "&&\|||\|!"
 ternary "[?:]"
 surrounding_element "[()[\]{}]"
 arithmetic_operator '[+\-%=*\/]'
-delimiter "[,:.]"
+delimiter "[,:.;]"
 shell_script_path "\~\=\(/[a-zA-Z0-9_.$-]\+\)\+/\="
