@@ -20,4 +20,3 @@ func! s:SortRulesAlphabetically()
 endfunc
 
 so ~/.vimrc_after
-set noet sw=4
