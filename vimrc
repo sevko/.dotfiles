@@ -11,8 +11,8 @@
 	endif
 
 	if has("autocmd")
-	  au bufreadpost * if line("'\"") > 1 && line("'\"") <= line("$")
-		\| exe "normal! g'\"" | endif
+		au bufreadpost * if line("'\"") > 1 && line("'\"") <= line("$")
+			\| exe "normal! g'\"" | endif
 	endif
 
 	if &term =~ '^screen'
@@ -57,9 +57,9 @@
 
 	" backup to ~/.tmp; get rid of .swp files
 		set backup
-		set backupdir=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
+		set backupdir=~/.vim-tmp,~/.tmp,/var/tmp,/tmp
 		set backupskip=/tmp/*,/private/tmp/*
-		set directory=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
+		set directory=~/.vim-tmp,~/.tmp,/var/tmp,/tmp
 		set writebackup
 
 	" indentation
@@ -179,12 +179,15 @@
 		au InsertLeave * hi _extraWhitespace ctermbg=88
 		au InsertLeave,WinEnter * silent! exe &nu?"set rnu":""
 
-		au FileType modula2 :call SetFiletypeToMarkdown()
+		au FileType modula2 set filetype=markdown
 		au FileType cpp set filetype=c
 		au FileType sql set filetype=pgsql.sql
 
 		au bufnewfile * silent! call s:LoadTemplate()
 		au BufRead,BufNewFile *.json set filetype=javascript.json
+		au BufReadPre,BufNewFile *.md let
+			\ g:markdown_fenced_languages = ["c", "python", "javascript",
+			\"sh"]
 		au BufRead,BufNewFile *.tmp exe "set ft=template." .
 				\split(expand("%:t:r"), "_")[0]
 		au BufRead,BufNewFile *.mdl set filetype=mdl
@@ -521,17 +524,19 @@
 		"   tab_type : (str) If "soft", convert all soft-tabs to hard-tabs.
 		"       If "hard", convert all hard-tabs into soft-tabs.
 
+		let start_cur_pos = getcurpos()
 		let soft_tab = repeat(" ", &tabstop)
 
 		if a:tab_type == "soft"
 			let soft_tab_regex = "\\(^\\(" . soft_tab . "\\)*\\)\\@<=" .
 				\ soft_tab
-			silent! exec "normal! :%s/" . soft_tab_regex . "/\t/g\<cr>``"
+			silent! exec "normal! :%s/" . soft_tab_regex . "/\t/g\<cr>"
 		elseif a:tab_type == "hard"
 			let hard_tab_regex = "\\(^[\t]*\\)\\@<=\t"
 			silent! exec "normal! :%s/" . hard_tab_regex . "/" . soft_tab .
-				\ "/g\<cr>``"
+				\ "/g\<cr>"
 		endif
+		call setpos(".", start_cur_pos)
 	endfunc
 
 	func! EscapeAbbreviation()
@@ -696,6 +701,6 @@
 		" set before the "markdown" ftplugin files are loaded). A function is
 		" the cleanest way to bundle them together.
 
-		let g:markdown_fenced_languages = ["c", "python", "javascript"]
 		set filetype=markdown
+		let g:markdown_fenced_languages = ["c", "python", "javascript"]
 	endfunc
