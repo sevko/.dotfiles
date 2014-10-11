@@ -29,7 +29,7 @@ create_source_files(){
 	# Create the `src/` directory, and the project's main source files.
 
 	mkdir src
-	touch src/$projectName.h
+	cp ~/.dotfiles/res/cinit/h.tmp src/$projectName.h
 	cp ~/.dotfiles/res/cinit/c.tmp src/$projectName.c
 	sed -i "s/__PROJECTNAME__/$projectName/g" src/$projectName.c
 }
