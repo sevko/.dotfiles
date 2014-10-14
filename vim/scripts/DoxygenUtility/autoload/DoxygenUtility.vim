@@ -30,8 +30,8 @@ func! s:IsOnFunction()
 	" Return a 1 if the user's cursor is on a line containing a function
 	" declaration; otherwise, return 0.
 
-	let declaration = s:CaptureOutputInRegister("0y/;\<cr>") . ";"
-	return declaration =~ "^[^\\t\\n]*(\\([^)]*\\n\\?\\)*);"
+	let declaration = s:CaptureOutputInRegister("0y/[;{]\<cr>") . ""
+	return declaration =~ '^[^\t\n]*(\([^)]*\n\?\)*)'
 endfunc
 
 func! s:IsOnStruct()
@@ -50,34 +50,36 @@ endfunc
 func! s:InsertMacroComment()
 	" Inserts a Doxygen comment for a function-like macro.
 
-	let doxygen_comment = "/*\n * @brief \n"
+	let doxygen_comment = "/**\n * @brief \n"
 
 	let arg_string = matchstr(getline("."),
 		\ '\(^\s*#define \S\+(\)\@<=[^)]*)\@=')
 	if 0 < len(arg_string)
-		let doxygen_comment .= "\n"
 		for arg in split(substitute(arg_string, " ", "", "g"), ",")
 			let doxygen_comment .= printf(" * @param %s () \n", arg)
 		endfor
 	endif
 
-	call s:InsertStringAboveCurrentLine(doxygen_comment . "*/")
+	call s:InsertStringAboveCurrentLine(doxygen_comment . " */")
 endfunc
 
 func! s:InsertFunctionComment()
 	" Insert a Doxygen comment for a function.
 
-	let doxygen_comment = "/*\n * @brief \n"
+	let doxygen_comment = "/**\n * @brief \n"
 
-	let declaration = s:CaptureOutputInRegister("0y/;\<cr>")
+	let declaration = s:CaptureOutputInRegister("0y/[;{]\<cr>")
 	let arg_string = matchstr(declaration, '(\@<=.*\()$\)\@=')
 
 	if 0 < len(arg_string) && arg_string != "void"
-		" let doxygen_comment .= " *\n"
+		let arg_string = substitute(
+			\l:arg_string, '(\(\*\w*\))([^)]*)', '\1', "g"
+		\)
 		for arg in split(arg_string, ",")
 			let arg_name = split(arg)[-1]
-			let doxygen_comment .= printf(" * @param %s \n",
-				\(l:arg_name[0] != "*")?(l:arg_name):(l:arg_name[1:]))
+			let doxygen_comment .= printf(
+				\" * @param %s \n", substitute(l:arg_name, "^\**", "", "")
+			\)
 		endfor
 	endif
 
@@ -86,7 +88,7 @@ func! s:InsertFunctionComment()
 		let doxygen_comment .= " * @return \n"
 	endif
 
-	call s:InsertStringAboveCurrentLine(doxygen_comment . "*/")
+	call s:InsertStringAboveCurrentLine(doxygen_comment . " */")
 endfunc
 
 func! s:InsertStructComment()
@@ -101,7 +103,7 @@ endfunc
 func! s:InsertFileHeaderComment()
 	" Insert a Doxygen comment for a file header.
 
-	let doxygen_comment = "/*\n * @brief \n*/"
+	let doxygen_comment = "/**\n * @brief \n */"
 	if 0 < len(getline("."))
 		exe "norm! O"
 	endif
