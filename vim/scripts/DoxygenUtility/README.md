@@ -14,14 +14,12 @@ Doxygen-documentable construct, insert a template comment accordingly; otherwise
 
 Tap `<leader>d`, and:
 
-	/*
+	/**
 	 * @brief 
-	 *
 	 * @param bar 
 	 * @param baz 
-	 *
 	 * @return 
-	*/
+	 */
 	int <|>*foo(int bar, char *baz){
 		/* code */;
 	}
