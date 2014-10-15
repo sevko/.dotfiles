@@ -9,12 +9,12 @@ Synclude ternary ctermfg=1
 Synclude logic_operator ctermfg=9
 Synclude equality_operator ctermfg=4
 Synclude bitwise_operator ctermfg=1
-Synclude surrounding_element ctermfg=2
+Synclude surrounding_element ctermfg=9
 
 syn match _cAddressOperator "\(\W\@<=&[^ \t&]\@=\|\*\S\@=\|->\|\.\)"
 syn match _cGlobal "\([a-zA-Z0-9]\)\@<!g_[a-zA-Z0-9]\+\([a-zA-Z0-9]\)\@!"
-syn match _cStruct "\([a-zA-Z0-9]\)[a-zA-Z0-9]\+_t\([a-zA-Z0-9]\)\@!"
-syn match _cFunction "\(^[^# \t][^;]\+ \*\=\)\@<=[^;*]\+(\@=" contains=Comment
+syn match _cStruct "\([a-zA-Z0-9]\)[a-zA-Z0-9_]\+_t\([a-zA-Z0-9]\)\@!"
+syn match _cFunction "\(^[^# \t][^;]\+ \**\)\@<=[^;(/*]\+(\@=" contains=Comment
 
 hi _arithmetic_operator ctermfg=3
 hi _delimiter ctermfg=242
