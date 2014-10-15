@@ -10,8 +10,10 @@
 		zstyle ":completion:*" menu select=2
 		zstyle ":completion:*" verbose yes
 		zstyle ":completion:*:processes-names" command "ps -e -o comm="
-		zstyle ":completion:*:*:vim:*" ignored-patterns "*.(o|pyc)"
+		zstyle ":completion:*:*:vim:*" ignored-patterns "*.(o|pyc|pdf)"
 		zstyle ":completion:*:*:pylint:*" file-patterns "*.py"
+		zstyle ":completion:*:*:node:*" file-patterns "*.js"
+		zstyle ":completion:*:*:osm2pgsql:*" file-patterns "*.pbf"
 
 	zmodload zsh/zle
 	DOT=$HOME/.dotfiles/zsh/
@@ -50,14 +52,11 @@
 	alias ccat="pygmentize -O style=monokai -f terminal -g"
 	alias clip="xclip -select clipboard"
 	alias com=command
-	alias ev=evince
 	alias gcc="gcc -Wall -Wextra"
 	alias gth=gthumb
 	alias jsw="jekyll serve --watch"
 	alias ka=killall
 	alias keepass="keepassx ~/.keepassx/.passwords.kdb"
-	alias memcheck="valgrind --leak-check=yes --show-reachable=yes\
-		--num-callers=20 --track-fds=yes --track-origins=yes"
 	alias nyan="nc -v nyancat.dakko.us 23"
 	alias py=python
 	alias pylint="pylint --reports=n --indent-string='\t'\
@@ -136,12 +135,12 @@
 
 			local cmd=""
 			[ $# -eq 1 ] && cmd="$1" || cmd="${@[2, -1]}"
-			alias "$1"="command nohup $cmd > /dev/null 2>&1"
+			alias "$1"="command nohup $cmd > /dev/null 2>&1 &"
 		}
 
 		alias_bg chrome google-chrome
 		alias_bg libre libreoffice
-		alias_bg ev
+		alias_bg ev evince
 		alias_bg gimp
 
 # variables
@@ -249,10 +248,36 @@
 			if [[ "$(sdcv -n $1)" =~ '^Nothing similar to ' ]]; then
 				echo "No match for '$1' found."
 			else
-				sdcv -n $1 | remark ~/.dotfiles/zsh/remark_syntax/sdcv.remark \
+				sdcv -n $1 | remark $DOT/remark_syntax/sdcv.remark \
 					| less
 			fi
 		fi
+	}
+
+	rmw(){
+		# Trash-can alternative to `rm`.
+		#
+		# use: rmw OBJ1 ...
+		#   OBJ1, ...: Files/directories to move to ~/.trash.
+
+		mv $* ~/.trash
+	}
+
+	memcheck(){
+		# Wrapper around the Valgrind `memcheck` tool; sets helpful flags and
+		# colorizes output using the `remark` utility.
+		#
+		# use: memcheck EXECUTABLE
+		#   EXECUTABLE (str): Invocation of the executable that valgrind will
+		#       run in a sandbox.
+
+		valgrind \
+			--leak-check=yes \
+			--show-reachable=yes \
+			--num-callers=20 \
+			--track-fds=yes \
+			--track-origins=yes $1 2>&1 | \
+		remark $DOT/remark_syntax/memcheck.remark
 	}
 
 	if [[ -s "/etc/zsh_command_not_found" ]]; then

@@ -1,0 +1,26 @@
+include "common"
+
+# numbers
+/[0-9]+/g {
+	cyan
+}
+
+# leading PID
+/^==[0-9]+==/ {
+	green
+}
+
+# hexadecimal values
+/0x[0-9a-fA-F]+/ {
+	blue
+}
+
+# all caps
+/\<[A-Z]+\>/g {
+	bold
+}
+
+# file paths
+/\/([^\/]+\/?)+/ {
+	yellow
+}
