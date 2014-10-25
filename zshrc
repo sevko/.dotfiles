@@ -1,6 +1,8 @@
 # settings
 	setopt extendedglob
 	setopt GLOB_COMPLETE
+	setopt NO_HUP
+	setopt NO_CHECK_JOBS
 	setopt braceccl
 
 	# completion
@@ -121,6 +123,16 @@
 		alias gu="git up"
 
 	# background
+		exec_background(){
+			# Detach and silently execute a command.
+			#
+			# use: exec_background CMD [ARGS ...]
+			#   CMD: the command to execute
+			#   ARGS: any args to pass to the command.
+
+			(command nohup $* &) > /dev/null 2>&1
+		}
+
 		alias_bg(){
 			# Wrapper for `alias` for processes meant to be run in the
 			# background.
@@ -128,17 +140,16 @@
 			# use: alias_bg ALIAS_NAME [ALIAS_CONTENTS ...]
 			#   ALIAS_NAME (str) : The name of the alias, as passed to `alias`.
 			#   ALIAS_CONTENTS (str) : The contents of the alias, as passed to
-			#       `alias`. Will be wrapped in `command nohup`, and standaroud
-			#       streams will be redirected to `/dev/null`. If no
+			#       `alias`. Will be wrapped in `exec_background()`. If no
 			#       argument(s) is/are given, `ALIAS_NAME` will be used as
 			#       `ALIAS_CONTENTS`.
 
-			local cmd=""
-			[ $# -eq 1 ] && cmd="$1" || cmd="${@[2, -1]}"
-			alias "$1"="command nohup $cmd > /dev/null 2>&1 &"
+			[ $# -eq 1 ] && local cmd="$1" || local cmd="${@[2, -1]}"
+			alias "$1"="exec_background $cmd"
 		}
 
 		alias_bg chrome google-chrome
+		alias_bg firefox
 		alias_bg libre libreoffice
 		alias_bg ev evince
 		alias_bg gimp
