@@ -3,19 +3,22 @@ setlocal tw=72
 setlocal colorcolumn=73
 setlocal spell spelllang=en_us
 
-syn match _gitcommitChangedFile "\v^\S.*$" contains=gitcommitDiff,Comment
-syn match _gitcommitSubjectLine "\v%1l%<51c."
-syn match _gitcommitUncapitalized "\v(^\t-)@<=\l"
-syn match _gitcommitBullet "\v(^\t)@<=-"
+syn match _gitcommit_abbr_hash "\v\x{7}"
+syn match _gitcommit_changed_file "\v^[^-+ \t].*$"
+	\ contains=gitcommit_diff,Comment
+syn match _gitcommit_subject_line "\v%1l%<51c."
+syn match _gitcommit_uncapitalized "\v(^\t-)@<=\l"
+syn match _gitcommit_bullet "\v(^\t)@<=-"
 
-syn region _gitcommitInlineCode start="`" end="`"
+syn region _gitcommit_inline_code start="`" end="`"
 syn match Comment "^#.*"
 
-hi _gitcommitChangedFile ctermfg=4
-hi _gitcommitSubjectLine ctermfg=3
-hi _gitcommitUncapitalized ctermfg=160
-hi _gitcommitBullet cterm=bold ctermfg=9
-hi _gitcommitInlineCode ctermfg=2
+hi _gitcommit_changed_file ctermfg=4
+hi _gitcommit_subject_line ctermfg=3
+hi _gitcommit_uncapitalized ctermfg=160
+hi _gitcommit_bullet cterm=bold ctermfg=9
+hi _gitcommit_inline_code ctermfg=2
+hi _gitcommit_abbr_hash ctermfg=5
 hi diffAdded ctermfg=2
 
 func! s:InsertStagedPaths()
