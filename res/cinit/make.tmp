@@ -11,7 +11,7 @@ OBJ = $(patsubst %.c, bin/%.o, $(foreach file, $(SRC), $(notdir $(file))))
 all: FLAGS += -Ofast
 all: bin $(PROJECT_EXECUTABLE)
 
-debug: FLAGS += -O0 -g3
+debug: FLAGS += -Og -g3
 debug: bin $(PROJECT_EXECUTABLE)
 
 run: all
