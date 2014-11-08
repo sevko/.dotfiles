@@ -27,6 +27,7 @@
 
 " settings
 
+	set fileformats=unix
 	set showcmd
 	set autowrite
 	set ttyfast lazyredraw
@@ -671,7 +672,8 @@
 			endif
 		endfunc
 
-		setl statusline=%1*\ %t\ " filename
+		setl statusline=%1*\ %t\  " filename
+		setl statusline+=%4*%{&ff!='unix'?'-------NOTUNIX-------':''}
 		setl stl+=%2*%{&readonly?'\ ':''} " readonly
 
 		if !exists("b:gitBranchName")
