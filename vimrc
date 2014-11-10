@@ -22,7 +22,9 @@
 		execute "set <s-left>=\e[1;2D"
 	endif
 
-	call pathogen#infect("bundle/{}") | call pathogen#helptags()
+	call pathogen#infect("bundle/{}", "~/.dotfiles/vim/scripts/{}")
+	call pathogen#helptags()
+
 	filetype plugin indent on
 
 " settings
