@@ -91,7 +91,6 @@
 		let g:NERDCustomDelimiters = {
 			\ "c": { "left": "//", "right": "",
 				\ "leftAlt": "/*","rightAlt": "*/" },
-			\ "mdl" : { "left" : "//" },
 			\ "pgsql" : { "left" : "--"}
 		\}
 
@@ -193,8 +192,8 @@
 			\"sh"]
 		au BufRead,BufNewFile *.tmp exe "set ft=template." .
 				\split(expand("%:t:r"), "_")[0]
-		au BufRead,BufNewFile *.mdl set filetype=mdl
 		au BufRead,BufRead *.supp set filetype=supp
+		au BufNewFile,BufRead *.hdl set filetype=hdl
 		au BufRead *.val set filetype=valgrind
 		au BufRead gitconfig set filetype=gitconfig
 		au BufRead psqlrc set filetype=pgsql
