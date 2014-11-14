@@ -98,4 +98,4 @@ setopt PROMPT_SUBST
 PROMPT='$(user_info)$(dir_path)$prompt_head'
 
 PS2="  $font[bold]$(fgCol 1)%_$(fgCol 1)$font[reset]"
-PS2="$PS2 $(fgCol 2)→$font[reset]"
+PS2="$PS2 $(fgCol 2)→$font[reset] "

@@ -39,6 +39,7 @@
 	fpath=($HOME/.dotfiles/zsh/ $fpath)
 
 	PATH=$PATH:~/.dotfiles/shell_scripts
+	PATH=$PATH:~/bin/nand2tetris/tools/ # temporary
 	EDITOR=vim
 	KEYTIMEOUT=1
 	COMPLETION_WAITING_DOTS="true"
@@ -174,11 +175,11 @@
 
 		test -z $submodule && echo "submodule required" 1>&2 && exit 1
 		test ! -f .gitmodules && echo ".gitmodules file not found" 1>&2 \
-			&& exit 2
+			&& return
 
 		NAME=$(echo $submodule | sed 's/\/$//g')
 		test -z $(git config --file=.gitmodules submodule.$NAME.url) \
-			&& echo "submodule not found" 1>&2 && exit 3
+			&& echo "submodule not found" 1>&2 && return
 
 		git config --remove-section submodule.$NAME
 		git config --file=.gitmodules --remove-section submodule.$NAME
@@ -195,11 +196,17 @@
 	}
 
 	gbda(){
-		# Delete a branch, locally and remotely.
+		# Delete a merged branch, locally and remotely.
 		#
 		# use: gbda GIT_BRANCH_NAME
 		# args:
-		#   GIT_BRANCH_NAME : The name of the branch to delete.
+		#   GIT_BRANCH_NAME : The name of the branch to delete. If it's not
+		#       merged, gbda will terminate.
+
+		if [ "$(git branch --merged | grep "$1")" = "" ]; then
+			echo "Branch $1 is not merged."
+			exit 1
+		fi
 
 		git branch -d $1
 		if [ "$(git branch -a --no-color | \
@@ -289,6 +296,11 @@
 			--track-fds=yes \
 			--track-origins=yes $1 2>&1 | \
 		remark $DOT/remark_syntax/memcheck.remark
+	}
+
+	unalias _
+	_(){
+		python -c "print $*"
 	}
 
 	if [[ -s "/etc/zsh_command_not_found" ]]; then
