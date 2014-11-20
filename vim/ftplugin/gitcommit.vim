@@ -4,8 +4,7 @@ setlocal colorcolumn=73
 setlocal spell spelllang=en_us
 
 syn match _gitcommit_abbr_hash "\v\x{7}"
-syn match _gitcommit_changed_file "\v^[^-+ \t].*$"
-	\ contains=gitcommit_diff,Comment
+syn match _gitcommit_changed_file "\v^\S.*$" contains=gitcommitDiff
 syn match _gitcommit_subject_line "\v%1l%<51c."
 syn match _gitcommit_uncapitalized "\v(^\t-)@<=\l"
 syn match _gitcommit_bullet "\v(^\t)@<=-"

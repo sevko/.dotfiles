@@ -93,9 +93,9 @@ func! PrettifyTable()
 endfunc
 
 func! SmartItalics()
-	if getline(".")[:col(".") - 1] !~ "^ *$"
+	if getline(".")[:col(".") - 1] !~ '^ \+$'
 		return "**\<left>"
 	else
-		return "*"
+		return "* "
 	endif
 endfunc
