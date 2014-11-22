@@ -6,16 +6,31 @@
 	setopt braceccl
 
 	# completion
-		autoload -Uz compinit
-		compinit
+		autoload -U colors && colors
+		autoload -U compinit && compinit
+		autoload -U vcs_info && vcs_info
+
+		zmodload zsh/complist
+		zmodload zsh/terminfo
+
+		# setopt
+		setopt \
+		  autocd \
+		  ksh_glob \
+		  extendedglob \
+		  prompt_subst \
+		  inc_append_history
+
+		bindkey -v
 
 		zstyle ":completion:*" menu select=2
 		zstyle ":completion:*" verbose yes
 		zstyle ":completion:*:processes-names" command "ps -e -o comm="
+
 		zstyle ":completion:*:*:vim:*" ignored-patterns "*.(o|pyc|pdf)"
-		zstyle ":completion:*:*:pylint:*" file-patterns "*.py"
-		zstyle ":completion:*:*:node:*" file-patterns "*.js"
-		zstyle ":completion:*:*:osm2pgsql:*" file-patterns "*.pbf"
+		zstyle ":completion:*:*:pylint:*" file-patterns "*.py *(-/)"
+		zstyle ":completion:*:*:node:*" file-patterns "*.js  *(-/)"
+		zstyle ":completion:*:*:osm2pgsql:*" file-patterns "*.pbf *(-/)"
 
 	zmodload zsh/zle
 	DOT=$HOME/.dotfiles/zsh/
@@ -27,6 +42,11 @@
 		COMPLETION_WAITING_DOTS="true"
 		DISABLE_UNTRACKED_FILES_DIRTY="true"
 
+		HISTFILE=~/.histfile
+		HISTSIZE=9000
+		SAVEHIST=9000
+		zstyle :compinstall filename '/home/sevko/.zshrc'
+
 		plugins=(last-working-dir pip git-extras)
 
 		if [ -d $ZSH ]; then
@@ -36,7 +56,7 @@
 	source $DOT/prompt.zsh
 	eval $(dircolors $DOT/dircolors)
 
-	fpath=($HOME/.dotfiles/zsh/ $fpath)
+	# fpath=($HOME/.dotfiles/zsh/ $fpath)
 
 	PATH=$PATH:~/.dotfiles/shell_scripts
 	PATH=$PATH:~/bin/nand2tetris/tools/ # temporary
@@ -59,11 +79,11 @@
 	alias gth=gthumb
 	alias jsw="jekyll serve --watch"
 	alias ka=killall
-	alias keepass="keepassx ~/.keepassx/.passwords.kdb"
 	alias nyan="nc -v nyancat.dakko.us 23"
 	alias py=python
 	alias pylint="pylint --reports=n --indent-string='\t'\
 		--output-format=colorized"
+	alias pp="python -m json.tool"
 	alias scan="command hp-scan --area=0,0,216,279 --mode=color"
 	alias sasw="sass --watch"
 	alias sdcv="sdcv --data-dir ~/.stardict"
@@ -149,6 +169,7 @@
 			alias "$1"="exec_background $cmd"
 		}
 
+		alias_bg keepass "keepassx ~/.keepassx/.passwords.kdb"
 		alias_bg chrome google-chrome
 		alias_bg firefox
 		alias_bg libre libreoffice
@@ -205,7 +226,7 @@
 
 		if [ "$(git branch --merged | grep "$1")" = "" ]; then
 			echo "Branch $1 is not merged."
-			exit 1
+			return
 		fi
 
 		git branch -d $1
@@ -353,14 +374,3 @@
 				"${(f)$(git branch --no-color | sed "/^* .*/d" | tr -d "^  ")}"
 			)
 		}
-
-# The following lines were added by zsh-newuser-install
-	HISTFILE=~/.histfile
-	HISTSIZE=9000
-	SAVEHIST=9000
-	bindkey -v
-	# End of lines configured by zsh-newuser-install
-	# The following lines were added by compinstall
-	zstyle :compinstall filename '/home/sevko/.zshrc'
-
-	# End of lines added by compinstall
