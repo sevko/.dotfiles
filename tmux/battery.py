@@ -1,42 +1,28 @@
-#! /usr/bin/python
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
 
 """
 A script that prints the computer's current battery level and status.
 """
 
-def battery_info():
-	"""
-	Returns information about the computer's battery.
+import subprocess
+import sys
+import os
 
+curr_dir = os.path.dirname(os.path.realpath(__file__))
+sys.path.append(os.path.join(curr_dir, "..", "shell_scripts"))
+import battery_warningd
+
+def _battery_info():
+	"""
 	Returns:
-		(str) The current battery level, and a Unicode "energy" symbol if it's
-		charging.
+		(string) The battery level, followed by a `%`, followed by
+		a Unicode energy symbol if the computer is currently charging.
 	"""
 
-	try:
-		level = (int(file_contents("energy_now")) * 100 /
-			int(file_contents("energy_full")))
-		status = file_contents("status")
-	except:
-		return "N/A"
-	charge_symbol = u" \u26a1".encode("utf-8")
-
-	return "%d%%%s" % (level, charge_symbol if status == "Charging" else "")
-
-def file_contents(filename):
-	"""
-	Return the contents of a battery status file.
-
-	Args:
-		path : (str) The path to a file inside `battery_dir`.
-
-	Return:
-		(str) The file's contents, with any trailing newlines removed.
-	"""
-
-	battery_dir = "/sys/class/power_supply/BAT0/"
-	with open("%s/%s" % (battery_dir, filename)) as obj:
-		return obj.read().rstrip("\n")
+	level, status = battery_warningd._get_battery_status()
+	status_str = "%d%%%s" % (level, " ⚡" if status == "charging" else "")
+	return status_str
 
 if __name__ == "__main__":
-	print battery_info()
+	print _battery_info()
