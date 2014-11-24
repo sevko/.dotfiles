@@ -1,10 +1,8 @@
-setlocal spell spelllang=en_us
+setl spell spelllang=en_us
 setl iskeyword-=.
 setl ts=4 sw=4
+setl expandtab
 so ~/.vimrc_after
-
-inore <buffer> * <c-r>=SmartItalics()<cr>
-inore <buffer> ** *<left>
 
 unlet b:current_syntax
 syn include @latex syntax/tex.vim
@@ -14,7 +12,15 @@ syn region _markdown_math_block start="\V$$" end="\V$$" contains=@latex keepend
 hi htmlItalic cterm=underline
 hi markdownCode ctermfg=2
 
-func! PrettifyTable()
+au QuitPre <buffer> Grip stop
+
+inore <buffer> * <c-r>=<SNR>SmartItalics()<cr>
+inore <buffer> ** *<left>
+
+" inore <buffer> <cr> <esc>:call <SID>AutoIncrementList()<cr>a
+" nnore <buffer> o $<esc>:call <SID>AutoIncrementList()<cr>a
+
+func! s:PrettifyTable()
 	" Pretty-format the markdown table under the cursor.
 	"
 	" Reformats the markdown table that begins on the current line and
@@ -92,10 +98,31 @@ func! PrettifyTable()
 	call append(l:startLine - 1, l:formattedRowStrings)
 endfunc
 
-func! SmartItalics()
+func! s:SmartItalics()
 	if getline(".")[:col(".") - 1] !~ '^ \+$'
 		return "**\<left>"
 	else
 		return "* "
+	endif
+endfunc
+
+com! -nargs=1 Grip :call <SID>Grip("<args>")
+
+func! s:Grip(action)
+	" Start/stop `grip` in the background for the markdown file in the current
+	" buffer.
+	"
+	" Args:
+	"   action: (string) Either "start" or "stop", to start/stop the Grip
+	"       server.
+
+	let grip_running = exists("b:grip_pid")
+	if a:action == "start" && !l:grip_running
+		let filepath = expand("%:p")
+		let b:grip_pid = system(printf("grip %s & echo -n $!", l:filepath))
+	elseif a:action == "stop" && l:grip_running
+		echom "Called: " . a:action . " " . b:grip_pid
+		call system("kill " . b:grip_pid)
+		unlet b:grip_pid
 	endif
 endfunc
