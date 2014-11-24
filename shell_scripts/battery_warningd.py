@@ -13,6 +13,7 @@ be kicked off on boot, which may be solved by adding a line to
     discharging.
   * upper: an array of battery-levels to check against when the computer is
     charging.
+  * sound: the path to the `.wav` sound file the script should play on warning.
 
 During every poll, if the current battery level is compared in either
 `lower`/`upper` (depending on whether the battery's charging or discharging), a
@@ -78,6 +79,7 @@ def _emit_warning(msg, sound_path):
 
 	Args:
 		msg (string): The message to display in the popup.
+		sound_path (string): The path of the `.wav` file to play.
 	"""
 
 	subprocess.call(["aplay", sound_path])
@@ -88,6 +90,12 @@ def _emit_warning(msg, sound_path):
 
 def _load_config(config_path):
 	"""
+	Reads and parses the config file. Also resolves its `sound` path to an
+	absolute path.
+
+	Args:
+		path (string): The path of the YAML config file to load.
+
 	Returns:
 		(dictionary) A dictionary representation of the configuration file
 			(`../res/battery_warning/config.yml`).
