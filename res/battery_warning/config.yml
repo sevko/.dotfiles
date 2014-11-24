@@ -1,5 +1,6 @@
 # Configuration file for the battery_warning script.
 
-interval : 1
-lower : [5, 10, 15, 20]
-upper : [90, 95, 97]
+interval: 1
+lower: [5, 10, 15, 20]
+upper: [90, 95, 97]
+sound: "warning.wav"
