@@ -58,7 +58,7 @@
 
 	# fpath=($HOME/.dotfiles/zsh/ $fpath)
 
-	PATH=$PATH:~/.dotfiles/shell_scripts
+	PATH=$PATH:~/.dotfiles/shell_scripts:~/bin/
 	PATH=$PATH:~/bin/nand2tetris/tools/ # temporary
 	EDITOR=vim
 	KEYTIMEOUT=1
@@ -123,7 +123,6 @@
 		alias gbm="git branch --merged"
 		alias gbnm="git branch --no-merged"
 		alias gc="git commit --verbose"
-		alias gcl="git clone"
 		alias gco="git checkout"
 		alias gcob="git checkout -b"
 		alias gd="git diff"
@@ -234,6 +233,40 @@
 			pcregrep -M "remotes/origin/$1\n")" ]; then
 			git push origin --delete $1
 		fi
+	}
+
+	gcl(){
+		# Smart git-clone wrapper, which can auto-insert the GitHub url for
+		# https/ssh depending on arguments.
+		#
+		# use: gcl (PROTOCOL USER/REPO) | URL
+		# args:
+		#   PROTOCOL: Either `s`(sh) or `h`(ttps). Auto-inserts the correct
+		#       GitHub url for each.
+		#   USER/REPO: The username of the owner and name of the GitHub
+		#       repository to clone.
+		#   URL: The fully qualified url of the repository to clone.
+
+		local url=""
+		if [ $# -eq 2 ]; then
+			case $1 in
+				s)
+					url="git@github.com:$2"
+					;;
+
+				h)
+					url="https://github.com/$2"
+					;;
+			esac
+		else
+			if ! [[ "$1" =~ ^https: ]]; then
+				url="git@github.com:$1"
+			else
+				url="$1"
+			fi
+		fi
+
+		git clone "$url"
 	}
 
 	gl(){
