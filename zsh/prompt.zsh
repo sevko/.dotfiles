@@ -76,7 +76,8 @@ user_info(){
 	# Indicate username and hostname if not the same as those of my standard
 	# account.
 
-	if [ "$USERNAME" != "sevko" ] || [ "$HOST" != "saturn" ]; then
+	if [ "$USERNAME" != "sevko" ] || [ -n "$SSH_CLIENT" ] || \
+		[ -n "$SSH_TTY" ]; then
 		echo "$(fgCol 2)$USERNAME$font[reset]$(fgCol 14)/$HOST "
 	fi
 }
