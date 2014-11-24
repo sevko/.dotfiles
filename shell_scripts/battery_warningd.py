@@ -48,7 +48,8 @@ def _battery_checker(config):
 
 		if level in levels:
 			if not warned:
-				_emit_warning("Battery %s, level: %d." % (status, level))
+				msg = "Battery %s, level: %d." % (status, level)
+				_emit_warning(msg, config["sound"])
 				warned = True
 		elif warned:
 			warned = False
@@ -71,7 +72,7 @@ def _get_battery_status():
 	return int(_extract_prop("percentage").rstrip("%")), \
 		_extract_prop("state")
 
-def _emit_warning(msg):
+def _emit_warning(msg, sound_path):
 	"""
 	Flash a graphical popup warning message to the user, and play a sound.
 
@@ -79,32 +80,29 @@ def _emit_warning(msg):
 		msg (string): The message to display in the popup.
 	"""
 
-	warning_wav_path = "../res/battery_warning/warning.wav"
+	subprocess.call(["aplay", sound_path])
+	subprocess.call([
+		"xmessage", "-default", "Acknowledge", "-button", "Acknowledge",
+		"-center", msg
+	])
 
-	subprocess.call(
-		["aplay", warning_wav_path], stdout=os.devnull, stderr=os.devnull
-	)
-	subprocess.call(
-		[
-			"xmessage", "-default", "Acknowledge", "-button", "Acknowledge",
-			"-center", msg
-		], stdout=os.devnull, stderr=os.devnull
-	)
-
-def _load_config():
+def _load_config(config_path):
 	"""
 	Returns:
 		(dictionary) A dictionary representation of the configuration file
 			(`../res/battery_warning/config.yml`).
 	"""
 
-	config_path = os.path.join(
-		os.path.dirname(os.path.realpath(__file__)),
-		"../res/battery_warning/config.yml"
-	)
+	curr_dir = os.path.dirname(os.path.realpath(__file__))
+	config_path = os.path.join(curr_dir, config_path)
 
 	with open(config_path) as config_file:
-		return yaml.load(config_file.read())
+		config = yaml.load(config_file.read())
+
+	config["sound"] = os.path.join(
+		os.path.dirname(config_path), config["sound"]
+	)
+	return config
 
 if __name__ == "__main__":
-	_battery_checker(_load_config())
+	_battery_checker(_load_config("../res/battery_warning/config.yml"))
