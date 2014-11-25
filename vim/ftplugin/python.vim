@@ -1,6 +1,7 @@
 let &l:include = "^import "
-set noet softtabstop=0 ts=4 sw=4
-set iskeyword+=\
+setl noet softtabstop=0 ts=4 sw=4
+setl iskeyword+=\
+setl path+=/usr/lib/python2.7
 
 Synclude arithmetic_operator ctermfg=3
 Synclude bitwise_operator ctermfg=1
@@ -15,6 +16,7 @@ syn match pythonStrFormatting
 syn match pythonStrFormatting
 	\ "%[-#0 +]*\%(\*\|\d\+\)\=\%(\.\%(\*\|\d\+\)\)\=[hlL]\=[diouxXeEfFgGcrs%]"
 	\ contained containedin=pythonString,pythonRawString
+syn match pythonStrFormatting "{\d\+}" containedin=pythonString,pythonRawString
 syn match _pythonImportedModule "\v((import|from) )@<=\S+"
 syn match _pythonMagic "__[a-zA-Z]\+__"
 syn keyword _pythonBuiltin self cls
