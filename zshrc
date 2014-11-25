@@ -69,6 +69,25 @@
 	bindkey -v "^r" history-incremental-search-backward
 
 # aliases
+	func_alias(){
+		# A convenience function-creation wrapper that allows easy creation of
+		# aliases with positional arguments. Also used to fake aliases when we
+		# want to bind them to custom completion functions, and, at the same
+		# time, want to preserve expansion-then-completion for all others
+		# (which appear to be two conflicting goals without a clear zsh
+		# configuration solution).
+		#
+		# use: func_alias ALIAS BODY
+		# args:
+		#   ALIAS: The alias/function name.
+		#   BODY: The body of the function. MUST be enclosed in single quotes
+		#       to prevent argument expansion (eg, 'echo $1' vs "echo $1",
+		#       since `$1` in the latter would get expanded before being
+		#       declared as the function body).
+
+		eval "$1(){$2}"
+	}
+
 	alias workflowy="/opt/google/chrome/google-chrome \
 		--profile-directory=Default --app-id=koegeopamaoljbmhnfjbclbocehhgmkm"
 	alias bpy=bpython
