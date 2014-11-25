@@ -91,6 +91,7 @@
 	alias workflowy="/opt/google/chrome/google-chrome \
 		--profile-directory=Default --app-id=koegeopamaoljbmhnfjbclbocehhgmkm"
 	alias bpy=bpython
+	func_alias cc 'gcc $* -o ${*[-1]%.c}'
 	alias ccat="pygmentize -O style=monokai -f terminal -g"
 	alias clip="xclip -select clipboard"
 	alias com=command
@@ -142,7 +143,7 @@
 		alias gbm="git branch --merged"
 		alias gbnm="git branch --no-merged"
 		alias gc="git commit --verbose"
-		alias gco="git checkout"
+		func_alias gco 'git checkout $1'
 		alias gcob="git checkout -b"
 		alias gd="git diff"
 		alias gf="git fetch"
@@ -150,6 +151,8 @@
 		alias gm="git merge --no-ff"
 		alias gp="git pull"
 		alias gpu="git push"
+		func_alias gpub \
+			'git push --set-upstream origin $(git symbolic-ref --short HEAD)'
 		alias gpuo="git push origin"
 		alias grh="git reset HEAD"
 		alias grhh="git reset --hard HEAD"
@@ -203,6 +206,7 @@
 	export LESS=-RSc
 
 # functions & conditionals
+
 	gdsu(){
 		# Delete a git submodule's files and metadata.
 		#
@@ -224,14 +228,6 @@
 		git config --file=.gitmodules --remove-section submodule.$NAME
 		git rm --cached $NAME
 		rm -rf $1
-	}
-
-	gpub(){
-		# Push the current git branch to the remote.
-		#
-		# use: gpub
-
-		git push --set-upstream origin $(git symbolic-ref --short HEAD)
 	}
 
 	gbda(){
@@ -298,17 +294,6 @@
 		git_log_format="%C(1)[ %h ]%Creset %C(3)%an%Creset "
 		git_log_format="$git_log_format%C(2)%cr%Creset %C(6)%s%Creset"
 		git log --pretty=format:$git_log_format $*
-	}
-
-	cc(){
-		# Compile the argument C file into an executable with the same root name.
-		#
-		# use: cc *COMPILER_OPTIONS C_SOURCE_FILE
-		# args:
-		#   *COMPILER_OPTIONS : Options passed to the compiler.
-		#   C_SOURCE_FILE : The C file to compile.
-
-		gcc $* -o ${*[-1]%.c}
 	}
 
 	add_host(){
@@ -409,20 +394,30 @@
 		_gco_compl(){
 			# Git branch-name and modified file-path completion for `gco`.
 
-			_git_branch_compl
-
 			modified_files=(
 				"${(f)$(git status --porcelain |\
 				sed "/^ M /!d" |\
 				sed "s/^ M //g")}"
 			)
+
+			remote_branches=(
+				"${(f)$(git branch --no-color --remote |\
+					sed "/^*/d;/HEAD/d;s/^  origin\///g")}"
+			)
+
+			_git_branch_compl
+			for branch in $remote_branches; do
+				if ! [[ ${reply[(r)$branch]} == $branch ]]; then
+					reply+=($branch)
+				fi
+			done
 			reply=($reply $modified_files)
 		}
 
 		_git_branch_compl(){
-			# Git branch-name completion.
+			# Git local branch-name completion.
 
 			reply=(
-				"${(f)$(git branch --no-color | sed "/^* .*/d" | tr -d "^  ")}"
+				"${(f)$(git branch --no-color | sed "/^*/d" | tr -d "^  ")}"
 			)
 		}
