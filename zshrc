@@ -56,8 +56,6 @@
 	source $DOT/prompt.zsh
 	eval $(dircolors $DOT/dircolors)
 
-	# fpath=($HOME/.dotfiles/zsh/ $fpath)
-
 	PATH=$PATH:~/.dotfiles/shell_scripts:~/bin/
 	PATH=$PATH:~/bin/nand2tetris/tools/ # temporary
 	EDITOR=vim
@@ -88,81 +86,76 @@
 		eval "$1(){$2}"
 	}
 
-	alias workflowy="/opt/google/chrome/google-chrome \
-		--profile-directory=Default --app-id=koegeopamaoljbmhnfjbclbocehhgmkm"
-	alias bpy=bpython
+	alias -g bpy=bpython
 	func_alias cc 'gcc $* -o ${*[-1]%.c}'
-	alias ccat="pygmentize -O style=monokai -f terminal -g"
-	alias clip="xclip -select clipboard"
-	alias com=command
-	alias gcc="gcc -Wall -Wextra"
-	alias gth=gthumb
-	alias jsw="jekyll serve --watch"
-	alias ka=killall
-	alias nyan="nc -v nyancat.dakko.us 23"
-	alias py=python
-	alias pylint="pylint --reports=n --indent-string='\t'\
+	alias -g clip="xclip -select clipboard"
+	alias -g gcc="gcc -Wall -Wextra"
+	alias -g gth=gthumb
+	alias -g jsw="jekyll serve --watch"
+	alias -g ka=killall
+	alias -g nyan="nc -v nyancat.dakko.us 23"
+	alias -g py=python
+	alias -g pylint="pylint --reports=n --indent-string='\t'\
 		--output-format=colorized"
-	alias pp="python -m json.tool"
-	alias scan="command hp-scan --area=0,0,216,279 --mode=color"
-	alias sasw="sass --watch"
-	alias sdcv="sdcv --data-dir ~/.stardict"
-	alias so=source
-	alias soz="source ~/.zshrc"
-	alias sudo="nocorrect sudo "
-	alias t="command tmux"
-	alias tmux="TERM=screen-256color-bce tmux"
-	alias uz=unzip
-	alias v="vim -p"
+	alias -g pp="python -m json.tool"
+	alias -g scan="command hp-scan --area=0,0,216,279 --mode=color"
+	alias -g sasw="sass --watch"
+	alias -g so=source
+	alias -g soz="source ~/.zshrc"
+	alias -g sudo="nocorrect sudo "
+	alias -g t="command tmux"
+	alias -g tmux="TERM=screen-256color-bce tmux"
+	alias -g uz=unzip
+	alias -g v="vim -p"
 
 	# apt-get
-		alias agi="sudo apt-get -y install"
-		alias agu="sudo apt-get update"
-		alias agr="sudo apt-get remove"
-		alias agrp="sudo apt-get remove --purge"
-		alias acs="sudo apt-cache search"
+		alias -g agi="sudo apt-get -y install"
+		alias -g agu="sudo apt-get update"
+		alias -g agr="sudo apt-get remove"
+		alias -g agrp="sudo apt-get remove --purge"
+		alias -g acs="sudo apt-cache search"
 
 	# core utils
-		alias c=cd
-		alias l="ls --color=auto -h --group-directories-first -p"
-		alias ll="l -al"
-		alias m=man
-		alias mk="make -j"
-		alias mkd=mkdir
-		alias rmd=rmdir
-		alias rmrf="rm -rf"
-		alias wg=wget
+		alias -g c=cd
+		alias -g l="ls --color=auto -h --group-directories-first -p"
+		alias -g ll="l -al"
+		alias -g m=man
+		alias -g mk="make -j"
+		alias -g mkd=mkdir
+		alias -g rmd=rmdir
+		alias -g rmrf="rm -rf"
+		alias -g wg=wget
 
 	# git
-		alias g=git
-		alias ga="git add"
-		alias gau="git add -u"
-		alias gb="git branch"
-		alias gba="git branch -a"
-		alias gbd="git branch -d"
-		alias gbm="git branch --merged"
-		alias gbnm="git branch --no-merged"
-		alias gc="git commit --verbose"
+		alias -g g=git
+		alias -g ga="git add"
+		alias -g gau="git add -u"
+		alias -g gb="git branch"
+		alias -g gba="git branch -a"
+		alias -g gbd="git branch -d"
+		alias -g gbm="git branch --merged"
+		alias -g gbnm="git branch --no-merged"
+		alias -g gc="git commit --verbose"
 		func_alias gco 'git checkout $1'
-		alias gcob="git checkout -b"
-		alias gd="git diff"
-		alias gf="git fetch"
-		alias gi="git init"
-		alias gm="git merge --no-ff"
-		alias gp="git pull"
-		alias gpu="git push"
+		alias -g gcob="git checkout -b"
+		alias -g gd="git diff"
+		alias -g gf="git fetch"
+		alias -g gi="git init"
+		alias -g gm="git merge --no-ff"
+		alias -g gp="git pull"
+		alias -g gpu="git push"
 		func_alias gpub \
 			'git push --set-upstream origin $(git symbolic-ref --short HEAD)'
-		alias gpuo="git push origin"
-		alias grh="git reset HEAD"
-		alias grhh="git reset --hard HEAD"
-		alias grm="git rm"
-		alias gs="git status"
-		alias gst="git stash"
-		alias gsta="git stash apply"
-		alias gstl="git stash list"
-		alias gsu="git submodule"
-		alias gu="git up"
+		alias -g gpuo="git push origin"
+		alias -g grh="git reset HEAD"
+		alias -g grhh="git reset --hard HEAD"
+		alias -g grm="git rm"
+		alias -g gs="git status"
+		alias -g gst="git stash"
+		alias -g gsta="git stash apply"
+		alias -g gstl="git stash list"
+		alias -g gsu="git submodule"
+		alias -g gu="git up"
 
 	# background
 		exec_background(){
@@ -187,7 +180,7 @@
 			#       `ALIAS_CONTENTS`.
 
 			[ $# -eq 1 ] && local cmd="$1" || local cmd="${@[2, -1]}"
-			alias "$1"="exec_background $cmd"
+			alias -g "$1"="exec_background $cmd"
 		}
 
 		alias_bg keepass "keepassx ~/.keepassx/.passwords.kdb"
