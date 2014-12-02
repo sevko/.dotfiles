@@ -1,4 +1,4 @@
-let &l:include = '^\zsfrom.*\ze$'
+let &l:include = '\v^\zs(from|import).*\ze$'
 setl noet softtabstop=0 ts=4 sw=4
 setl iskeyword+=\
 setl path+=/usr/lib/python2.7
@@ -42,10 +42,20 @@ inorem <buffer> __ ____<left><left>
 func! ResolveIncludePath(path)
 	if a:path[:3] == "from"
 		let components = split(a:path)
+		if len(components) != 4
+			return ""
+		endif
 		let base_path = substitute(l:components[1], '\.', "/", "g")
-		let import_path = printf("%s/%s", l:base_path, components[3])
+
+		let file_path = l:base_path . ".py"
+		if filereadable(l:file_path)
+			return l:file_path
+		else
+			let import_path = printf("%s/%s", l:base_path, components[3])
+		endif
 	else
-		let import_path = substitute(a:path, '\.', "/", "g")
+		let module_path = split(a:path)[1]
+		let import_path = substitute(l:module_path, '\.', "/", "g")
 	endif
 
 	if isdirectory(l:import_path)
