@@ -1,0 +1,26 @@
+#! /usr/bin/env bash
+
+# Description:
+#   A wrapper around bpython that allows the user to specify whether it should
+#   be executed with version 2 or 3 of the Python interpreter.
+#
+# Use:
+#   bpython+ PYTHON_VERSION [BPYTHON_ARGS]
+#
+#   PYTHON_VERSION: Either 2 or 3, for version 2/3 of the Python interpreter.
+#   BPYTHON_ARGS: Argument to pass on to bpython.
+
+python_interpreter="python${1}"
+bpython_args="${@:2}"
+bpython_import=$(cat << PYTHON
+import sys
+import pkg_resources
+
+__requires__ = "bpython"
+sys.exit(
+	pkg_resources.load_entry_point("bpython", "console_scripts", "bpython")()
+)
+PYTHON
+)
+
+$python_interpreter -c "$bpython_import" $bpython_args
