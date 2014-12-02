@@ -4,7 +4,7 @@ Synclude constant cterm=bold ctermfg=70
 Synclude ternary ctermfg=5
 Synclude delimiter ctermfg=11
 
-syn keyword Identifier console
+syn keyword Identifier console JSON Math
 syn keyword Constant NaN Infinity
 syn match Statement "['"]use strict['"];"
 syn match _javascript_arithmetic_operator '[+\-%=*]\|[*\/]\@<!\/[*\/]\@!'

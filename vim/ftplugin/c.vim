@@ -1,4 +1,4 @@
-set formatoptions+=t
+setl formatoptions+=t
 
 Ftpackage curly_bracket
 
