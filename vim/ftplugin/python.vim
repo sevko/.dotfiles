@@ -1,7 +1,8 @@
-let &l:include = "^import "
+let &l:include = '^\zsfrom.*\ze$'
 setl noet softtabstop=0 ts=4 sw=4
 setl iskeyword+=\
 setl path+=/usr/lib/python2.7
+setl includeexpr=ResolveIncludePath(v:fname)
 
 Synclude arithmetic_operator ctermfg=3
 Synclude bitwise_operator ctermfg=1
@@ -37,5 +38,23 @@ hi pythonStatement cterm=reverse,bold ctermfg=0 ctermbg=2
 hi pythonStrFormatting ctermfg=5
 
 inorem <buffer> __ ____<left><left>
+
+func! ResolveIncludePath(path)
+	if a:path[:3] == "from"
+		let components = split(a:path)
+		let base_path = substitute(l:components[1], '\.', "/", "g")
+		let import_path = printf("%s/%s", l:base_path, components[3])
+	else
+		let import_path = substitute(a:path, '\.', "/", "g")
+	endif
+
+	if isdirectory(l:import_path)
+		let l:import_path .= "/__init__"
+	endif
+	let l:import_path .= ".py"
+
+	echom a:path . " : " . l:import_path
+	return l:import_path
+endfunc
 
 so ~/.vimrc_after
