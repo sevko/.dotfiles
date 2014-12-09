@@ -50,7 +50,6 @@
 	set laststatus=2
 	set t_Co=256
 	set pumheight=10
-	set path-=/usr/include
 
 	set list lcs=tab:\·\ 
 
@@ -105,7 +104,7 @@
 		let NERDTreeMapJumpFirstChild="<leader>k"
 		let NERDTreeMapJumpLastChild="<leader>j"
 
-		let NERDTreeWinSize=24
+		let NERDTreeWinSize=30
 
 	" emmet
 		imap <c-e> <c-y>,
@@ -136,7 +135,7 @@
 	hi statuslinenc cterm=none ctermfg=black ctermbg=2
 	hi NonText ctermbg=15
 	hi Search ctermbg=1 ctermfg=8
-	hi SpellBad cterm=none ctermfg=1
+	hi SpellBad cterm=bold ctermfg=196
 
 	hi statusline cterm=none ctermbg=235
 	hi statuslinenc ctermfg=none ctermbg=236
@@ -206,6 +205,8 @@
 	com! ToggleUniversalFold :set foldmethod=indent <bar> exe "norm! " .
 			\(&foldlevel != 0?"zM":"zR")
 	com! -nargs=1 Ftpackage so ~/.dotfiles/vim/ftpackage/<args>.vim
+	com! Haste :echo system("command haste " . shellescape(expand("%:p")))
+	com! Dpaste :call Dpaste()
 
 " key mappings
 
@@ -332,6 +333,12 @@
 		inorem '' '
 		inorem ` ``<left>
 		inorem `` `
+
+		inorem <silent> <c-h> <esc>:TmuxNavigateLeft<cr>
+		inorem <silent> <c-j> <esc>:TmuxNavigateDown<cr>
+		inorem <silent> <c-k> <esc>:TmuxNavigateUp<cr>
+		inorem <silent> <c-l> <esc>:TmuxNavigateRight<cr>
+		inorem <silent> <c-\> <esc>:TmuxNavigatePrevious<cr>
 
 		inorem ( ()<left>
 		inorem (( ()
@@ -530,7 +537,7 @@
 		let soft_tab = repeat(" ", &tabstop)
 
 		if a:tab_type == "soft"
-			let soft_tab_regex = "\\(^\\(" . soft_tab . "\\)*\\)\\@<=" .
+			let soft_tab_regex = '\(^\(' . soft_tab . '\)*\)\@<=' .
 				\ soft_tab
 			silent! exec "normal! :%s/" . soft_tab_regex . "/\t/g\<cr>"
 		elseif a:tab_type == "hard"
@@ -706,4 +713,25 @@
 
 		set filetype=markdown
 		let g:markdown_fenced_languages = ["c", "python", "javascript"]
+	endfunc
+
+	func! Dpaste()
+python << endpython
+import urllib
+import urllib2
+
+request = urllib2.Request(
+	"https://dpaste.de/api/",
+	urllib.urlencode({
+		"content": "\n".join(vim.current.buffer),
+		"lexer": vim.current.buffer.options["filetype"],
+		"format": "url",
+	})
+)
+paste_url = urllib2.urlopen(request).read().rstrip("\n")
+vim.command("let l:paste_url = '{0}'".format(paste_url))
+endpython
+
+		echom l:paste_url
+		let @+ = l:paste_url
 	endfunc

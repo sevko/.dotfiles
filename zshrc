@@ -296,6 +296,14 @@
 		git log --pretty=format:$git_log_format $*
 	}
 
+	haste(){
+		if [ $# -eq 1 ]; then
+			command haste $1 | clip
+		else
+			command haste | clip
+		fi
+	}
+
 	add_host(){
 		# Add a new host entry to ~/.ssh/config.
 		#
