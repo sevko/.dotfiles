@@ -408,6 +408,10 @@
 				sed "s/^ M //g")}"
 			)
 
+			# Prune the current directory from each modified file's path.
+			git_dir=${PWD##$(git rev-parse --show-toplevel)}
+			modified_files=(${${modified_files##$git_dir[2,-1]}##/})
+
 			remote_branches=(
 				"${(f)$(git branch --no-color --remote |\
 					sed "/^*/d;/HEAD/d;s/^  origin\///g")}"
