@@ -181,7 +181,7 @@
 		au InsertLeave,WinEnter * silent! exe &nu?"set rnu":""
 
 		au FileType modula2 set filetype=markdown
-		au FileType cpp set filetype=c
+		au FileType cpp set filetype=c.cpp
 		au FileType sql set filetype=pgsql.sql
 
 		au bufnewfile * silent! call s:LoadTemplate()
@@ -214,7 +214,7 @@
 
 	" global
 
-		map <leader>c <plug>NERDCommenterToggle
+		map c <plug>NERDCommenterToggle
 		map <leader>cz <plug>NerdComComment
 
 	" normal
@@ -641,13 +641,6 @@
 				return
 			endif
 		endfor
-	endfunc
-
-	func! EatSpace()
-		" Deletes the preceding space; used by abbreviations.
-
-		let c = nr2char(getchar(0))
-		return (c == " ")?"":c
 	endfunc
 
 	func! SynStack()
