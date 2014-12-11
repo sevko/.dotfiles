@@ -1,15 +1,23 @@
 snippet req
-var $1 = require("$1");
+var `!p
+importName = []
+importPath = t[1].split("/")[-1]
+
+ind = 0
+while ind < len(importPath):
+	curr_char = importPath[ind]
+	if curr_char == "-" or curr_char == "_":
+		ind += 1
+		if ind >= len(importPath):
+			break
+		importName.append(importPath[ind].upper()) 
+	else:
+		importName.append(curr_char) 
+	ind += 1
+
+snip.rv = "".join(importName)` = require( '$1' );
 endsnippet
 
 snippet err
-console.error($1);
-endsnippet
-
-snippet read "" i
-fs.createReadStream($1)
-endsnippet
-
-snippet write "" i
-fs.createWriteStream($1)
+console.error( $1 );
 endsnippet
