@@ -183,6 +183,7 @@
 		au FileType modula2 set filetype=markdown
 		au FileType cpp set filetype=c.cpp
 		au FileType sql set filetype=pgsql.sql
+		au FileType node set filetype=node.javascript
 
 		au bufnewfile * silent! call s:LoadTemplate()
 		au BufRead,BufNewFile *.json set filetype=javascript.json
@@ -709,15 +710,32 @@
 	endfunc
 
 	func! Dpaste()
+
+
 python << endpython
 import urllib
 import urllib2
+
+valid_filetypes = [
+	"text", "plain", "abap", "apacheconf", "applescript", "as", "bash",
+	"bbcode", "c", "clojure", "cobol", "css", "cuda", "dart", "delphi",
+	"diff", "django", "erlang", "fortran", "go", "groovy", "haml",
+	"haskell", "html", "http", "ini", "irc", "java", "js", "json",
+	"lua", "make", "mako", "mason", "matlab", "modula2", "monkey",
+	"mysql", "numpy", "objc", "ocaml", "perl", "php", "postscript",
+	"powershell", "prolog", "properties", "puppet", "python", "rb",
+	"rst", "rust", "sass", "scala", "scheme", "scilab", "scss",
+	"smalltalk", "smarty", "sql", "tcl", "tcsh", "tex", "text",
+	"vb.net", "vim", "xml", "xquery", "xslt", "yaml"
+]
+filetype = vim.current.buffer.options["filetype"]
+lexer = filetype if filetype in valid_filetypes else "plain"
 
 request = urllib2.Request(
 	"https://dpaste.de/api/",
 	urllib.urlencode({
 		"content": "\n".join(vim.current.buffer),
-		"lexer": vim.current.buffer.options["filetype"],
+		"lexer": lexer,
 		"format": "url",
 	})
 )
@@ -726,5 +744,5 @@ vim.command("let l:paste_url = '{0}'".format(paste_url))
 endpython
 
 		echom l:paste_url
-		let @+ = l:paste_url
+		silent! let @+ = l:paste_url
 	endfunc
