@@ -14,7 +14,7 @@ hi markdownCode ctermfg=2
 
 au QuitPre <buffer> Grip stop
 
-inore <buffer> * <c-r>=<SNR>SmartItalics()<cr>
+inore <buffer> * <c-r>=<SID>SmartItalics()<cr>
 inore <buffer> ** *<left>
 
 " inore <buffer> <cr> <esc>:call <SID>AutoIncrementList()<cr>a
