@@ -90,7 +90,9 @@
 		let g:NERDCustomDelimiters = {
 			\ "c": { "left": "//", "right": "",
 				\ "leftAlt": "/*","rightAlt": "*/" },
-			\ "pgsql" : { "left" : "--"}
+			\ "pgsql": {"left": "--"},
+			\ "hack_asm": {"left": "//"},
+			\ "hack_vm": {"left": "//"}
 		\}
 
 	" NERDTree
@@ -105,6 +107,8 @@
 		let NERDTreeMapJumpLastChild="<leader>j"
 
 		let NERDTreeWinSize=30
+		let NERDTreeWinSize=28
+		let NERDTreeIgnore = ["__pycache__", '\.pyc$']
 
 	" emmet
 		imap <c-e> <c-y>,
@@ -123,6 +127,19 @@
 
 	" Synclude
 		let g:synclude_matches_file = "~/.dotfiles/vim/matches.syn"
+
+	" TapSurround
+		let g:surround_close_char = {
+			\"<" : ">",
+			\"{" : "}",
+			\"(" : ")",
+			\'"' : '"',
+			\"'" : "'",
+			\"[" : "]",
+			\"*" : "*",
+			\"$" : "$",
+			\"`" : "`"
+		\}
 
 " highlighting/syntax
 
@@ -163,8 +180,6 @@
 		hi User6 ctermfg=231 ctermbg=31
 		hi User7 cterm=bold ctermfg=234 ctermbg=253
 
-	match _extraWhitespace /\s\+$/
-
 " autocommands
 
 	augroup miscellaneous
@@ -185,15 +200,17 @@
 		au FileType sql set filetype=pgsql.sql
 		au FileType node set filetype=node.javascript
 
+		au BufRead,BufNewFile * match _extraWhitespace /\s\+$/
 		au bufnewfile * silent! call s:LoadTemplate()
+		au BufRead {.,}pylintrc set ft=dosini
 		au BufRead,BufNewFile *.json set filetype=javascript.json
 		au BufReadPre,BufNewFile *.md let
 			\ g:markdown_fenced_languages = ["c", "python", "javascript",
 			\"sh"]
 		au BufRead,BufNewFile *.tmp exe "set ft=template." .
 				\split(expand("%:t:r"), "_")[0]
-		au BufRead,BufRead *.supp set filetype=supp
-		au BufNewFile,BufRead *.hdl set filetype=hdl
+		au BufRead *.supp set filetype=supp
+		au BufRead,BufNewFile *.md set ft=markdown
 		au BufRead *.val set filetype=valgrind
 		au BufRead gitconfig set filetype=gitconfig
 		au BufRead psqlrc set filetype=pgsql
@@ -216,6 +233,7 @@
 	" global
 
 		map c <plug>NERDCommenterToggle
+		map <leader>c :echo "NOPE"
 		map <leader>cz <plug>NerdComComment
 
 	" normal
