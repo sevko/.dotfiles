@@ -204,9 +204,9 @@
 		au bufnewfile * silent! call s:LoadTemplate()
 		au BufRead {.,}pylintrc set ft=dosini
 		au BufRead,BufNewFile *.json set filetype=javascript.json
-		au BufReadPre,BufNewFile *.md let
-			\ g:markdown_fenced_languages = ["c", "python", "javascript",
-			\"sh"]
+		au BufReadPre,BufNewFile *.md let g:markdown_fenced_languages = [
+			\"c", "python", "javascript", "sh"
+		\]
 		au BufRead,BufNewFile *.tmp exe "set ft=template." .
 				\split(expand("%:t:r"), "_")[0]
 		au BufRead *.supp set filetype=supp
