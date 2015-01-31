@@ -59,7 +59,7 @@
 	# fpath=($HOME/.dotfiles/zsh/ $fpath)
 
 	PATH=$PATH:~/.dotfiles/shell_scripts:~/bin/
-	PATH=$PATH:~/bin/nand2tetris/tools/ # temporary
+	PATH=$PATH:~/bin/processing # temporary
 	EDITOR=vim
 	KEYTIMEOUT=1
 	COMPLETION_WAITING_DOTS="true"
@@ -100,6 +100,9 @@
 	alias jsw="jekyll serve --watch"
 	alias ka=killall
 	alias nyan="nc -v nyancat.dakko.us 23"
+	func_alias processing \
+		'processing-java --force --run --sketch=$1 --output=$1/compiled_sketch'
+	func_alias processing_init 'mkdir $1 && vim $1/$1.pde'
 	alias py=python
 	alias pylint="pylint --reports=n --indent-string='\t'\
 		--output-format=colorized"
