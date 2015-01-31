@@ -40,3 +40,6 @@
 [submodule "vim/bundle/nginx-vim-syntax"]
 	path = vim/bundle/nginx-vim-syntax
 	url = https://github.com/evanmiller/nginx-vim-syntax
+[submodule "vim/bundle/vim-processing"]
+	path = vim/bundle/vim-processing
+	url = https://github.com/sophacles/vim-processing
