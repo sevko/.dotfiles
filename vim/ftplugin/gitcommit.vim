@@ -8,8 +8,12 @@ syn match _gitcommit_changed_file "\v^\S.*$" contains=gitcommitDiff
 syn match _gitcommit_subject_line "\v%1l%<51c."
 syn match _gitcommit_uncapitalized "\v(^\t-)@<=\l"
 syn match _gitcommit_bullet "\v(^\t)@<=-"
+syn keyword _github_close_issue close closes closed fix fixes fixed resolve
+	\ resolves resolved Close Closes Closed Fix Fixes Fixed Resolve Resolves
+	\ Resolved
 
 syn region _gitcommit_inline_code start="`" end="`"
+syn region String start='"' end='"'
 syn match Comment "^#.*"
 
 hi _gitcommit_changed_file ctermfg=4
@@ -18,6 +22,7 @@ hi _gitcommit_uncapitalized ctermfg=160
 hi _gitcommit_bullet cterm=bold ctermfg=9
 hi _gitcommit_inline_code ctermfg=2
 hi _gitcommit_abbr_hash ctermfg=5
+hi _github_close_issue ctermfg=9
 hi diffAdded ctermfg=2
 
 func! s:InsertStagedPaths()
