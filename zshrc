@@ -27,7 +27,8 @@
 		zstyle ":completion:*" verbose yes
 		zstyle ":completion:*:processes-names" command "ps -e -o comm="
 
-		zstyle ":completion:*:*:vim:*" ignored-patterns "*.(o|pyc|pdf)"
+		zstyle ":completion:*:*:vim:*" ignored-patterns \
+			"*.(o|pyc|pdf|png|gif|pbf|dbf|sh[px]|prj|cpg)"
 		zstyle ":completion:*:*:pylint:*" file-patterns "*.py *(-/)"
 		zstyle ":completion:*:*:node:*" file-patterns "*.js  *(-/)"
 		zstyle ":completion:*:*:osm2pgsql:*" file-patterns "*.pbf *(-/)"
@@ -60,6 +61,7 @@
 
 	PATH=$PATH:~/.dotfiles/shell_scripts:~/bin/
 	PATH=$PATH:~/bin/processing # temporary
+	PATH=$PATH:~/bin/elasticsearch-1.3.4/bin # temporary
 	EDITOR=vim
 	KEYTIMEOUT=1
 	COMPLETION_WAITING_DOTS="true"
@@ -67,6 +69,7 @@
 
 	stty intr \^x
 	bindkey -v "^r" history-incremental-search-backward
+	zstyle ":completion:*:default" list-colors ${(s.:.)LS_COLORS}
 
 # aliases
 	func_alias(){
@@ -209,7 +212,6 @@
 	export LESS=-RSc
 
 # functions & conditionals
-
 	gdsu(){
 		# Delete a git submodule's files and metadata.
 		#
@@ -365,6 +367,22 @@
 			--track-fds=yes \
 			--track-origins=yes $1 2>&1 | \
 		remark $DOT/remark_syntax/memcheck.remark
+	}
+
+	crop(){
+		$* > /tmp/log.txt &
+		let pid=$!
+		less -S +F /tmp/log.txt
+
+		echo "Kill process $pid? [y/n]"
+		read resp
+		if [[ $resp =~ [yY] ]]; then
+			kill -9 $pid > /dev/null && echo "Headshot."
+		fi
+	}
+
+	tard(){
+		tar cvfz $1.tar.gz $1
 	}
 
 	unalias _
