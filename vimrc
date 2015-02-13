@@ -199,6 +199,7 @@
 		au FileType cpp set filetype=c.cpp
 		au FileType sql set filetype=pgsql.sql
 		au FileType node set filetype=node.javascript
+		au FileType arduino set filetype=processing
 
 		au BufRead,BufNewFile * match _extraWhitespace /\s\+$/
 		au bufnewfile * silent! call s:LoadTemplate()
