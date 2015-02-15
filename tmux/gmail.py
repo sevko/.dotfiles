@@ -42,4 +42,4 @@ def get_gmail_credentials():
 		return cred_file.read().rstrip("\n").split(",")
 
 if __name__ == "__main__":
-	print count_unread_emails()
+	print(count_unread_emails())
