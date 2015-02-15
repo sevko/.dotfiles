@@ -6,14 +6,14 @@
 has_internet_connection(){
 	# Checks whether the computer is connected to the internet.
 
-	local test_ip1="google-public-dns-b.google.com"
-	local test_ip2="google-public-dns-b.google.com"
+	local test_ip1="google.com"
+	local test_ip2="yahoo.com"
 	(ping -w5 -c1 "$test_ip1" || ping -w5 -c1 "$test_ip2") > /dev/null
 	return $?
 }
 
 print_network_info(){
-	# If the computer is conneted to the internet, print the network name;
+	# If the computer is connected to the internet, print the network name;
 	# otherwise, "N/A".
 
 	if has_internet_connection; then
