@@ -1,6 +1,7 @@
 Ftpackage curly_bracket
 
 set iskeyword+=:
+let g:vim_indent_cont=shiftwidth()
 
 Synclude ternary containedin=ALL ctermfg=5
 syn match _vimAutoloadSymbol "\v\w@<=#\w@=" containedin=ALL

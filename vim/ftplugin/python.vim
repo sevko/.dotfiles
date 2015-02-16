@@ -3,6 +3,7 @@ setl noet softtabstop=0 ts=4 sw=4
 setl iskeyword+=\
 setl path+=/usr/lib/python2.7
 setl includeexpr=ResolveIncludePath(v:fname)
+let g:pyindent_open_paren="shiftwidth()"
 
 Synclude arithmetic_operator ctermfg=3
 Synclude bitwise_operator ctermfg=1
