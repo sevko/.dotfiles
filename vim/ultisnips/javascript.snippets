@@ -16,7 +16,7 @@ while($1){
 }
 endsnippet
 
-snippet fun
+snippet fun "" i
 function $1($2){
 	$3
 }
@@ -24,4 +24,31 @@ endsnippet
 
 snippet log "" b
 console.log($1);
+endsnippet
+
+snippet jstr
+JSON.stringify($1, undefined, ${3:4})
+endsnippet
+
+snippet try
+try {
+	$1
+}
+catch(ex){
+	$2
+}
+endsnippet
+
+snippet fore
+for(var $1 in $2){
+	$3
+}
+endsnippet
+
+snippet time
+new Date().getTime()
+endsnippet
+
+snippet ret
+return 
 endsnippet
