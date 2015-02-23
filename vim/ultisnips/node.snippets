@@ -10,14 +10,22 @@ while ind < len(importPath):
 		ind += 1
 		if ind >= len(importPath):
 			break
-		importName.append(importPath[ind].upper()) 
+		importName.append(importPath[ind].upper())
 	else:
-		importName.append(curr_char) 
+		importName.append(curr_char)
 	ind += 1
 
-snip.rv = "".join(importName)` = require( '$1' );
+if importName and importName[-1] in "0123456789":
+	importName.pop()
+snip.rv = "".join(importName)` = require("$1");
 endsnippet
 
 snippet err
-console.error( $1 );
+console.error($1);
+endsnippet
+
+snippet thr
+through.obj(function write(data, _, next){
+	$1
+})
 endsnippet
