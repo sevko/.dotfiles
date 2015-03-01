@@ -50,6 +50,7 @@
 	set laststatus=2
 	set t_Co=256
 	set pumheight=10
+	set complete+=k
 
 	set list lcs=tab:\·\ 
 
@@ -195,6 +196,7 @@
 		au InsertLeave * hi _extraWhitespace ctermbg=88
 		au InsertLeave,WinEnter * silent! exe &nu?"set rnu":""
 
+		au FileType * exe "setlocal dict+=~/.vim/dict/" . &filetype . ".txt"
 		au FileType modula2 set filetype=markdown
 		au FileType cpp set filetype=c.cpp
 		au FileType sql set filetype=pgsql.sql
