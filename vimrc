@@ -231,6 +231,17 @@
 
 " key mappings
 
+	" Automatically show the autocompletion menu when typing.
+	let char_nums = range(char2nr("0"), char2nr("9"))
+	let char_nums += range(char2nr("A"), char2nr("Z"))
+	let char_nums += range(char2nr("a"), char2nr("z"))
+
+	for char_num in char_nums
+		let char = nr2char(char_num)
+		silent! exec "inoremap <silent> " . char . " " . char .
+			\ "<c-n><c-p>"
+	endfor
+
 	let mapleader = " "
 
 	" global
