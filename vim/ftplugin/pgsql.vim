@@ -4,6 +4,8 @@ Synclude surrounding_element ctermfg=4
 Synclude delimiter ctermfg=242
 
 hi _pgsql_function ctermfg=9
+syn clear pgsqlString
+syn region pgsqlString start="'" end="'"
 
 nnorem <buffer> <leader>;
 	\ :exe "norm! $" . ("{," =~ getline(".")[-1:]?"r":"a") . ";"<cr>

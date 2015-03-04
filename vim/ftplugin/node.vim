@@ -53,3 +53,5 @@ endpython
 		endif
 	endif
 endfunc
+
+so ~/.vimrc_after
