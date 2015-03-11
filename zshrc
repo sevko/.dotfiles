@@ -113,6 +113,8 @@
 	alias scan="command hp-scan --area=0,0,216,279 --mode=color"
 	alias sasw="sass --watch"
 	alias sdcv="sdcv --data-dir ~/.stardict"
+	func_alias shp2json 'ogr2ogr -f GeoJSON ${1:r}.json $1'
+	func_alias json2shp 'ogr2ogr -f "ESRI Shapefile" ${1:r}.shp $1'
 	alias so=source
 	alias soz="source ~/.zshrc"
 	alias sudo="nocorrect sudo "
