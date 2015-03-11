@@ -1,3 +1,5 @@
+# vim: set ft=dircolors:
+
 # 00=none 01=bold 04=underscore 05=blink 07=reverse 08=concealed
 # Text color codes:
 # 30=black 31=red 32=green 33=yellow 34=blue 35=magenta 36=cyan 37=white
@@ -125,5 +127,11 @@ EXEC 01;50
 .spx 00;36
 .xspf 00;36
 
-.o 00;31
 .pdf 00;36
+.txt 00;32
+.rst 00;32
+.md 00;32
+
+.pyc 00;31
+.hi 00;31
+.o 00;31
