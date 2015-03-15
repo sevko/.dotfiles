@@ -30,6 +30,7 @@
 		zstyle ":completion:*:*:vim:*" ignored-patterns \
 			"*.(o|pyc|pdf|png|gif|pbf|dbf|sh[px]|prj|cpg)"
 		zstyle ":completion:*:*:pylint:*" file-patterns "*.py *(-/)"
+		zstyle ":completion:*:*:ghc:*" file-patterns "*.hs *(-/)"
 		zstyle ":completion:*:*:node:*" file-patterns "*.js  *(-/)"
 		zstyle ":completion:*:*:osm2pgsql:*" file-patterns "*.pbf *(-/)"
 
@@ -60,8 +61,7 @@
 	# fpath=($HOME/.dotfiles/zsh/ $fpath)
 
 	PATH=$PATH:~/.dotfiles/shell_scripts:~/bin/
-	PATH=$PATH:~/bin/processing # temporary
-	PATH=$PATH:~/bin/elasticsearch-1.3.4/bin # temporary
+	PATH=$PATH:~/bin/pyprocessing:~/bin/elasticsearch-1.3.4/bin:~/.cabal/bin
 	EDITOR=vim
 	KEYTIMEOUT=1
 	COMPLETION_WAITING_DOTS="true"
@@ -106,7 +106,8 @@
 	func_alias processing \
 		'processing-java --force --run --sketch=$1 --output=$1/compiled_sketch'
 	func_alias processing_init 'mkdir $1 && vim $1/$1.pde'
-	alias py=python
+	func_alias ghcr 'ghc $1 && ./${1:r}'
+	alias py=python3
 	alias pylint="pylint --reports=n --indent-string='\t'\
 		--output-format=colorized"
 	alias pp="python -m json.tool"
@@ -367,7 +368,7 @@
 			--show-reachable=yes \
 			--num-callers=20 \
 			--track-fds=yes \
-			--track-origins=yes $1 2>&1 | \
+			--track-origins=yes $* 2>&1 | \
 		remark $DOT/remark_syntax/memcheck.remark
 	}
 
