@@ -1,0 +1,22 @@
+snippet im
+import qualified $1 as ${1/.*\.//g}
+
+endsnippet
+
+snippet main
+main = do
+	$0
+endsnippet
+
+snippet let
+let $1 in $2
+endsnippet
+
+snippet fun
+$1 :: $2
+$1 $3${3/(.+)/ /}= $4
+endsnippet
+
+snippet data
+data $1 = $1 $2
+endsnippet
