@@ -6,14 +6,14 @@ so ~/.vimrc_after
 
 " Add LaTeX syntax highlighting to Kramdown math blocks.
 unlet b:current_syntax
-syn include @latex syntax/tex.vim
-syn region _markdown_math_inline start="\V$" end="\V$" contains=@latex keepend
-syn region _markdown_math_block start="\V$$" end="\V$$" contains=@latex keepend
+silent! syn include @latex syntax/tex.vim
+silent! syn region _markdown_math_inline start="\V$" end="\V$" contains=@latex keepend
+silent! syn region _markdown_math_block start="\V$$" end="\V$$" contains=@latex keepend
 
 " Add yaml syntax highlighting to Jekyll front matter.
 unlet b:current_syntax
-syn include @yaml syntax/yaml.vim
-syn region _jekyll_front_matter start="\%^---" end="---" keepend contains=@yaml
+silent! syn include @yaml syntax/yaml.vim
+silent! syn region _jekyll_front_matter start="\%^---" end="---" keepend contains=@yaml
 
 " Extend markdown code block language-specific highlighting to Jekyll Liquid
 " code blocks, contained in `{% highlight <lang> %}`/`{% endhighlight %}`.
@@ -39,7 +39,7 @@ inore <buffer> ** *<left>
 " inore <buffer> <cr> <esc>:call <SID>AutoIncrementList()<cr>a
 " nnore <buffer> o $<esc>:call <SID>AutoIncrementList()<cr>a
 
-func! s:PrettifyTable()
+func! PrettifyTable()
 	" Pretty-format the markdown table under the cursor.
 	"
 	" Reformats the markdown table that begins on the current line and
