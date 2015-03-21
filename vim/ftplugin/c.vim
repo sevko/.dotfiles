@@ -14,7 +14,7 @@ Synclude surrounding_element ctermfg=9
 syn match _cAddressOperator "\(\W\@<=&[^ \t&]\@=\|\*\S\@=\|->\|\.\)"
 syn match _cGlobal "\([a-zA-Z0-9]\)\@<!g_[a-zA-Z0-9]\+\([a-zA-Z0-9]\)\@!"
 syn match _cStruct "\([a-zA-Z0-9]\)[a-zA-Z0-9_]\+_t\([a-zA-Z0-9]\)\@!"
-syn match _cFunction "\(^[^# \t][^;]\+ \**\)\@<=[^;(/*]\+(\@=" contains=Comment
+syn match _cFunction "\(^[^# \t][^;]\+ \**\)\@<=[^=;(/*"]\+(\@=" contains=Comment
 
 hi _arithmetic_operator ctermfg=3
 hi _delimiter ctermfg=242
@@ -31,6 +31,7 @@ nm <buffer> <leader>{ $a<bs>{
 nnorem <buffer> <leader>ov :OpenTwinFile "vsplit"<cr>
 nnorem <buffer> <leader>os :OpenTwinFile "split"<cr>
 nnorem <buffer> <leader>gc :call <SID>GetFunctionHeaders()<cr>
+nnorem <buffer> <leader>d :call <SID>GetDocumentation()<cr>
 
 func! PrintTemplate()
 	" Echo my preferred order of declarations and definitions.
@@ -47,6 +48,10 @@ func! s:GetFunctionHeaders()
 
 	let script = "python ~/.dotfiles/vim/scripts/c_function_headers.py"
 	silent! exe printf("read! %s %s.c", l:script, expand("%:p:r"))
+endfunc
+
+func! s:GetDocumentation()
+	exe "norm! :!man -s3 " . expand("<cword>") . "\<cr>"
 endfunc
 
 source ~/.dotfiles/vimrc_after
