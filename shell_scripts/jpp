@@ -1,0 +1,10 @@
+#! /usr/bin/env python3
+
+# An alternative to `python -m json.tool` that prints unicode characters rather
+# than escape sequences.
+
+import sys
+import json
+
+json_ = json.loads(sys.stdin.read())
+print(json.dumps(json_, indent=4, ensure_ascii=False))
