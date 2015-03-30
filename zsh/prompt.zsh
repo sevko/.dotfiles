@@ -48,24 +48,31 @@ git_branch_status(){
 	fi
 }
 
+abbreviate_path(){
+	echo $1 | sed "s/\([^/]\)[^/]*\//\1\//g"
+}
+
 dir_path(){
 	# Return formatted working directory path.
 
 	# replace $HOME in $PWD with "~" character
 	if [[ "$PWD" =~ ^"$HOME"(/|$) ]]; then
-		workingDir="$(fgCol 38)~${PWD#$HOME}"
+		workingDir="~${PWD#$HOME}"
 	else
-		workingDir="$(fgCol 38)$PWD"
+		workingDir="$PWD"
 	fi
 
 	# if current directory is part of a git archive, highlight any directories
 	# that are part of the archive in a color different from the path
 	if $(inside_git_archive); then
 		gitRootDir=${$(git rev-parse --show-toplevel)##*/}
-		gitRootPre=${workingDir%$gitRootDir*}
-		gitRootPost=${gitRootDir##*/}${workingDir#*$gitRootDir}
+		gitRootPre=$(abbreviate_path ${workingDir%$gitRootDir*})
+		gitRootPost=$(abbreviate_path ${gitRootDir##*/}${workingDir#*$gitRootDir})
 
-		workingDir="$gitRootPre$(fgCol 43)$font[bold]$gitRootPost$font[reset]"
+
+		workingDir="$(fgCol 38)$gitRootPre$(fgCol 43)$font[bold]$gitRootPost$font[reset]"
+	else
+		workingDir="$(fgCol 38)$(abbreviate_path $workingDir)"
 	fi
 
 	[[ ! -w $PWD ]] && workingDir="$workingDir$(fgCol 196) "
