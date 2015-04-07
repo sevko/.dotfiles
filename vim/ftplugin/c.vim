@@ -2,7 +2,7 @@ setl formatoptions+=t
 
 Ftpackage curly_bracket
 
-Synclude constant cterm=bold ctermfg=70
+Synclude constant cterm=bold ctermfg=14
 syn match _arithmetic_operator '[+\-%=*]\|[*\/]\@<!\/[*\/]\@!'
 syn match _delimiter "[,;]"
 Synclude ternary ctermfg=1
@@ -31,7 +31,7 @@ nm <buffer> <leader>{ $a<bs>{
 nnorem <buffer> <leader>ov :OpenTwinFile "vsplit"<cr>
 nnorem <buffer> <leader>os :OpenTwinFile "split"<cr>
 nnorem <buffer> <leader>gc :call <SID>GetFunctionHeaders()<cr>
-nnorem <buffer> <leader>d :call <SID>GetDocumentation()<cr>
+nnorem <buffer> m :call <SID>GetFunctionDocumentation()<cr>
 
 func! PrintTemplate()
 	" Echo my preferred order of declarations and definitions.
@@ -50,8 +50,17 @@ func! s:GetFunctionHeaders()
 	silent! exe printf("read! %s %s.c", l:script, expand("%:p:r"))
 endfunc
 
-func! s:GetDocumentation()
-	exe "norm! :!man -s3 " . expand("<cword>") . "\<cr>"
+func! s:GetFunctionDocumentation()
+	let func_name = expand("<cword>")
+	vnew
+	setl buftype=nofile bufhidden=hide noswapfile
+	setl ft=man
+	silent! exe printf(
+		\"norm! :read! MANWIDTH=80 man -s3 %s || man -s2 %s\<cr>gg",
+		\l:func_name, l:func_name
+	\)
+	delete
+	setl nomodifiable nobuflisted
 endfunc
 
 source ~/.dotfiles/vimrc_after
