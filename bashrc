@@ -1,7 +1,7 @@
-# aliases
-	alias tmux="TERM=screen-256color-bce tmux"
+export PS1="[01m$[00m "
+alias tmux="TERM=screen-256color-bce tmux"
 
-# functions/conditionals
-	if [ "$(ps -al | grep tmux )" = "" ]
-		then tmux attach || tmux new
-	fi
+
+if [ "$(ps -al | grep tmux )" = "" ]
+	then tmux attach || tmux new
+fi
