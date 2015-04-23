@@ -219,6 +219,8 @@
 		au BufRead psqlrc set filetype=pgsql
 		au BufRead .psqlrc set filetype=pgsql
 		au BufReadPost ~/.vimrc exe "normal! zM"
+
+		au BufEnter * :let &titlestring=expand('%:t')
 	augroup END
 
 " commands
