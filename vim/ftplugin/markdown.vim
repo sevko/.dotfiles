@@ -5,13 +5,13 @@ setl expandtab
 so ~/.vimrc_after
 
 " Add LaTeX syntax highlighting to Kramdown math blocks.
-unlet b:current_syntax
+silent! unlet b:current_syntax
 silent! syn include @latex syntax/tex.vim
 silent! syn region _markdown_math_inline start="\V$" end="\V$" contains=@latex keepend
 silent! syn region _markdown_math_block start="\V$$" end="\V$$" contains=@latex keepend
 
 " Add yaml syntax highlighting to Jekyll front matter.
-unlet b:current_syntax
+silent! unlet b:current_syntax
 silent! syn include @yaml syntax/yaml.vim
 silent! syn region _jekyll_front_matter start="\%^---" end="---" keepend contains=@yaml
 
@@ -22,7 +22,7 @@ for lang in g:markdown_fenced_languages
 	let startExpr = "^{% highlight " . lang
 	let endExpr = "{% endhighlight %}"
 	let synName = "@markdownHighlight" . lang
-	exe printf(
+	silent! exe printf(
 		\"norm! :syn region %s start='%s' end='%s' keepend contains=%s\<cr>",
 		\regionName, startExpr, endExpr, synName
 	\)
