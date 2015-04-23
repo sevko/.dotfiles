@@ -61,7 +61,7 @@
 	# fpath=($HOME/.dotfiles/zsh/ $fpath)
 
 	PATH=$PATH:~/.dotfiles/shell_scripts:~/bin/
-	PATH=$PATH:~/bin/pyprocessing:~/bin/elasticsearch-1.3.4/bin:~/.cabal/bin
+	PATH=$PATH:~/bin/pyprocessing:~/bin/elasticsearch-1.5.1/bin:~/.cabal/bin
 	EDITOR=vim
 	KEYTIMEOUT=1
 	COMPLETION_WAITING_DOTS="true"
@@ -101,6 +101,7 @@
 	alias gcc="gcc -Wall -Wextra"
 	alias gth=gthumb
 	alias jsw="jekyll serve --watch"
+	alias jq="noglob jq"
 	alias ka=killall
 	alias nyan="nc -v nyancat.dakko.us 23"
 	func_alias processing \
@@ -140,7 +141,8 @@
 		alias mkd=mkdir
 		alias rmd=rmdir
 		alias rmrf="rm -rf"
-		alias wg=wget
+		alias wg="noglob wget"
+		alias curl="noglob curl"
 
 	# git
 		alias g=git
@@ -153,13 +155,13 @@
 		alias gbnm="git branch --no-merged"
 		alias gc="git commit --verbose"
 		func_alias gco 'git checkout $1'
-		alias gcob="git checkout -b"
+		alias gcob="noglob git checkout -b"
 		alias gd="git diff"
 		alias gf="git fetch"
 		alias gi="git init"
 		alias gm="git merge --no-ff"
 		alias gp="git pull"
-		alias gpu="git push"
+		alias gpu="noglob git push"
 		func_alias gpub \
 			'git push --set-upstream origin $(git symbolic-ref --short HEAD)'
 		alias gpuo="git push origin"
@@ -205,6 +207,7 @@
 		alias_bg libre libreoffice
 		alias_bg ev evince
 		alias_bg gimp
+		alias_bg tilemill "~/bin/tilemill/index.js"
 
 # variables
 	export EDITOR=vim
