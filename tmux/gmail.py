@@ -10,13 +10,7 @@ import imaplib
 import os
 
 def count_unread_emails():
-	"""
-	Queries Gmail's IMAP server for my unread emails.
-
-	Returns:
-		(str) A string representation (for `tmux` consumption) of my number of
-		unread emails.
-	"""
+	"""Get the number of unread emails from Gmail's IMAP server."""
 
 	obj = imaplib.IMAP4_SSL("imap.gmail.com", "993")
 	obj.login(*get_gmail_credentials())
@@ -30,12 +24,7 @@ def count_unread_emails():
 	)
 
 def get_gmail_credentials():
-	"""
-	Retrieves my Gmail credentials from a file outside of `.dotfiles/`.
-
-	Returns:
-		(tuple of str) A tuple in the following format: (username, password).
-	"""
+	"""Read Gmail credentials from a file."""
 
 	with open(os.path.expanduser("~/.sensitive/tmux_gmail_credentials.csv"))\
 		as cred_file:
