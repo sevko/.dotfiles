@@ -13,7 +13,3 @@ Host bitshift
 Host sevko.io
 	Hostname 104.131.120.234
 	User root
-
-Host mapzen
-	Hostname 54.164.17.151
-	User severyn
