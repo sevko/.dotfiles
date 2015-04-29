@@ -4,6 +4,11 @@ setopt GLOB_COMPLETE
 setopt NO_HUP
 setopt NO_CHECK_JOBS
 setopt braceccl
+setopt autocd
+setopt ksh_glob
+setopt extendedglob
+setopt prompt_subst
+setopt inc_append_history
 
 # completion
 autoload -U colors && colors
@@ -12,9 +17,7 @@ autoload -U vcs_info && vcs_info
 
 zmodload zsh/complist
 zmodload zsh/terminfo
-
-# setopt
-setopt autocd ksh_glob extendedglob prompt_subst inc_append_history
+zmodload zsh/zle
 
 bindkey -v
 zstyle ":completion:*" menu select=2
@@ -28,19 +31,19 @@ zstyle ":completion:*:*:ghc:*" file-patterns "*.hs *(-/)"
 zstyle ":completion:*:*:node:*" file-patterns "*.js  *(-/)"
 zstyle ":completion:*:*:osm2pgsql:*" file-patterns "*.pbf *(-/)"
 
-zmodload zsh/zle
 DOT=$HOME/.dotfiles/zsh/
-
-# zsh configuration
 ZSH=$DOT/plugins/oh-my-zsh
-
 DISABLE_AUTO_UPDATE="true"
 COMPLETION_WAITING_DOTS="true"
 DISABLE_UNTRACKED_FILES_DIRTY="true"
-
 HISTFILE=~/.histfile
 HISTSIZE=9000
 SAVEHIST=9000
+PATH=$PATH:~/.dotfiles/shell_scripts:~/bin/
+PATH=$PATH:~/bin/pyprocessing:~/bin/elasticsearch-1.5.1/bin:~/.cabal/bin
+EDITOR=vim
+KEYTIMEOUT=1
+
 zstyle :compinstall filename '/home/sevko/.zshrc'
 
 plugins=(last-working-dir pip git-extras)
@@ -51,13 +54,6 @@ fi
 
 source $DOT/prompt.zsh
 eval $(dircolors $DOT/dircolors)
-
-PATH=$PATH:~/.dotfiles/shell_scripts:~/bin/
-PATH=$PATH:~/bin/pyprocessing:~/bin/elasticsearch-1.5.1/bin:~/.cabal/bin
-EDITOR=vim
-KEYTIMEOUT=1
-COMPLETION_WAITING_DOTS="true"
-DISABLE_UNTRACKED_FILES_DIRTY="true"
 
 stty intr \^x
 bindkey -v "^r" history-incremental-search-backward
@@ -202,12 +198,10 @@ alias_bg gimp
 alias_bg tilemill "~/bin/tilemill/index.js"
 
 # variables
-export EDITOR=vim
-export TMPDIR=/tmp
-export PROMPT_DIRTRIM=3
-export SDCV_PAGER=less
-export PAGER=less
-export LESS=-RSc
+EDITOR=vim
+TMPDIR=/tmp
+PAGER=less
+LESS=-RSc
 
 # functions & conditionals
 gdsu(){
