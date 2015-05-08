@@ -4,6 +4,7 @@ import qualified $1 as ${1/.*\.//g}
 endsnippet
 
 snippet main
+main :: IO ()
 main = do
 	$0
 endsnippet
@@ -19,4 +20,13 @@ endsnippet
 
 snippet data
 data $1 = $1 $2
+endsnippet
+
+snippet inst
+instance $1 where
+	$2
+endsnippet
+
+snippet \ "" i
+\ $1 -> $2
 endsnippet
