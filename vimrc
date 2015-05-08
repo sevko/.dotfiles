@@ -338,6 +338,7 @@ inorem <expr> J ((pumvisible())?("\<c-n>\<c-n>\<c-n>"):("J"))
 inorem <expr> K ((pumvisible())?("\<c-p>\<c-p>\<c-p>"):("K"))
 
 inorem <c-p> <c-x><c-f>
+inorem <c-n> <esc>:call SkipPastSymbol()<cr>a
 
 inorem <tab> <c-r>=Tab_Or_Complete()<cr>
 inorem <s-tab> <c-p>
@@ -727,4 +728,14 @@ func! SetFiletypeToMarkdown()
 
 	set filetype=markdown
 	let g:markdown_fenced_languages = ["c", "python", "javascript"]
+endfunc
+
+func! SkipPastSymbol()
+	" Move the cursor past the next `symbolRegex` without leaving insert-mode.
+
+	let symbolRegex = '[)\]}]'
+	let currLn = getline(".")
+	if currLn[getcurpos()[2]:] =~ symbolRegex
+		exe "norm! /" . symbolRegex . "\<cr>"
+	endif
 endfunc
