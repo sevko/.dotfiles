@@ -125,23 +125,20 @@ func! s:SmartItalics()
 	endif
 endfunc
 
-com! -nargs=1 Grip :call <SID>Grip("<args>")
+com! Grip :call <SID>Grip()
 
-func! s:Grip(action)
-	" Start/stop `grip` in the background for the markdown file in the current
-	" buffer.
-	"
-	" Args:
-	"   action: (string) Either "start" or "stop", to start/stop the Grip
-	"       server.
+func! s:Grip()
+	" Toggle `grip` in the background for the markdown file in the current
+	" buffer. Its PID will be stored in `b:grip_pid`.
 
 	let grip_running = exists("b:grip_pid")
-	if a:action == "start" && !l:grip_running
-		let filepath = expand("%:p")
-		let b:grip_pid = system(printf("grip %s & echo -n $!", l:filepath))
-	elseif a:action == "stop" && l:grip_running
-		echom "Called: " . a:action . " " . b:grip_pid
+	if l:grip_running
 		call system("kill " . b:grip_pid)
 		unlet b:grip_pid
+		echom "Grip stopped."
+	else
+		let filepath = expand("%:p")
+		let b:grip_pid = system(printf("grip %s & echo -n $!", l:filepath))
+		echom "Grip started."
 	endif
 endfunc
