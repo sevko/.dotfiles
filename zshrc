@@ -41,7 +41,6 @@ HISTSIZE=9000
 SAVEHIST=9000
 PATH=$PATH:~/.dotfiles/shell_scripts:~/bin/
 PATH=$PATH:~/bin/pyprocessing:~/bin/elasticsearch-1.5.1/bin:~/.cabal/bin
-EDITOR=vim
 KEYTIMEOUT=1
 
 zstyle :compinstall filename '/home/sevko/.zshrc'
@@ -95,7 +94,8 @@ alias nyan="nc -v nyancat.dakko.us 23"
 func_alias processing \
 	'processing-java --force --run --sketch=$1 --output=$1/compiled_sketch'
 func_alias processing_init 'mkdir $1 && vim $1/$1.pde'
-func_alias ghcr 'ghc $1 && ./${1:r}'
+alias ghc="ghc -Wall -fno-warn-type-defaults"
+func_alias ghcr 'ghc $* && ./${1:r}'
 alias py=python3
 alias pylint="pylint --reports=n --indent-string='\t'\
 	--output-format=colorized"
@@ -196,12 +196,13 @@ alias_bg libre libreoffice
 alias_bg ev evince
 alias_bg gimp
 alias_bg tilemill "~/bin/tilemill/index.js"
+alias_bg skype
 
 # variables
-EDITOR=vim
-TMPDIR=/tmp
-PAGER=less
-LESS=-RSc
+export EDITOR=vim
+export TMPDIR=/tmp
+export PAGER=less
+export LESS=-RSc
 
 # functions & conditionals
 gdsu(){
