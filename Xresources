@@ -1,7 +1,7 @@
 xterm*faceName: DejaVu Sans Mono for Powerline
 xterm*locale: true
 xterm*utf8: true
-xterm*faceSize: 8
+xterm*faceSize: 9
 xterm*fullscreen: true
 xterm*internalBorder: 0
 xterm*selectToClipboard: true
