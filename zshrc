@@ -105,6 +105,7 @@ alias sasw="sass --watch"
 alias sdcv="sdcv --data-dir ~/.stardict"
 func_alias shp2json 'ogr2ogr -f GeoJSON ${1:r}.json $1'
 func_alias json2shp 'ogr2ogr -f "ESRI Shapefile" ${1:r}.shp $1'
+func_alias path 'readlink -e $1'
 alias so=source
 alias soz="source ~/.zshrc"
 alias sudo="nocorrect sudo "
@@ -376,6 +377,28 @@ crop(){
 
 tard(){
 	tar cvfz $1.tar.gz $1
+}
+
+pg2shp(){
+	# usage: pg2shp DB_NAME TABLE_NAME
+	#
+	# Export TABLE_NAME to a shapefile of the same name using pgsql2shp.
+
+	if [ $# -ne 2 ]; then
+		echo "Usage: pg2shp DB_NAME TABLE_NAME"
+		return 1
+	fi
+	pgsql2shp -k -f $2.shp $1 $2
+}
+
+tile2features(){
+	# usage: tile2features PATH_TO_VECTOR_TILE
+	#
+	# Convert a JSON vector tile to a GeoJSON feature-collection and print it
+	# to `stdout`.
+
+	cat $1 | jq '([.[].features] | add) as $foo |
+		{features: $foo, type: "FeatureCollection"}'
 }
 
 unalias _
