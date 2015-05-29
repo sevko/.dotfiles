@@ -122,7 +122,6 @@ alias agrp="sudo apt-get remove --purge"
 alias acs="sudo apt-cache search"
 
 # core utils
-alias c=cd
 alias l="ls --color=auto -h --group-directories-first -p"
 alias ll="l -al"
 alias m=man
@@ -470,3 +469,35 @@ _git_branch_compl(){
 		"${(f)$(git branch --no-color | sed "/^*/d" | tr -d "^  ")}"
 	)
 }
+
+c(){
+	cd $@
+	on_directory_enter
+}
+
+on_directory_enter(){
+	# Currently just handles (de)activating Python virtual envs.
+
+	venv_directory=.venv
+	curr_dir=$(pwd)
+
+	# If a venv is currently enabled, check if we're still in its directory
+	# tree and disable it if not.
+	if ! [ "$VIRTUAL_ENV" = "" ]; then
+		if [ "$(echo $curr_dir | grep "$(dirname $VIRTUAL_ENV)")" = "" ]; then
+			deactivate
+		fi
+	fi
+
+	# Search up the directory tree, stopping at the first directory with a
+	# virtual env and sourcing it.
+	dirs=($(echo ${curr_dir##$HOME} | tr "/" " "))
+	for dir in ${(Oa)dirs}; do
+		venv_path="${curr_dir%%$dir*}$dir/$venv_directory"
+		if [[ -d "$venv_path" ]]; then
+			source "$venv_path/bin/activate"
+		fi
+	done
+}
+
+on_directory_enter
