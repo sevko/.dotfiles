@@ -22,7 +22,7 @@ syn match pythonStrFormatting "{\d\+}" containedin=pythonString,pythonRawString
 syn match _pythonImportedModule "\v((import|from) )@<=\S+"
 syn match _pythonMagic "__[a-zA-Z]\+__"
 syn keyword _pythonBuiltin self cls
-syn region Comment start=/"""/ end=/"""/
+syn region Comment start=/"""\|'''/ end=/"""\|'''/
 
 hi _delimiter ctermfg=242
 hi _pythonBuiltin ctermfg=3

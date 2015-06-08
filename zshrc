@@ -105,6 +105,7 @@ alias sasw="sass --watch"
 alias sdcv="sdcv --data-dir ~/.stardict"
 func_alias shp2json 'ogr2ogr -f GeoJSON ${1:r}.json $1'
 func_alias json2shp 'ogr2ogr -f "ESRI Shapefile" ${1:r}.shp $1'
+func_alias path 'readlink -e $1'
 alias so=source
 alias soz="source ~/.zshrc"
 alias sudo="nocorrect sudo "
@@ -121,7 +122,6 @@ alias agrp="sudo apt-get remove --purge"
 alias acs="sudo apt-cache search"
 
 # core utils
-alias c=cd
 alias l="ls --color=auto -h --group-directories-first -p"
 alias ll="l -al"
 alias m=man
@@ -378,6 +378,28 @@ tard(){
 	tar cvfz $1.tar.gz $1
 }
 
+pg2shp(){
+	# usage: pg2shp DB_NAME TABLE_NAME
+	#
+	# Export TABLE_NAME to a shapefile of the same name using pgsql2shp.
+
+	if [ $# -ne 2 ]; then
+		echo "Usage: pg2shp DB_NAME TABLE_NAME"
+		return 1
+	fi
+	pgsql2shp -k -f $2.shp $1 $2
+}
+
+tile2features(){
+	# usage: tile2features PATH_TO_VECTOR_TILE
+	#
+	# Convert a JSON vector tile to a GeoJSON feature-collection and print it
+	# to `stdout`.
+
+	cat $1 | jq '([.[].features] | add) as $foo |
+		{features: $foo, type: "FeatureCollection"}'
+}
+
 unalias _
 _(){
 	python -c "print $*"
@@ -447,3 +469,35 @@ _git_branch_compl(){
 		"${(f)$(git branch --no-color | sed "/^*/d" | tr -d "^  ")}"
 	)
 }
+
+c(){
+	cd $@
+	on_directory_enter
+}
+
+on_directory_enter(){
+	# Currently just handles (de)activating Python virtual envs.
+
+	venv_directory=.venv
+	curr_dir=$(pwd)
+
+	# If a venv is currently enabled, check if we're still in its directory
+	# tree and disable it if not.
+	if ! [ "$VIRTUAL_ENV" = "" ]; then
+		if [ "$(echo $curr_dir | grep "$(dirname $VIRTUAL_ENV)")" = "" ]; then
+			deactivate
+		fi
+	fi
+
+	# Search up the directory tree, stopping at the first directory with a
+	# virtual env and sourcing it.
+	dirs=($(echo ${curr_dir##$HOME} | tr "/" " "))
+	for dir in ${(Oa)dirs}; do
+		venv_path="${curr_dir%%$dir*}$dir/$venv_directory"
+		if [[ -d "$venv_path" ]]; then
+			source "$venv_path/bin/activate"
+		fi
+	done
+}
+
+on_directory_enter
