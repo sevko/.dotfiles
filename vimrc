@@ -36,13 +36,13 @@ set nowrap
 set splitbelow splitright
 set incsearch
 
-set runtimepath+=~/.dotfiles/vim/
 set timeoutlen=280
 set colorcolumn=80
 set textwidth=79
 set scrolloff=25
 set noshowmatch
 set wildmenu wildmode=longest,list,full
+set wildignore+=*.o,*.hi,*.pyc
 set backspace=indent,eol,start
 set nf+=alpha
 set laststatus=2
@@ -234,12 +234,9 @@ let mapleader = " "
 " global
 
 map c <plug>NERDCommenterToggle
-map <leader>c :echo "NOPE"
-map <leader>cz <plug>NerdComComment
 
 " normal
-
-norem <f1> :NERDTreeToggle<cr>
+norem <leader>f :NERDTreeToggle<cr>
 nnorem <leader>ev :tabf $MYVIMRC<cr>
 nnorem <leader>ef :call OpenFtpluginFile()<cr>
 nnorem <leader>eu :call OpenUltiSnipsFile()<cr>
@@ -329,7 +326,7 @@ onorem <leader>k gg
 " insert
 
 inorem <special><expr> <esc>[200~ SmartPaste()
-im <F2> <plug>NERDCommenterInsert
+im <c-z> <plug>NERDCommenterInsert
 
 " Scroll up/down auto-complete menu with j/k
 inorem <expr> J ((pumvisible())?("\<c-n>\<c-n>\<c-n>"):("J"))
