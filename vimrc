@@ -195,7 +195,6 @@ augroup miscellaneous
 	au InsertLeave,WinEnter * silent! exe &nu?"set rnu":""
 
 	au FileType * exe "setlocal dict+=~/.vim/dict/" . &filetype . ".txt"
-	au FileType modula2 set filetype=markdown
 	au FileType cpp set filetype=c.cpp
 	au FileType sql set filetype=pgsql.sql
 	au FileType node set filetype=node.javascript
@@ -211,7 +210,6 @@ augroup miscellaneous
 	au BufRead,BufNewFile *.tmp exe "set ft=template." .
 			\split(expand("%:t:r"), "_")[0]
 	au BufRead *.supp set filetype=supp
-	au BufRead,BufNewFile *.md set ft=markdown
 	au BufRead *.val set filetype=valgrind
 	au BufRead gitconfig set filetype=gitconfig
 	au BufRead psqlrc set filetype=pgsql
@@ -718,16 +716,6 @@ func! StatusLineNC()
 	setl statusline=%1*\ %t\  " filename
 	setl stl+=%4*%{&modified?'\ +\ ':''} " modified
 	setl stl+=%5*%= " right justify
-endfunc
-
-func! SetFiletypeToMarkdown()
-	" Set the filetype to "markdown", and initilize
-	" `g:markdown_fenced_languages` (`g:markdown_fenced_languages` must be
-	" set before the "markdown" ftplugin files are loaded). A function is
-	" the cleanest way to bundle them together.
-
-	set filetype=markdown
-	let g:markdown_fenced_languages = ["c", "python", "javascript"]
 endfunc
 
 func! SkipPastSymbol()

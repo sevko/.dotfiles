@@ -31,8 +31,6 @@ endfor
 hi htmlItalic cterm=underline
 hi markdownCode ctermfg=2
 
-au QuitPre <buffer> Grip stop
-
 inore <buffer> * <c-r>=<SID>SmartItalics()<cr>
 inore <buffer> ** *<left>
 
@@ -125,20 +123,28 @@ func! s:SmartItalics()
 	endif
 endfunc
 
-com! Grip :call <SID>Grip()
+com! -nargs=? Grip :call <SID>Grip("<args>")
 
-func! s:Grip()
-	" Toggle `grip` in the background for the markdown file in the current
-	" buffer. Its PID will be stored in `b:grip_pid`.
+func! s:Grip(action)
+	" Start/stop `grip` in the background for the markdown file in the current
+	" buffer.
+	"
+	" Args:
+	"   action: (string) "start" or "stop", to start/stop the Grip server, or
+	"       "" to toggle it.
 
 	let grip_running = exists("b:grip_pid")
-	if l:grip_running
+	if l:grip_running && (a:action == "" || a:action == "stop")
 		call system("kill " . b:grip_pid)
 		unlet b:grip_pid
 		echom "Grip stopped."
-	else
+	elseif !l:grip_running && (a:action == "" || a:action == "start")
 		let filepath = expand("%:p")
 		let b:grip_pid = system(printf("grip %s & echo -n $!", l:filepath))
 		echom "Grip started."
 	endif
 endfunc
+
+au QuitPre <buffer> Grip stop
+redraw!
+Grip start
