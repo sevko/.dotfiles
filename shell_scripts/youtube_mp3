@@ -50,14 +50,14 @@ main(){
 
 		echo "Downloading video and extracting audio."
 		youtube-dl --extract-audio --audio-format mp3 --audio-quality 0 \
-			-o "%(id)s.%(ext)s" $id > /dev/null
+			-o "%(id)s.%(ext)s" -- $id > /dev/null
 
 		echo "Adding album art."
 		local filename=$(escape "$2")-$(escape "$3")-$(escape "$4").mp3
 		album_art_path=$(find ~/pic/album_art | sort -R | head -n 1)
 		avconv -loglevel error -i $id.mp3 -i $album_art_path -c copy $filename
 
-		rm $id.mp3
+		rm -- $id.mp3
 
 		echo "Editing tags."
 		mid3v2 --album=single --genre="$2" --artist="$3" --song="$4" $filename
