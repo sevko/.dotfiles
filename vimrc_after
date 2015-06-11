@@ -1,41 +1,42 @@
 " settings
 
-	set autoindent noexpandtab
-	let g:NERDCommenterSNR = GetScriptNumber("NERD_commenter.vim")
+set autoindent noexpandtab
+let g:NERDCommenterSNR = GetScriptNumber("NERD_commenter.vim")
 
-	match _extraWhitespace /\s\+$/
+match _extraWhitespace /\s\+$/
 
 " key mappings
-	inorem <space> <c-r>=UltiSnipExpand()<cr>
+
+inorem <space> <c-r>=UltiSnipExpand()<cr>
 
 " functions
 
-	func! s:LocalVimrc()
-		" Searches up the open file's directory tree for a file named
-		" ".vimrc.local"; if one exists, sources it.
+func! s:LocalVimrc()
+	" Searches up the open file's directory tree for a file named
+	" ".vimrc.local"; if one exists, sources it.
 
-		let cmd = "$HOME/.dotfiles/vim/scripts/local_vimrc.zsh " .
-			\ expand("%:p:")
+	let cmd = "$HOME/.dotfiles/vim/scripts/local_vimrc.zsh " .
+		\ expand("%:p:")
 
-		let local_vimrc_path = system(cmd)
-		if len(local_vimrc_path) != 0
-			exec "normal! :silent! source " . local_vimrc_path . "\<cr>"
-		endif
-	endfunc
+	let local_vimrc_path = system(cmd)
+	if len(local_vimrc_path) != 0
+		exec "normal! :silent! source " . local_vimrc_path . "\<cr>"
+	endif
+endfunc
 
-	func! UltiSnipExpand()
-		" Attempt to expand an UltiSnip snippet.
-		"
-		" Return:
-		"   (str) On successful expansion, return ""; on failure, " ".
+func! UltiSnipExpand()
+	" Attempt to expand an UltiSnip snippet.
+	"
+	" Return:
+	"   (str) On successful expansion, return ""; on failure, " ".
 
-		if eval(printf("<SNR>%d_IsCommentedNormOrSexy(line('.'))",
-			\g:NERDCommenterSNR))
-			return " "
-		else
-			call UltiSnips#ExpandSnippet()
-			return (g:ulti_expand_res == 0)?" ":""
-		endif
-	endfunc
+	if eval(printf("<SNR>%d_IsCommentedNormOrSexy(line('.'))",
+		\g:NERDCommenterSNR))
+		return " "
+	else
+		call UltiSnips#ExpandSnippet()
+		return (g:ulti_expand_res == 0)?" ":""
+	endif
+endfunc
 
-	silent! call s:LocalVimrc()
+silent! call s:LocalVimrc()
