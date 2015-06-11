@@ -1,6 +1,8 @@
 snippet im
-import qualified $1 as ${1/.*\.//g}
-
+import qualified $1`!p
+module_path = t[1]
+if "." in module_path:
+	snip.rv = " as " + module_path.split(".")[-1]`
 endsnippet
 
 snippet main
@@ -29,4 +31,8 @@ endsnippet
 
 snippet \ "" i
 \ $1 -> $2
+endsnippet
+
+snippet if
+if $1 then $2 else $3
 endsnippet
