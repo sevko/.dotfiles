@@ -1,0 +1,11 @@
+abs accumulate align and appearances append apply assoc before? begin bf bl
+boolean? butfirst butlast car cdr ceiling children close-all-ports
+close-input-port close-output-port cond cons cos count datum define display
+empty? eof-object? equal? error even? every expt filter first floor
+for-each if integer? item keep lambda last length let list list->vector
+list-ref list? load log make-node make-vector map max member member? min
+newline not null? number? odd? open-input-file open-output-file or
+procedure? quote quotient random read read-line read-string reduce remainder
+repeated round se sentence sentence? show show-line sin sqrt square trace
+untrace vector vector->list vector-length vector-ref vector-set! vector?
+vowel? word word? write
