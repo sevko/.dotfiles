@@ -14,6 +14,7 @@ silent! syn region _markdown_math_block start="\V$$" end="\V$$" contains=@latex 
 silent! unlet b:current_syntax
 silent! syn include @yaml syntax/yaml.vim
 silent! syn region _jekyll_front_matter start="\%^---" end="---" keepend contains=@yaml
+syn region _jekyll_code_block start="^{% highlight" end="^{% endhighlight %}"
 
 " Extend markdown code block language-specific highlighting to Jekyll Liquid
 " code blocks, contained in `{% highlight <lang> %}`/`{% endhighlight %}`.

@@ -34,7 +34,6 @@ endfunc
 
 if !exists("g:gitcommit_ftplugin_sourced")
 	let g:gitcommit_ftplugin_sourced = 1
-	call s:InsertStagedPaths()
 endif
 
 so ~/.vimrc_after
