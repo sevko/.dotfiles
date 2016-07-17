@@ -13,3 +13,7 @@ Host bitshift
 Host sevko.io
 	Hostname 104.131.120.234
 	User root
+
+Host sae
+	Hostname 18.102.196.139
+	User saeubuntu
