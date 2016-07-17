@@ -59,7 +59,11 @@ create_project(){
 
 	create_makefile
 	create_source_files
-	confirm_git_initialization
+
+	git rev-parse --git-dir
+	if [ "$?" -ne 0 ]; then
+		confirm_git_initialization
+	fi
 }
 
 main(){
