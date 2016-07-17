@@ -1,11 +1,10 @@
-#dotfiles
+# dotfiles
+This repo contains my various dotfiles and convenience tools/scripts. Most of it's custom-made but I've borrowed large
+portions from forums, blogs, and wikis.
 
-Enclosed are my configuration files and shell-scripts. Most of the code's
-home-brewed, but I've borrowed large portions from forums, blogs, and wikis.
-
-### Installation
-The enclosed installation script will handle all `symlink` creation, and other
-necessary setup.
+### installation
+The enclosed installation script will `symlink` dotfiles from their expected locations on disk to the ones in this
+repo.
 
 ```
 python setup.py
