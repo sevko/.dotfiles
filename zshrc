@@ -25,7 +25,7 @@ zstyle ":completion:*" verbose yes
 zstyle ":completion:*:processes-names" command "ps -e -o comm="
 
 zstyle ":completion:*:*:vim:*" ignored-patterns \
-	"*.(o|pyc|pdf|png|gif|pbf|dbf|sh[px]|prj|cpg)"
+	"*.(o|pyc|pdf|png|gif|pbf|dbf|sh[px]|prj|cpg|hi)"
 zstyle ":completion:*:*:pylint:*" file-patterns "*.py *(-/)"
 zstyle ":completion:*:*:ghc:*" file-patterns "*.hs *(-/)"
 zstyle ":completion:*:*:node:*" file-patterns "*.js  *(-/)"
@@ -80,22 +80,24 @@ func_alias(){
 
 alias workflowy="/opt/google/chrome/google-chrome \
 	--profile-directory=Default --app-id=koegeopamaoljbmhnfjbclbocehhgmkm"
-alias bpy=bpython
+alias bpy="bpython+ 3"
 func_alias cc 'gcc $* -o ${*[-1]%.c}'
 alias ccat="pygmentize -O style=monokai -f terminal -g"
 alias clip="xclip -select clipboard"
 alias com=command
 alias gcc="gcc -Wall -Wextra"
+alias google-music-manager="google-musicmanager && google-musicmanager"
 alias gth=gthumb
 alias jsw="jekyll serve --watch"
 alias jq="noglob jq"
 alias ka=killall
 alias nyan="nc -v nyancat.dakko.us 23"
+alias open=xdg-open
 func_alias processing \
 	'processing-java --force --run --sketch=$1 --output=$1/compiled_sketch'
 func_alias processing_init 'mkdir $1 && vim $1/$1.pde'
 alias ghc="ghc -Wall -fno-warn-type-defaults"
-func_alias ghcr 'ghc $* && ./${1:r}'
+func_alias ghcr 'ghc -Wall $* && ./${1:r}'
 alias py=python3
 alias pylint="pylint --reports=n --indent-string='\t'\
 	--output-format=colorized"
@@ -105,7 +107,7 @@ alias sasw="sass --watch"
 alias sdcv="sdcv --data-dir ~/.stardict"
 func_alias shp2json 'ogr2ogr -f GeoJSON ${1:r}.json $1'
 func_alias json2shp 'ogr2ogr -f "ESRI Shapefile" ${1:r}.shp $1'
-func_alias path 'readlink -e $1'
+func_alias cppath 'readlink -e $1 | clip'
 alias so=source
 alias soz="source ~/.zshrc"
 alias sudo="nocorrect sudo "
@@ -113,6 +115,7 @@ alias t="command tmux"
 alias tmux="TERM=screen-256color-bce tmux"
 alias uz=unzip
 alias v="vim -p"
+func_alias zipd 'zip -r $1.zip $1'
 
 # apt-get
 alias agi="sudo apt-get -y install"
@@ -390,6 +393,10 @@ pg2shp(){
 	pgsql2shp -k -f $2.shp $1 $2
 }
 
+gpuf(){
+	git push --force origin $(git rev-parse --abbrev-ref HEAD)
+}
+
 tile2features(){
 	# usage: tile2features PATH_TO_VECTOR_TILE
 	#
@@ -400,10 +407,10 @@ tile2features(){
 		{features: $foo, type: "FeatureCollection"}'
 }
 
-unalias _
-_(){
-	python -c "print $*"
+print_python_expr(){
+	python -c "from math import *; print $*"
 }
+alias _="noglob print_python_expr"
 
 if [[ -s "/etc/zsh_command_not_found" ]]; then
 	source "/etc/zsh_command_not_found"
@@ -501,3 +508,5 @@ on_directory_enter(){
 }
 
 on_directory_enter
+
+export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
