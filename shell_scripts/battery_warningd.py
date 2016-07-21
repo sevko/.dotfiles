@@ -32,6 +32,7 @@ import re
 import subprocess
 import time
 import yaml
+import logging
 
 def _battery_checker(config):
 	"""
@@ -43,6 +44,7 @@ def _battery_checker(config):
 
 	warned = False
 
+	logging.info("starting battery checker")
 	while True:
 		level, status = _get_battery_status()
 		levels = config["upper" if status == "charging" else "lower"]
@@ -56,6 +58,7 @@ def _battery_checker(config):
 			warned = False
 
 		time.sleep(config["interval"])
+	logging.info("ending battery checker")
 
 def _get_battery_status():
 	"""
@@ -83,6 +86,8 @@ def _emit_warning(msg, sound_path):
 	"""
 
 	subprocess.call(["aplay", sound_path])
+	# subprocess.call(["zenity", "--warning", "--text", msg])
+	logging.info("emitted warning `%s`", msg)
 	subprocess.call([
 		"xmessage", "-default", "Acknowledge", "-button", "Acknowledge",
 		"-center", msg
@@ -106,11 +111,12 @@ def _load_config(config_path):
 
 	with open(config_path) as config_file:
 		config = yaml.load(config_file.read())
+	logging.info("config file loaded")
 
 	config["sound"] = os.path.join(
-		os.path.dirname(config_path), config["sound"]
-	)
+		os.path.dirname(config_path), config["sound"])
 	return config
 
 if __name__ == "__main__":
+	logging.basicConfig(level=logging.DEBUG)
 	_battery_checker(_load_config("../res/battery_warning/config.yml"))
