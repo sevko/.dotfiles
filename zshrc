@@ -98,9 +98,8 @@ func_alias processing \
 func_alias processing_init 'mkdir $1 && vim $1/$1.pde'
 alias ghc="ghc -Wall -fno-warn-type-defaults"
 func_alias ghcr 'ghc -Wall $* && ./${1:r}'
-alias py=python3
-alias pylint="pylint --reports=n --indent-string='\t'\
-	--output-format=colorized"
+alias py=python
+alias pylint="pylint --reports=n --output-format=colorized"
 alias pp="python -m json.tool"
 alias scan="command hp-scan --area=0,0,216,279 --mode=color"
 alias sasw="sass --watch"
@@ -510,3 +509,8 @@ on_directory_enter(){
 on_directory_enter
 
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
+
+# Initialize pyenv
+export PATH="/home/sevko/.pyenv/bin:$PATH"
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
