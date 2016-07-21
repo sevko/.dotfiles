@@ -52,28 +52,38 @@ abbreviate_path(){
 	echo $1 | sed "s/\([^/]\)[^/]*\//\1\//g"
 }
 
+make_home_tilde(){
+	# If $1 starts with $HOME, replace $HOME with a '~' and return the new
+	# path. Otherwise, return $1
+
+	if [[ "$1" =~ ^"$HOME"(/|$) ]]; then
+		echo "~${1#$HOME}"
+	else
+		echo "$1"
+	fi
+}
+
 dir_path(){
 	# Return formatted working directory path.
-
-	# replace $HOME in $PWD with "~" character
-	if [[ "$PWD" =~ ^"$HOME"(/|$) ]]; then
-		workingDir="~${PWD#$HOME}"
-	else
-		workingDir="$PWD"
-	fi
 
 	# if current directory is part of a git archive, highlight any directories
 	# that are part of the archive in a color different from the path
 	if $(inside_git_archive); then
-		gitRootDir=${$(git rev-parse --show-toplevel)##*/}
-		gitRootPre=$(abbreviate_path ${workingDir%$gitRootDir*})
-		gitRootPost=$(abbreviate_path ${gitRootDir##*/}${workingDir#*$gitRootDir})
+		gitRootDir=$(git rev-parse --show-toplevel)
+		gitRootPre=${gitRootDir:h}
+		gitRootPost=${PWD##$gitRootPre}
 
+		gitRootPre="$(make_home_tilde $gitRootPre))"
+		gitRootPre="${$(abbreviate_path $gitRootPre/foo):h}/"
+		gitRootPost="${gitRootPost#/}"
 
-		workingDir="$(fgCol 38)$gitRootPre$(fgCol 43)$font[bold]$gitRootPost$font[reset]"
+		workingDir="$gitRootPre"
+		workingDir="$workingDir$(fgCol 43)$font[bold]"
+		workingDir="$workingDir$gitRootPost$font[reset]"
 	else
-		workingDir="$(fgCol 38)$(abbreviate_path $workingDir)"
+		workingDir="$(abbreviate_path $(make_home_tilde $PWD))"
 	fi
+	workingDir="$(fgCol 38)$workingDir"
 
 	[[ ! -w $PWD ]] && workingDir="$workingDir$(fgCol 196) "
 	echo -n $workingDir
