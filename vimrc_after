@@ -12,19 +12,6 @@ inorem <space> <c-r>=UltiSnipExpand()<cr>
 
 " functions
 
-func! s:LocalVimrc()
-	" Searches up the open file's directory tree for a file named
-	" ".vimrc.local"; if one exists, sources it.
-
-	let cmd = "$HOME/.dotfiles/vim/scripts/local_vimrc.zsh " .
-		\ expand("%:p:")
-
-	let local_vimrc_path = system(cmd)
-	if len(local_vimrc_path) != 0
-		exec "normal! :silent! source " . local_vimrc_path . "\<cr>"
-	endif
-endfunc
-
 func! UltiSnipExpand()
 	" Attempt to expand an UltiSnip snippet.
 	"

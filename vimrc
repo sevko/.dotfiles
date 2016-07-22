@@ -181,6 +181,30 @@ hi User7 cterm=bold ctermfg=234 ctermbg=253
 
 " autocommands
 
+func! LocalVimrc()
+	" Searches up the open file's directory tree for a file named
+	" ".vimrc.local"; if one exists, sources it.
+
+	if exists("b:local_vimrc_loaded")
+		return
+	endif
+
+	let b:local_vimrc_loaded = 1
+
+	let dir_to_use = expand("%:p:")
+	if len(dir_to_use) == 0
+		let dir_to_use = getcwd()
+	endif
+
+	let cmd = "$HOME/.dotfiles/vim/scripts/local_vimrc.zsh " . dir_to_use
+
+	let local_vimrc_path = system(cmd)
+	if len(local_vimrc_path) != 0
+		" exec ":source " . local_vimrc_path . "\<cr>"
+		exec "source " . local_vimrc_path
+	endif
+endfunc
+
 augroup miscellaneous
 	au!
 	au WinEnter,BufRead,BufNewFile * silent! call StatusLine()
@@ -217,6 +241,7 @@ augroup miscellaneous
 	au BufReadPost ~/.vimrc exe "normal! zM"
 
 	au BufWrite,BufRead,BufEnter * :let &titlestring=expand('%:t')
+	au BufEnter,Filetype * call LocalVimrc()
 augroup END
 
 " commands
