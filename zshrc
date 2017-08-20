@@ -88,6 +88,7 @@ alias com=command
 alias gcc="gcc -Wall -Wextra"
 alias google-music-manager="google-musicmanager && google-musicmanager"
 alias gth=gthumb
+alias ghd="git rev-parse --short HEAD | tr --delete '\n'"
 alias jsw="jekyll serve --watch"
 alias jq="noglob jq"
 alias ka=killall
@@ -99,6 +100,7 @@ func_alias processing_init 'mkdir $1 && vim $1/$1.pde'
 alias ghc="ghc -Wall -fno-warn-type-defaults"
 func_alias ghcr 'ghc -Wall $* && ./${1:r}'
 alias py=python
+alias pyvenv="command pyvenv venv && . venv/bin/activate"
 alias pylint="pylint --reports=n --output-format=colorized"
 alias pp="python -m json.tool"
 alias scan="command hp-scan --area=0,0,216,279 --mode=color"
@@ -106,7 +108,7 @@ alias sasw="sass --watch"
 alias sdcv="sdcv --data-dir ~/.stardict"
 func_alias shp2json 'ogr2ogr -f GeoJSON ${1:r}.json $1'
 func_alias json2shp 'ogr2ogr -f "ESRI Shapefile" ${1:r}.shp $1'
-func_alias cppath 'readlink -e $1 | clip'
+func_alias cppath 'readlink -e $1 | tr -d "\n" |  clip'
 alias so=source
 alias soz="source ~/.zshrc"
 alias sudo="nocorrect sudo "
@@ -133,6 +135,7 @@ alias rmd=rmdir
 alias rmrf="rm -rf"
 alias wg="noglob wget"
 alias curl="noglob curl"
+alias tree='tree -C'
 
 # git
 alias g=git
@@ -146,6 +149,7 @@ alias gbnm="git branch --no-merged"
 alias gc="git commit --verbose"
 func_alias gco 'git checkout $1'
 alias gcob="noglob git checkout -b"
+alias gwd="git diff --word-diff-regex='.' --word-diff=color"
 alias gd="git diff"
 alias gf="git fetch"
 alias gi="git init"
@@ -155,6 +159,8 @@ alias gpu="noglob git push"
 func_alias gpub \
 	'git push --set-upstream origin $(git symbolic-ref --short HEAD)'
 alias gpuo="git push origin"
+func_alias grf 'noglob git rebase -i $1^'
+alias gr="gradle"
 alias grh="git reset HEAD"
 alias grhh="git reset --hard HEAD"
 alias grm="git rm"
@@ -193,6 +199,7 @@ alias_bg(){
 
 alias_bg keepass "keepassx ~/.keepassx/.passwords.kdb"
 alias_bg chrome google-chrome
+alias_bg idea
 alias_bg firefox
 alias_bg libre libreoffice
 alias_bg ev evince
@@ -393,7 +400,13 @@ pg2shp(){
 }
 
 gpuf(){
-	git push --force origin $(git rev-parse --abbrev-ref HEAD)
+	git push --force-with-lease origin $(git rev-parse --abbrev-ref HEAD)
+}
+
+list(){
+	for file in $*; do
+		echo $file
+	done
 }
 
 tile2features(){
@@ -480,11 +493,12 @@ c(){
 	cd $@
 	on_directory_enter
 }
+compdef _dirs c
 
 on_directory_enter(){
 	# Currently just handles (de)activating Python virtual envs.
 
-	venv_directory=.venv
+	venv_directory=venv
 	curr_dir=$(pwd)
 
 	# If a venv is currently enabled, check if we're still in its directory
@@ -492,6 +506,8 @@ on_directory_enter(){
 	if ! [ "$VIRTUAL_ENV" = "" ]; then
 		if [ "$(echo $curr_dir | grep "$(dirname $VIRTUAL_ENV)")" = "" ]; then
 			deactivate
+		else
+			return
 		fi
 	fi
 
