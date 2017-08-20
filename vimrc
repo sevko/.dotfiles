@@ -201,7 +201,7 @@ func! LocalVimrc()
 	let local_vimrc_path = system(cmd)
 	if len(local_vimrc_path) != 0
 		" exec ":source " . local_vimrc_path . "\<cr>"
-		exec "source " . local_vimrc_path
+		silent! exec "source " . local_vimrc_path
 	endif
 endfunc
 
@@ -235,6 +235,7 @@ augroup miscellaneous
 			\split(expand("%:t:r"), "_")[0]
 	au BufRead *.supp set filetype=supp
 	au BufRead *.val set filetype=valgrind
+	au BufRead *.html.j2 set filetype=django
 	au BufRead gitconfig set filetype=gitconfig
 	au BufRead psqlrc set filetype=pgsql
 	au BufRead .psqlrc set filetype=pgsql
