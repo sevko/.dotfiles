@@ -17,7 +17,7 @@ print_network_info(){
 	# otherwise, "N/A".
 
 	if has_internet_connection; then
-		local network_data=$(iwconfig wlan0)
+		local network_data=$(iwconfig wlp2s0)
 		local network_name=$(\
 			echo $network_data |\
 			grep -oP "(?<=ESSID:\").*(?=\")")
