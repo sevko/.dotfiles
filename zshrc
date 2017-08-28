@@ -39,17 +39,21 @@ DISABLE_UNTRACKED_FILES_DIRTY="true"
 HISTFILE=~/.histfile
 HISTSIZE=9000
 SAVEHIST=9000
-PATH=$PATH:~/.dotfiles/shell_scripts:~/bin/
+PATH=$PATH:~/.dotfiles/shell_scripts:~/bin/:~/.local/bin
 PATH=$PATH:~/bin/pyprocessing:~/bin/elasticsearch-1.5.1/bin:~/.cabal/bin
 KEYTIMEOUT=1
 
 zstyle :compinstall filename '/home/sevko/.zshrc'
 
-plugins=(last-working-dir pip git-extras)
+plugins=(last-working-dir git-extras)
 
 if [ -d $ZSH ]; then
 	source $ZSH/oh-my-zsh.sh
 fi
+
+# Configure zsh syntax highlighting
+source $DOT/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor root line)
 
 source $DOT/prompt.zsh
 eval $(dircolors $DOT/dircolors)
@@ -111,7 +115,7 @@ func_alias json2shp 'ogr2ogr -f "ESRI Shapefile" ${1:r}.shp $1'
 func_alias cppath 'readlink -e $1 | tr -d "\n" |  clip'
 alias so=source
 alias soz="source ~/.zshrc"
-alias sudo="nocorrect sudo "
+alias sudo="sudo "
 alias t="command tmux"
 alias tmux="TERM=screen-256color-bce tmux"
 alias uz=unzip
@@ -528,5 +532,6 @@ export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 
 # Initialize pyenv
 export PATH="/home/sevko/.pyenv/bin:$PATH"
-eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"
+if type pyenv > /dev/null; then
+	eval "$(pyenv init -)"
+fi
