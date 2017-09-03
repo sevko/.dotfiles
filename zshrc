@@ -109,9 +109,6 @@ alias pylint="pylint --reports=n --output-format=colorized"
 alias pp="python -m json.tool"
 alias scan="command hp-scan --area=0,0,216,279 --mode=color"
 alias sasw="sass --watch"
-alias sdcv="sdcv --data-dir ~/.stardict"
-func_alias shp2json 'ogr2ogr -f GeoJSON ${1:r}.json $1'
-func_alias json2shp 'ogr2ogr -f "ESRI Shapefile" ${1:r}.shp $1'
 func_alias cppath 'readlink -e $1 | tr -d "\n" |  clip'
 alias so=source
 alias soz="source ~/.zshrc"
@@ -215,7 +212,7 @@ alias_bg skype
 export EDITOR=vim
 export TMPDIR=/tmp
 export PAGER=less
-export LESS=-RSc
+export LESS=-RScI
 
 # functions & conditionals
 gdsu(){
@@ -307,14 +304,6 @@ gl(){
 	git log --pretty=format:$git_log_format $*
 }
 
-haste(){
-	if [ $# -eq 1 ]; then
-		command haste $1 | clip
-	else
-		command haste | clip
-	fi
-}
-
 add_host(){
 	# Add a new host entry to ~/.ssh/config.
 	#
@@ -391,18 +380,6 @@ tard(){
 	tar cvfz $1.tar.gz $1
 }
 
-pg2shp(){
-	# usage: pg2shp DB_NAME TABLE_NAME
-	#
-	# Export TABLE_NAME to a shapefile of the same name using pgsql2shp.
-
-	if [ $# -ne 2 ]; then
-		echo "Usage: pg2shp DB_NAME TABLE_NAME"
-		return 1
-	fi
-	pgsql2shp -k -f $2.shp $1 $2
-}
-
 gpuf(){
 	git push --force-with-lease origin $(git rev-parse --abbrev-ref HEAD)
 }
@@ -411,16 +388,6 @@ list(){
 	for file in $*; do
 		echo $file
 	done
-}
-
-tile2features(){
-	# usage: tile2features PATH_TO_VECTOR_TILE
-	#
-	# Convert a JSON vector tile to a GeoJSON feature-collection and print it
-	# to `stdout`.
-
-	cat $1 | jq '([.[].features] | add) as $foo |
-		{features: $foo, type: "FeatureCollection"}'
 }
 
 print_python_expr(){
