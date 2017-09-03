@@ -94,8 +94,7 @@ let g:NERDCustomDelimiters = {
 	\ "hack_vm": {"left": "//"}
 \}
 
-" NERDTree
-" key-maps
+" NERDTree key-maps
 let NERDTreeMapOpenSplit="s"
 let NERDTreeMapOpenVSplit="v"
 
