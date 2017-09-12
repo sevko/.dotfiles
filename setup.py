@@ -87,7 +87,7 @@ def link_files():
 	directories.
 	"""
 
-	json_setup_file = "res/setup.json"
+	json_setup_file = "setup.json"
 
 	print Shell.HEADER % "Creating dotfile symlinks."
 
