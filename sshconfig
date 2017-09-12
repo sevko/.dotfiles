@@ -17,3 +17,11 @@ Host sevko.io
 Host sae
 	Hostname 18.102.196.139
 	User saeubuntu
+
+Host perf
+	Hostname sev.perf.engineering
+	User sev
+
+Host athena
+	Hostname athena.dialup.mit.edu
+	User sev
