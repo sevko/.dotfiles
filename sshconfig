@@ -1,3 +1,5 @@
+ForwardX11 yes
+
 Host stuybooks
 	Hostname 162.243.33.238
 	User root
