@@ -103,7 +103,7 @@ func_alias processing \
 func_alias processing_init 'mkdir $1 && vim $1/$1.pde'
 alias ghc="ghc -Wall -fno-warn-type-defaults"
 func_alias ghcr 'ghc -Wall $* && ./${1:r}'
-alias py=python
+alias py=python3
 alias pyvenv="command pyvenv venv && . venv/bin/activate"
 alias pylint="pylint --reports=n --output-format=colorized"
 alias pp="python -m json.tool"
@@ -118,6 +118,7 @@ alias tmux="TERM=screen-256color-bce tmux"
 alias uz=unzip
 alias v="vim -p"
 func_alias zipd 'zip -r $1.zip $1'
+func_alias markdown2pdf 'pandoc -o ${1:r}.pdf --from markdown --template ~/.dotfiles/res/pandoc_template.latex --listings $*'
 
 # apt-get
 alias agi="sudo apt-get -y install"
@@ -148,7 +149,7 @@ alias gbd="git branch -d"
 alias gbm="git branch --merged"
 alias gbnm="git branch --no-merged"
 alias gc="git commit --verbose"
-func_alias gco 'git checkout $1'
+func_alias gco 'git checkout $*'
 alias gcob="noglob git checkout -b"
 alias gwd="git diff --word-diff-regex='.' --word-diff=color"
 alias gd="git diff"
@@ -203,6 +204,7 @@ alias_bg chrome google-chrome
 alias_bg idea
 alias_bg firefox
 alias_bg libre libreoffice
+alias_bg gummi
 alias_bg ev evince
 alias_bg gimp
 alias_bg tilemill "~/bin/tilemill/index.js"
