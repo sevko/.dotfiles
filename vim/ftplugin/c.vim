@@ -56,7 +56,7 @@ func! s:GetFunctionDocumentation()
 	setl buftype=nofile bufhidden=hide noswapfile
 	setl ft=man
 	silent! exe printf(
-		\"norm! :read! MANWIDTH=80 man -s3 %s || man -s2 %s\<cr>gg",
+		\"norm! :read! MANWIDTH=80 man %s || man -s2 %s\<cr>gg",
 		\l:func_name, l:func_name
 	\)
 	delete
