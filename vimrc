@@ -289,8 +289,8 @@ nnorem + <c-a>
 nnorem _ <c-x>
 nnorem = =<cr>
 nnorem <c-f> zO
-nnorem f za
-nnorem <silent> F :ToggleUniversalFold<cr>
+nnorem zf za
+nnorem <silent> za :ToggleUniversalFold<cr>
 nnorem <leader>t :tabnext<cr>
 nnorem <leader>st :tabprev<cr>
 
@@ -317,6 +317,9 @@ nmap <s-up> <up><up><up>
 nmap <s-down> <down><down><down>
 nmap <s-left> <left><left><left>
 nmap <s-right> <right><right><right>
+
+norem <c-m> <c-]>
+norem <c-n> <c-T>
 
 nnorem ; :
 nnorem : <nop>
