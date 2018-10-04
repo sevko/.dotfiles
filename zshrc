@@ -19,6 +19,8 @@ zmodload zsh/complist
 zmodload zsh/terminfo
 zmodload zsh/zle
 
+bindkey -M vicmd v edit-command-line
+
 bindkey -v
 zstyle ":completion:*" menu select=2
 zstyle ":completion:*" verbose yes
@@ -59,7 +61,7 @@ source $DOT/prompt.zsh
 eval $(dircolors $DOT/dircolors)
 
 stty intr \^x
-bindkey -v "^r" history-incremental-search-backward
+bindkey -v "^r" history-incremental-pattern-search-backward
 zstyle ":completion:*:default" list-colors ${(s.:.)LS_COLORS}
 
 # aliases
