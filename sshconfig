@@ -1,29 +1,13 @@
 ForwardX11 yes
 
-Host stuybooks
-	Hostname 162.243.33.238
-	User root
-
-Host cstuy
-	Hostname newweb.cstuy.org
-	User sevko
-
-Host bitshift
-	Hostname 107.170.78.213
-	User sevko
-
-Host sevko.io
-	Hostname 104.131.120.234
-	User root
-
 Host sae
 	Hostname 18.102.196.139
 	User saeubuntu
 
-Host perf
-	Hostname sev.perf.engineering
-	User sev
-
 Host athena
 	Hostname athena.dialup.mit.edu
 	User sev
+
+Host supercloud
+	Hostname txe1-login.mit.edu
+	User skozak

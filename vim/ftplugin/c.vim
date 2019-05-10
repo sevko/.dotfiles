@@ -55,8 +55,10 @@ func! s:GetFunctionDocumentation()
 	vnew
 	setl buftype=nofile bufhidden=hide noswapfile
 	setl ft=man
+	let manwidth_str = "MANWIDTH=" . min([winwidth(0) - 10, 78])
+	echom manwidth_str
 	silent! exe printf(
-		\"norm! :read! MANWIDTH=80 man %s || man -s2 %s\<cr>gg",
+		\"norm! :read! " . manwidth_str . " man %s || " . manwidth_str . " man -s2 %s\<cr>gg",
 		\l:func_name, l:func_name
 	\)
 	delete
