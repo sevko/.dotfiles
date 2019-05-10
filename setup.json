@@ -13,7 +13,8 @@
 	],
 	"special_files" : {
 		"~/.ssh/config" : "sshconfig",
-		"~/.vim" : "vim"
+		"~/.vim" : "vim",
+		"~/.config/feh/buttons" : "feh.buttons"
 	},
 	"create_directories" : [
 		"~/.tmux_cache"

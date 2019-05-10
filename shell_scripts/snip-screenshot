@@ -1,0 +1,10 @@
+#! /bin/bash
+
+outFile=~/pic/snips/snip-$(date '+%y-%m-%d-%H:%M:%S')
+gnome-screenshot --area --file="$outFile"
+mouseCoords=$(xdotool getmouselocation --shell)
+mouseX=$(echo "$mouseCoords" | grep -oP "(?<=X=).*")
+mouseY=$(echo "$mouseCoords" | grep -oP "(?<=Y=).*")
+snipDimensions=$(identify "$outFile" | grep -oP "\d+x\d+" | head -n 1)
+snipDimensionsX=$(echo $snipDimensions | grep -oP "\d+" | head -n 1)
+feh --geometry "$snipDimensions+$((mouseX - snipDimensionsX / 2))+$((mouseY - 10))" "$outFile"
