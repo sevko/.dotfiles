@@ -1,7 +1,7 @@
 " settings
 
-set autoindent noexpandtab
-set ts=4 sw=4
+" set autoindent noexpandtab
+" set ts=4 sw=4
 let g:NERDCommenterSNR = GetScriptNumber("NERD_commenter.vim")
 
 match _extraWhitespace /\s\+$/

@@ -41,7 +41,7 @@ set colorcolumn=80
 set textwidth=79
 set scrolloff=25
 set noshowmatch
-set wildmenu wildmode=longest,list,full
+set wildmenu wildmode=list:longest,list,full
 set wildignore+=*.o,*.hi,*.pyc
 set backspace=indent,eol,start
 set nf+=alpha
@@ -238,6 +238,7 @@ augroup miscellaneous
 	au BufRead gitconfig set filetype=gitconfig
 	au BufRead psqlrc set filetype=pgsql
 	au BufRead .psqlrc set filetype=pgsql
+	au BufRead,BufEnter,BufNewFile *.plot,*.gnuplot set filetype=gnuplot
 	au BufReadPost ~/.vimrc exe "normal! zM"
 
 	au BufWrite,BufRead,BufEnter * :let &titlestring=expand('%:t')
@@ -288,7 +289,7 @@ nnorem <leader>n :set rnu!<cr>
 nnorem + <c-a>
 nnorem _ <c-x>
 nnorem = =<cr>
-nnorem <c-f> zO
+nnorem <c-f> zA
 nnorem zf za
 nnorem <silent> za :ToggleUniversalFold<cr>
 nnorem <leader>t :tabnext<cr>

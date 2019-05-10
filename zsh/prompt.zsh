@@ -49,7 +49,7 @@ git_branch_status(){
 }
 
 abbreviate_path(){
-	echo $1 | sed "s/\([^/]\)[^/]*\//\1\//g"
+	echo $1 | sed "s/\(\.\)\?\([^/]\)[^/]*\//\1\2\//g"
 }
 
 make_home_tilde(){
@@ -69,13 +69,16 @@ dir_path(){
 	# if current directory is part of a git archive, highlight any directories
 	# that are part of the archive in a color different from the path
 	if $(inside_git_archive); then
-		gitRootDir=$(git rev-parse --show-toplevel)
+		# echo $cdPath
+		currPath=$(pwd)
+		cdPath=${$(git rev-parse --show-cdup):-.}
+		gitRootDir=$(echo $(cd $cdPath; pwd; cd $currPath))
 		gitRootPre=${gitRootDir:h}
 		gitRootPost=${PWD##$gitRootPre}
 
 		gitRootPre="$(make_home_tilde $gitRootPre))"
 		gitRootPre="${$(abbreviate_path $gitRootPre/foo):h}/"
-		gitRootPost="${gitRootPost#/}"
+		gitRootPost="${$(abbreviate_path $gitRootPost)#/}"
 
 		workingDir="$gitRootPre"
 		workingDir="$workingDir$(fgCol 43)$font[bold]"

@@ -1,4 +1,4 @@
-xterm*faceName: DejaVu Sans Mono for Powerline
+xterm*faceName: Fira Code
 xterm*locale: true
 xterm*utf8: true
 xterm*faceSize: 9
