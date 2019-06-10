@@ -2,6 +2,7 @@
 
 outFile=~/pic/snips/snip-$(date '+%y-%m-%d-%H:%M:%S')
 gnome-screenshot --area --file="$outFile"
+xclip -selection clipboard -t image/png -i "$outFile"
 mouseCoords=$(xdotool getmouselocation --shell)
 mouseX=$(echo "$mouseCoords" | grep -oP "(?<=X=).*")
 mouseY=$(echo "$mouseCoords" | grep -oP "(?<=Y=).*")

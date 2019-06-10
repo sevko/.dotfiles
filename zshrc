@@ -41,7 +41,7 @@ DISABLE_UNTRACKED_FILES_DIRTY="true"
 HISTFILE=~/.histfile
 HISTSIZE=9000
 SAVEHIST=9000
-PATH=$PATH:~/.dotfiles/shell_scripts:~/bin/:~/.local/bin
+PATH=$PATH:~/.dotfiles/scripts:~/bin/:~/.local/bin
 PATH=$PATH:~/bin/pyprocessing:~/bin/elasticsearch-1.5.1/bin:~/.cabal/bin
 KEYTIMEOUT=1
 
