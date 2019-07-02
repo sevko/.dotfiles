@@ -6,7 +6,7 @@ if has("syntax")
 endif
 
 if filereadable("/etc/vim/vimrc.local")
-	source /etc/vim/vimrc.local
+	silent! source /etc/vim/vimrc.local
 endif
 
 if has("autocmd")
@@ -49,6 +49,7 @@ set laststatus=2
 set t_Co=256
 set pumheight=10
 set complete+=k
+set tabpagemax=100
 
 set list lcs=tab:\·\ 
 
@@ -112,6 +113,13 @@ let NERDTreeIgnore = ["__pycache__", '\.pyc$']
 imap <c-e> <c-y>,
 let g:user_emmet_install_global = 0
 autocmd FileType html,css EmmetInstall
+
+" ctrlp
+let g:ctrlp_prompt_mappings = {
+    \ 'AcceptSelection("h")': ['<m-i>'],
+    \ 'AcceptSelection("v")': ['<m-o>'],
+    \ 'AcceptSelection("t")': ['<m-p>'],
+\}
 
 " smart pasting
 let &t_SI .= "\<esc>[?2004h"
@@ -321,6 +329,7 @@ nmap <s-right> <right><right><right>
 
 norem <c-m> <c-]>
 norem <c-n> <c-T>
+nnoremap <m-m> :vsplit<cr>:tag<cr>
 
 nnorem ; :
 nnorem : <nop>
@@ -413,6 +422,7 @@ vnorem <leader>c "+y
 vnoremap <tab> :<bs><bs><bs><bs><bs>call VisualIndent()<cr>
 vnoremap <s-tab> :<bs><bs><bs><bs><bs>call VisualDeindent()<cr>
 vnorem // y/<c-r>"<cr>
+vnorem ?? y?<c-r>"<cr>
 
 " functions
 
@@ -721,7 +731,7 @@ func! StatusLine()
 		endif
 	endfunc
 
-	setl statusline=%1*\ %t\  " filename
+	setl statusline=%1*\ %f\  " filename
 	setl statusline+=%4*%{&ff!='unix'?'-------NOTUNIX-------':''}
 	setl stl+=%2*%{&readonly?'\ ':''} " readonly
 
@@ -741,7 +751,7 @@ endfunc
 func! StatusLineNC()
 	" Statusline generator for idle window splits.
 
-	setl statusline=%1*\ %t\  " filename
+	setl statusline=%1*\ %f\  " filename
 	setl stl+=%4*%{&modified?'\ +\ ':''} " modified
 	setl stl+=%5*%= " right justify
 endfunc

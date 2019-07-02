@@ -47,7 +47,17 @@ KEYTIMEOUT=1
 
 zstyle :compinstall filename '/home/sevko/.zshrc'
 
-plugins=(last-working-dir git-extras)
+plugins=(last-working-dir git-extras fzf)
+
+# Set fzf installation directory path
+export FZF_BASE=~/.dotfiles/zsh/plugins/oh-my-zsh/plugins/fzf/
+
+# Uncomment the following line to disable fuzzy completion
+# export DISABLE_FZF_AUTO_COMPLETION="true"
+
+# Uncomment the following line to disable key bindings (CTRL-T, CTRL-R, ALT-C)
+export DISABLE_FZF_KEY_BINDINGS="true"
+
 
 if [ -d $ZSH ]; then
 	source $ZSH/oh-my-zsh.sh
@@ -154,6 +164,7 @@ alias gc="git commit --verbose"
 func_alias gco 'git checkout $*'
 alias gcob="noglob git checkout -b"
 alias gwd="git diff --word-diff-regex='.' --word-diff=color"
+alias gwd2="git diff --word-diff=color"
 alias gd="git diff"
 alias gf="git fetch"
 alias gi="git init"
@@ -165,6 +176,7 @@ func_alias gpub \
 alias gpuo="git push origin"
 func_alias grf 'noglob git rebase -i $1^'
 alias gr="gradle"
+alias grb="git rebase"
 alias grh="git reset HEAD"
 alias grhh="git reset --hard HEAD"
 alias grm="git rm"
@@ -499,10 +511,12 @@ on_directory_enter(){
 
 on_directory_enter
 
-export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
+export PATH="$HOME/.cabal/bin:$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 
 # Initialize pyenv
 export PATH="/home/sevko/.pyenv/bin:$PATH"
 if type pyenv > /dev/null; then
 	eval "$(pyenv init -)"
 fi
+
+source $DOT/plugins/zsh-ctrlp.zsh

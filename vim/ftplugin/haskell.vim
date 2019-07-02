@@ -8,7 +8,7 @@ func! SmartSingleQuote()
 	return isInIdentifier ? "'" : "''\<left>"
 endfunc
 
-set ts=2 sw=2 et softtabstop
+silent! set ts=4 sw=4 et softtabstop
 hi hsVarSym ctermfg=2
 hi hsString ctermfg=6
 hi hsStatement ctermfg=9

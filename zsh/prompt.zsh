@@ -96,7 +96,8 @@ user_info(){
 	# Indicate username and hostname if not the same as those of my standard
 	# account.
 
-	if [ "$USERNAME" != "sevko" ] || [ -n "$SSH_CLIENT" ] || \
+	if ([ "$USERNAME" != "sevko" ] && [ "$USERNAME" != "sev" ]) || \
+		[ -n "$SSH_CLIENT" ] || \
 		[ -n "$SSH_TTY" ]; then
 		echo "$(fgCol 2)$USERNAME$font[reset]$(fgCol 14)/$HOST "
 	fi
@@ -112,11 +113,15 @@ function zle-line-init zle-keymap-select {
 zle -N zle-line-init
 zle -N zle-keymap-select
 
+time_(){
+	echo "$(fgCol 1)[$(date '+%H:%M')]"
+}
+
 prompt_head="$(fgCol 202) λ $font[reset]"
 exit_status="%(?..$(fgCol 160)$font[bold] ✘ %?)"
 
 setopt PROMPT_SUBST
-PROMPT='$(user_info)$(dir_path)$prompt_head'
+PROMPT='$(time_) $(user_info)$(dir_path)$prompt_head'
 
 PS2="  $font[bold]$(fgCol 1)%_$(fgCol 1)$font[reset]"
 PS2="$PS2 $(fgCol 2)→$font[reset] "
