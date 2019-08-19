@@ -1,11 +1,42 @@
 #! /usr/bin/env python3
 
 import sys
+from functools import reduce
 
-if len(sys.argv) != 2:
-	print("No expression provided. Usage: pyawk EXPR", file=sys.stderr)
+from collections import Counter
+
+if len(sys.argv) not in [2, 3]:
+	print(
+		"Invalid. Usage: pyawk MAP-EXPR [REDUCE-EXPR]",
+		file=sys.stderr)
 	sys.exit(1)
 
-func = eval("lambda ln: print(ln.{})".format(sys.argv[1]))
-for ln in sys.stdin:
-	func(ln)
+map_expr, reduce_expr = \
+	(sys.argv[1], "") if len(sys.argv) == 2 else sys.argv[1:]
+
+if map_expr.isidentifier():
+	map_func_template = "map_func = {}"
+else:
+	map_func_template = (
+		"def map_func(x):"
+		"	return {}")
+exec(map_func_template.format(map_expr))
+
+if reduce_expr:
+	reduce_vec_func_template = "reduce_func_vec = lambda x: {}(x)"
+	reduce_func_template = (
+		"def reduce_func(x, y):"
+		"	return {}")
+
+	exec(reduce_vec_func_template.format(reduce_expr))
+	exec(reduce_func_template.format(reduce_expr))
+	mapped = (map_func(ln[:-1]) for ln in sys.stdin)
+	try:
+		print(reduce_func_vec(mapped))
+
+	except:
+		print(reduce(reduce_func, mapped))
+
+else:
+	for ln in sys.stdin:
+		print(map_func(ln[:-1]))
