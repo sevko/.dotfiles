@@ -16,4 +16,6 @@ hi _hs_prelude_builtins ctermfg=4
 hi _hs_module_name ctermfg=14
 hi VarId ctermfg=12
 
-so ~/.vimrc_after
+nnoremap <m-h> :call system("google-chrome 'https://hoogle.haskell.org/?hoogle=" . expand("<cword>") . "'")<cr>
+
+silent! so ~/.vimrc_after
