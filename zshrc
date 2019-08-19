@@ -187,6 +187,8 @@ alias gstl="git stash list"
 alias gsu="git submodule"
 alias gu="git up"
 
+alias pyawk='noglob pyawk'
+
 # background
 exec_background(){
 	# Detach and silently execute a command.
@@ -315,8 +317,8 @@ gl(){
 	# Args:
 	#   GIT_LOG_ARGS : Any arguments to `git log`.
 
-	git_log_format="%C(1)[ %h ]%Creset %C(3)%an%Creset "
-	git_log_format="$git_log_format%C(2)%cr%Creset %C(6)%s%Creset"
+	git_log_format="%C(1)%h%Creset  %C(3)%<(15,trunc)%an%Creset "
+	git_log_format="$git_log_format%C(2)%<(14,trunc)%cr%Creset %C(6)%s%Creset"
 	git log --pretty=format:$git_log_format $*
 }
 
@@ -397,7 +399,16 @@ tard(){
 }
 
 gpuf(){
-	git push --force-with-lease origin $(git rev-parse --abbrev-ref HEAD)
+	cmd="git push --force-with-lease origin $(git rev-parse --abbrev-ref HEAD)"
+	echo "Executing: $cmd"
+	read "?Are you sure? [y/n]"
+	if [[ ! "$REPLY" =~ ^[Yy]$ ]]; then
+		echo "aborting"
+	fi
+
+	set -x
+	$cmd
+	set +x
 }
 
 list(){
