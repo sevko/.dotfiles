@@ -1,5 +1,7 @@
 Ftpackage curly_bracket
 
+inoremap < <><Left>
+
 syn clear javaCommentTitle
 syn match _arithmetic_operator '[+\-%=*]\|[*\/]\@<!\/[*\/]\@!'
 syn match _delimiter "[,;]"

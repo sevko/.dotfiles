@@ -36,6 +36,7 @@ set nowrap
 set splitbelow splitright
 set incsearch
 
+" set completeopt+=longest
 set timeoutlen=280
 set colorcolumn=80
 set textwidth=79
@@ -116,9 +117,9 @@ autocmd FileType html,css EmmetInstall
 
 " ctrlp
 let g:ctrlp_prompt_mappings = {
-    \ 'AcceptSelection("h")': ['<m-i>'],
-    \ 'AcceptSelection("v")': ['<m-o>'],
-    \ 'AcceptSelection("t")': ['<m-p>'],
+    \ 'AcceptSelection("h")': ['<m-j>'],
+    \ 'AcceptSelection("v")': ['<m-k>'],
+    \ 'AcceptSelection("t")': ['<m-l>'],
 \}
 
 " smart pasting
@@ -186,6 +187,8 @@ hi User5 cterm=none ctermbg=235
 hi User6 ctermfg=231 ctermbg=31
 hi User7 cterm=bold ctermfg=234 ctermbg=253
 
+hi CurrentWordTwins cterm=bold ctermfg=8
+
 " autocommands
 
 func! LocalVimrc()
@@ -212,6 +215,7 @@ func! LocalVimrc()
 	endif
 endfunc
 
+" match _extraWhitespace /\s\+$/
 augroup miscellaneous
 	au!
 	au WinEnter,BufRead,BufNewFile * silent! call StatusLine()
@@ -231,7 +235,6 @@ augroup miscellaneous
 	au FileType node set filetype=node.javascript
 	au FileType arduino set filetype=processing
 
-	au BufRead,BufNewFile * match _extraWhitespace /\s\+$/
 	au bufnewfile * silent! call s:LoadTemplate()
 	au BufRead {.,}pylintrc set ft=dosini
 	au BufRead,BufNewFile *.json set filetype=javascript.json
@@ -282,6 +285,7 @@ nnorem <leader>q <esc>:q<cr>
 nnorem <leader>wq <esc>:wq<cr>
 nnorem <leader>fq <esc>:q!<cr>
 nnorem <leader>wa <esc>:wa<cr>
+nnorem <c-e> <c-w>
 
 " faster navigation
 nnorem H b
@@ -329,12 +333,22 @@ nmap <s-right> <right><right><right>
 
 norem <c-m> <c-]>
 norem <c-n> <c-T>
-nnoremap <m-m> :vsplit<cr>:tag<cr>
+nnoremap <m-m> :vsplit<cr><c-]>
+nnoremap <m-n> :split<cr><c-]>
+nnoremap s /
+nnoremap S ?
+nnoremap <leader>c :let @+=expand("<cword>")<cr>
+
+nmap g <Plug>(easymotion-prefix)
+nnoremap m gg
 
 nnorem ; :
 nnorem : <nop>
 nnorem \ @
 nnorem @ <nop>
+nnorem <leader>p :let @+ = expand("%:p")<cr>
+
+nnorem <leader>e <esc>:call HighlightCurrentWord()<cr>
 
 " tmux/vim pane navigation
 if exists('$TMUX')
@@ -423,6 +437,7 @@ vnoremap <tab> :<bs><bs><bs><bs><bs>call VisualIndent()<cr>
 vnoremap <s-tab> :<bs><bs><bs><bs><bs>call VisualDeindent()<cr>
 vnorem // y/<c-r>"<cr>
 vnorem ?? y?<c-r>"<cr>
+vnorem s :sort<cr>
 
 " functions
 
@@ -763,5 +778,22 @@ func! SkipPastSymbol()
 	let currLn = getline(".")
 	if currLn[getcurpos()[2]:] =~ symbolRegex
 		exe "norm! /" . symbolRegex . "\<cr>"
+	endif
+endfunc
+
+let g:highlighted_words = []
+let g:next_highlight_number = 0
+func! HighlightCurrentWord()
+	let cword = expand("<cword>")
+	let syn_group_name = "_highlight_tmp_" . cword
+	let words_ind = index(g:highlighted_words, cword)
+	if words_ind == -1
+		exe "syn keyword " . syn_group_name . " " . cword . " containedin=ALL"
+		exe "hi " . syn_group_name . " ctermfg=" . g:next_highlight_number
+		let g:next_highlight_number = (g:next_highlight_number + 1) % 40
+		call add(g:highlighted_words, cword)
+	else
+		exe "syntax clear " . syn_group_name
+		call remove(g:highlighted_words, words_ind)
 	endif
 endfunc
