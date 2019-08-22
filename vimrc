@@ -419,6 +419,7 @@ inorem {{ {}<left>
 
 inorem <c-x> x<esc>:call EscapeAbbreviation()<cr>a
 inorem <c-o> <esc>o
+inorem <c-e> <c-w>
 
 " visual
 
@@ -439,6 +440,8 @@ vnorem // y/<c-r>"<cr>
 vnorem ?? y?<c-r>"<cr>
 vnorem s :sort<cr>
 
+nm f gf
+nm F gF
 " functions
 
 func! NERDTreeQuit()
