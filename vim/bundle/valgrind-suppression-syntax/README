@@ -1,0 +1,3 @@
+This is a mirror of http://www.vim.org/scripts/script.php?script_id=3415
+
+The script provides syntax highlighting for Valgrind suppression files, usually bearing the extension .supp.
