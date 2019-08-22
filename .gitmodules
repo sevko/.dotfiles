@@ -37,12 +37,6 @@
 [submodule "vim/bundle/nerdtree"]
 	path = vim/bundle/nerdtree
 	url = https://github.com/scrooloose/nerdtree
-[submodule "vim/bundle/nginx-vim-syntax"]
-	path = vim/bundle/nginx-vim-syntax
-	url = https://github.com/evanmiller/nginx-vim-syntax
-[submodule "vim/bundle/vim-processing"]
-	path = vim/bundle/vim-processing
-	url = https://github.com/sophacles/vim-processing
 [submodule "zsh/plugins/zsh-syntax-highlighting"]
 	path = zsh/plugins/zsh-syntax-highlighting
 	url = https://github.com/zsh-users/zsh-syntax-highlighting.git
