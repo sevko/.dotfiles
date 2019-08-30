@@ -186,6 +186,7 @@ alias gsta="git stash apply"
 alias gstl="git stash list"
 alias gsu="git submodule"
 alias gu="git up"
+alias feh='feh --action1 "xclip -selection clipboard -t image/png -i %F"'
 
 alias pyawk='noglob pyawk'
 

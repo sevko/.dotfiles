@@ -5,7 +5,7 @@ set -x
 command -v feh xdotool
 mkdir -p ~/pic/snips/
 
-outFile=~/pic/snips/snip-$(date '+%y-%m-%d-%H:%M:%S')
+outFile=~/pic/snips/snip-$(date '+%y-%m-%d-%H:%M:%S').png
 gnome-screenshot --area --file="$outFile"
 xclip -selection clipboard -t image/png -i "$outFile"
 
@@ -14,4 +14,6 @@ mouseX=$(echo "$mouseCoords" | grep -oP "(?<=X=).*")
 mouseY=$(echo "$mouseCoords" | grep -oP "(?<=Y=).*")
 snipDimensions=$(identify "$outFile" | grep -oP "\d+x\d+" | head -n 1)
 snipDimensionsX=$(echo $snipDimensions | grep -oP "\d+" | head -n 1)
-feh --geometry "$snipDimensions+$((mouseX - snipDimensionsX / 2))+$((mouseY - 10))" "$outFile"
+feh --action1 "xclip -selection clipboard -t image/png -i %F" \
+	--geometry "$snipDimensions+$((mouseX - snipDimensionsX / 2))+$((mouseY - 10))" \
+	"$outFile"
