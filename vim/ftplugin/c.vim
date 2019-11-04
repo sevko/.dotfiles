@@ -31,7 +31,7 @@ nm <buffer> <leader>{ $a<bs>{
 nnorem <buffer> <leader>ov :OpenTwinFile "vsplit"<cr>
 nnorem <buffer> <leader>os :OpenTwinFile "split"<cr>
 nnorem <buffer> <leader>gc :call <SID>GetFunctionHeaders()<cr>
-nnorem <buffer> m :call <SID>GetFunctionDocumentation()<cr>
+" nnorem <buffer> m :call <SID>GetFunctionDocumentation()<cr>
 
 func! PrintTemplate()
 	" Echo my preferred order of declarations and definitions.

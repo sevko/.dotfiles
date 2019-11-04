@@ -777,7 +777,7 @@ endfunc
 func! SkipPastSymbol()
 	" Move the cursor past the next `symbolRegex` without leaving insert-mode.
 
-	let symbolRegex = '[)\]}''"`*]'
+	let symbolRegex = '[)\]}''"`*$]'
 	let currLn = getline(".")
 	if currLn[getcurpos()[2]:] =~ symbolRegex
 		exe "norm! /" . symbolRegex . "\<cr>"
