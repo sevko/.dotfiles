@@ -9,7 +9,7 @@ xterm*VT100.Translations: #override \
 	Ctrl <Key>v: insert-selection(CLIPBOARD, CUT_BUFFER0) \n\
 	Ctrl <Key>c: select-end(CLIPBOARD, CUT_BUFFER0) \n\
 
-xterm*foreground: #8AE234
+xterm*foreground: #788692
 xterm*background: #000000
 xterm*cursorColor: #DC322F
 xterm*cursorBlink: true
