@@ -1,3 +1,8 @@
+alias tmux="TERM=screen-256color-bce tmux"
+if [ "$(ps -al | grep tmux )" = "" ]
+	then tmux attach || tmux new
+fi
+
 # settings
 setopt extendedglob
 setopt GLOB_COMPLETE
@@ -48,16 +53,10 @@ KEYTIMEOUT=1
 zstyle :compinstall filename '/home/sevko/.zshrc'
 
 plugins=(last-working-dir git-extras fzf)
+mkdir -p $ZSH/cache/    # For last-working-dir plugin.
 
 # Set fzf installation directory path
 export FZF_BASE=~/.dotfiles/zsh/plugins/oh-my-zsh/plugins/fzf/
-
-# Uncomment the following line to disable fuzzy completion
-# export DISABLE_FZF_AUTO_COMPLETION="true"
-
-# Uncomment the following line to disable key bindings (CTRL-T, CTRL-R, ALT-C)
-export DISABLE_FZF_KEY_BINDINGS="true"
-
 
 if [ -d $ZSH ]; then
 	source $ZSH/oh-my-zsh.sh
@@ -126,7 +125,6 @@ alias so=source
 alias soz="source ~/.zshrc"
 alias sudo="sudo "
 alias t="command tmux"
-alias tmux="TERM=screen-256color-bce tmux"
 alias uz=unzip
 alias v="vim -p"
 func_alias zipd 'zip -r $1.zip $1'
@@ -425,10 +423,6 @@ alias _="noglob print_python_expr"
 
 if [[ -s "/etc/zsh_command_not_found" ]]; then
 	source "/etc/zsh_command_not_found"
-fi
-
-if [ "$(ps -al | grep tmux )" = "" ]
-	then tmux attach || tmux new
 fi
 
 # completion
