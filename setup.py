@@ -133,7 +133,7 @@ def setup():
 
 	print Shell.HEADER % "Setup: begin."
 	link_files()
-	update_git_submodules()
+	# update_git_submodules()
 	print Shell.HEADER % "Setup: end."
 
 if __name__ == "__main__":
