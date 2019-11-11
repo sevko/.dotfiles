@@ -9,7 +9,8 @@
 		"~/.tmux.conf",
 		"~/.vimrc",
 		"~/.zshrc",
-		"~/.vimrc_after"
+		"~/.vimrc_after",
+		"~/.lesskey"
 	],
 	"special_files" : {
 		"~/.ssh/config" : "sshconfig",
