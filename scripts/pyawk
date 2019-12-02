@@ -6,38 +6,78 @@ from functools import reduce
 from collections import Counter
 import numpy as np
 
-if len(sys.argv) not in [2, 3]:
-	print(
-		"Invalid. Usage: pyawk MAP-EXPR [REDUCE-EXPR]",
-		file=sys.stderr)
+def error(msg):
+	print("ERROR: " + msg, file=sys.stderr)
 	sys.exit(1)
 
-map_expr, reduce_expr = \
-	(sys.argv[1], "") if len(sys.argv) == 2 else sys.argv[1:]
+if len(sys.argv) <= 1:
+	error("Usage: pyawk [m:map expr] [f:filter expr] [r:reduce-expr]")
 
-if map_expr.isidentifier():
-	map_func_template = "map_func = {}"
-else:
-	map_func_template = (
-		"def map_func(x):"
-		"	{}")
-exec(map_func_template.format(map_expr))
+map_expr = None
+filter_expr = None
+reduce_expr = None
+for arg in sys.argv[1:]:
+	if arg.startswith("m:"):
+		map_expr = arg[2:]
+	elif arg.startswith("f:"):
+		filter_expr = arg[2:]
+	elif arg.startswith("r:"):
+		reduce_expr = arg[2:]
+	else:
+		error("Invalid argument. {} is not prefixed with \"[mfr]:\".".format(arg))
 
-if reduce_expr:
-	reduce_vec_func_template = "reduce_func_vec = lambda xs: {}"
-	reduce_func_template = (
-		"def reduce_func(x, y):"
-		"	return {}")
+input_lines = [ln.strip() for ln in sys.stdin]
+if map_expr is not None:
+	if map_expr.isidentifier():
+		map_func_template = "map_func = {}"
 
-	mapped = [map_func(ln[:-1]) for ln in sys.stdin]
-	try:
-		exec(reduce_vec_func_template.format(reduce_expr))
-		print(reduce_func_vec(mapped))
+	elif "return" in map_expr:
+		map_func_template = (
+			"def map_func(x):"
+			"	{}")
 
-	except:
-		exec(reduce_func_template.format(reduce_expr))
-		print(reduce(reduce_func, mapped))
+	else:
+		map_func_template = (
+			"def map_func(x):"
+			"	return {}")
 
-else:
-	for ln in sys.stdin:
-		print(map_func(ln[:-1]))
+	map_func_str = map_func_template.format(map_expr)
+	exec(map_func_str)
+	input_lines = [map_func(x) for x in input_lines]
+
+if filter_expr is not None:
+	if filter_expr.isidentifier():
+		filter_func_template = "filter_func = {}"
+
+	elif "return" in filter_expr:
+		filter_func_template = (
+			"def filter_func(x):"
+			"	{}")
+
+	else:
+		filter_func_template = (
+			"def filter_func(x):"
+			"	return {}")
+
+	filter_func_str = filter_func_template.format(filter_expr)
+	exec(filter_func_str)
+	input_lines = [x for x in input_lines if filter_func(x)]
+
+if reduce_expr is not None:
+	if reduce_expr.isidentifier():
+		reduce_func_template = "reduce_func = {}"
+
+	elif "return" in reduce_expr:
+		reduce_func_template = (
+			"def reduce_func(xs):"
+				"{}")
+	else:
+		reduce_func_template = (
+			"def reduce_func(xs):"
+				"return {}")
+
+	exec(reduce_func_template.format(reduce_expr))
+	input_lines = [reduce_func(input_lines)]
+
+for result in input_lines:
+	print(result)
