@@ -4,6 +4,7 @@ import sys
 from functools import reduce
 
 from collections import Counter
+import numpy as np
 
 if len(sys.argv) not in [2, 3]:
 	print(
@@ -19,22 +20,22 @@ if map_expr.isidentifier():
 else:
 	map_func_template = (
 		"def map_func(x):"
-		"	return {}")
+		"	{}")
 exec(map_func_template.format(map_expr))
 
 if reduce_expr:
-	reduce_vec_func_template = "reduce_func_vec = lambda x: {}(x)"
+	reduce_vec_func_template = "reduce_func_vec = lambda xs: {}"
 	reduce_func_template = (
 		"def reduce_func(x, y):"
 		"	return {}")
 
-	exec(reduce_vec_func_template.format(reduce_expr))
-	exec(reduce_func_template.format(reduce_expr))
-	mapped = (map_func(ln[:-1]) for ln in sys.stdin)
+	mapped = [map_func(ln[:-1]) for ln in sys.stdin]
 	try:
+		exec(reduce_vec_func_template.format(reduce_expr))
 		print(reduce_func_vec(mapped))
 
 	except:
+		exec(reduce_func_template.format(reduce_expr))
 		print(reduce(reduce_func, mapped))
 
 else:
