@@ -14,5 +14,6 @@ Synclude delimiter containedin=ALL ctermfg=11
 syn match _javaClassName "\v(\W)@<=\u\w+" contains=_java_constant
 hi _javaClassName ctermfg=14 cterm=italic
 hi _arithmetic_operator ctermfg=9
+syn clear javaLabelRegion
 
 so ~/.vimrc_after
