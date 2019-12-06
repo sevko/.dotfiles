@@ -69,7 +69,6 @@ ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor root line)
 source $DOT/prompt.zsh
 eval $(dircolors $DOT/dircolors)
 
-stty intr \^x
 bindkey -v "^r" history-incremental-pattern-search-backward
 zstyle ":completion:*:default" list-colors ${(s.:.)LS_COLORS}
 
@@ -129,6 +128,7 @@ alias uz=unzip
 alias v="vim -p"
 func_alias zipd 'zip -r $1.zip $1'
 func_alias markdown2pdf 'pandoc -o ${1:r}.pdf --from markdown --template ~/.dotfiles/res/pandoc_template.latex --listings $*'
+func_alias tmux-capture-screen 'tmux capture-pane -pS 2 | v -'
 
 # apt-get
 alias agi="sudo apt-get -y install"
