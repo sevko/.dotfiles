@@ -1,0 +1,2 @@
+#!/bin/bash
+/home/sevko/.dotfiles/scripts/focus-or-open2 $1 $2 $> /tmp/bloop

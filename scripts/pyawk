@@ -77,7 +77,8 @@ if reduce_expr is not None:
 				"return {}")
 
 	exec(reduce_func_template.format(reduce_expr))
-	input_lines = [reduce_func(input_lines)]
+	result = reduce_func(input_lines)
+	input_lines = result if hasattr(result, "__iter__") else [result]
 
 for result in input_lines:
 	print(result)
