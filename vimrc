@@ -252,7 +252,7 @@ augroup miscellaneous
 	au BufRead,BufEnter,BufNewFile *.plot,*.gnuplot set filetype=gnuplot
 	au BufReadPost ~/.vimrc exe "normal! zM"
 
-	au BufWrite,BufRead,BufEnter * :let &titlestring=expand('%:t')
+	au BufWrite,BufRead,BufEnter * :let &titlestring='xterm: ' . expand('%:t')
 	au BufEnter,Filetype * call LocalVimrc()
 augroup END
 
@@ -314,7 +314,7 @@ nnorem vv :silent! vsp
 nnorem ;vsp :echo "Nope."
 nnorem ;sp :echo "Nope."
 
-nnorem b <c-v>
+nnorem <c-b> <c-v>
 nnorem <leader>rt :call HardRetab("soft")<cr>
 nnorem tt :silent! tabe 
 
