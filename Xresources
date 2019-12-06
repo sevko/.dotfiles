@@ -8,6 +8,10 @@ xterm*selectToClipboard: true
 xterm*VT100.Translations: #override \
 	Ctrl <Key>v: insert-selection(CLIPBOARD, CUT_BUFFER0) \n\
 	Ctrl <Key>c: select-end(CLIPBOARD, CUT_BUFFER0) \n\
+	Ctrl <Key>BackSpace: string(0x17) \n\
+	Ctrl <Key>-: smaller-vt-font() \n\
+	Ctrl <Key>+: larger-vt-font() \n\
+	Ctrl <Key>x: string(0x3) \n\
 
 xterm*foreground: #788692
 xterm*background: #000000
