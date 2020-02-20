@@ -4,7 +4,26 @@ import sys
 from functools import reduce
 
 from collections import Counter
-import numpy as np
+
+try:
+	import numpy as np
+except ImportError:
+	pass
+
+try:
+	import scipy as sp
+	import scipy.stats as spstats
+except ImportError:
+	pass
+
+def norm(xs):
+	max_ = max(xs)
+	return [x / max_ for x in xs]
+
+def center(xs):
+	min_ = min(xs)
+	range_ = max(xs) - min_
+	return [(x - min_) / range_ for x in xs] if range_ != 0 else [0] * len(xs)
 
 def error(msg):
 	print("ERROR: " + msg, file=sys.stderr)
@@ -43,7 +62,14 @@ if map_expr is not None:
 
 	map_func_str = map_func_template.format(map_expr)
 	exec(map_func_str)
-	input_lines = [map_func(x) for x in input_lines]
+
+	new_input_lines = []
+	for x in input_lines:
+		mapped = map_func(x)
+		if mapped is not None:
+			new_input_lines.append(mapped)
+
+	input_lines = new_input_lines
 
 if filter_expr is not None:
 	if filter_expr.isidentifier():
