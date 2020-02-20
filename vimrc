@@ -417,7 +417,7 @@ inorem [[ []
 inorem { {<cr>}<esc>O
 inorem {{ {}<left>
 
-inorem <c-x> x<esc>:call EscapeAbbreviation()<cr>a
+inorem <c-z> x<esc>:call EscapeAbbreviation()<cr>a
 inorem <c-o> <esc>o
 inorem <c-e> <c-w>
 
