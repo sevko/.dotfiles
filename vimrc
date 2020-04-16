@@ -221,6 +221,7 @@ augroup miscellaneous
 	au WinEnter,BufRead,BufNewFile * silent! call StatusLine()
 	au WinEnter * call NERDTreeQuit()
 	au WinLeave * silent! call StatusLineNC()
+	au VimResized * wincmd =
 
 	au InsertEnter * hi _extraWhitespace ctermbg=8
 	au InsertEnter,WinLeave * set nornu
