@@ -94,6 +94,7 @@ func_alias(){
 
 alias workflowy="/opt/google/chrome/google-chrome \
 	--profile-directory=Default --app-id=koegeopamaoljbmhnfjbclbocehhgmkm"
+alias ipm="/usr/lib/inkdrop/resources/app/ipm/bin/ipm"
 alias bpy="bpython+ 3"
 func_alias cc 'gcc $* -o ${*[-1]%.c}'
 alias ccat="pygmentize -O style=monokai -f terminal -g"
