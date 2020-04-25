@@ -1,21 +1,47 @@
-#!/usr/bin/zsh
+#! /usr/bin/env python3
 
-command_name=$1
-program_name="$2"
+import os
+import sys
+import pickle
+import subprocess
+import collections
 
-wmctrl -R $program_name
-if [ $? -eq 1 ]; then
-	for windowIdPid in $(wmctrl -l -p | awk '{print $1 "-" $3}'); do
-		ids=("${(@s/-/)windowIdPid}")
-		windowId=$ids[1]
-		pid=$ids[2]
-		if [ "$(ps $pid | grep $program_name)" != "" ]; then
-			wmctrl -i -R $windowId
-			exit
-		fi
-	done
-else
-	exit
-fi
+def shell(cmd):
+	return subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE).stdout.read().decode("utf-8")
 
-eval $command_name
+PICKLE_DB_PATH = os.path.expanduser("~/.focus-or-open.pickle.db")
+def get_db():
+	try:
+		with open(PICKLE_DB_PATH, "rb") as inf:
+			return pickle.load(inf)
+
+	except (OSError, IOError):
+		return collections.defaultdict(int)
+
+def save_db(db):
+	with open(PICKLE_DB_PATH, "wb") as outf:
+		pickle.dump(db, outf)
+
+if __name__ == "__main__":
+	command = sys.argv[1]
+	window_name = sys.argv[2] if len(sys.argv) > 2 else command
+
+	db = get_db()
+	windows = shell("wmctrl -lxp")
+	win_ids = []
+	for win in windows.strip().split("\n"):
+		win_id, _, pid, x_class, win_title = win.split(maxsplit=4)
+		if window_name.lower() in x_class.lower():
+			win_ids.append(win_id)
+
+	if win_ids:
+		next_win_ind = (db[window_name] + 1) % len(win_ids)
+		next_win_id = win_ids[next_win_ind]
+
+		shell(f"wmctrl -i -R {next_win_id}")
+	else:
+		next_win_ind = 0
+		os.system(command)
+
+	db[window_name] = next_win_ind
+	save_db(db)
