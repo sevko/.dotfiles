@@ -16,7 +16,10 @@ def get_db():
 			return pickle.load(inf)
 
 	except (OSError, IOError):
-		return collections.defaultdict(int)
+		return {
+			"last_app": None,
+			"history": collections.defaultdict(int)
+		}
 
 def save_db(db):
 	with open(PICKLE_DB_PATH, "wb") as outf:
@@ -27,6 +30,8 @@ if __name__ == "__main__":
 	window_name = sys.argv[2] if len(sys.argv) > 2 else command
 
 	db = get_db()
+	cycle_windows = db["last_app"] == window_name
+
 	windows = shell("wmctrl -lxp")
 	win_ids = []
 	for win in windows.strip().split("\n"):
@@ -35,7 +40,7 @@ if __name__ == "__main__":
 			win_ids.append(win_id)
 
 	if win_ids:
-		next_win_ind = (db[window_name] + 1) % len(win_ids)
+		next_win_ind = (db["history"][window_name] + (1 if cycle_windows else 0)) % len(win_ids)
 		next_win_id = win_ids[next_win_ind]
 
 		shell(f"wmctrl -i -R {next_win_id}")
@@ -43,5 +48,6 @@ if __name__ == "__main__":
 		next_win_ind = 0
 		os.system(command)
 
-	db[window_name] = next_win_ind
+	db["history"][window_name] = next_win_ind
+	db["last_app"] = window_name
 	save_db(db)
