@@ -3,6 +3,19 @@ if [ "$(ps -al | grep tmux )" = "" ]
 	then tmux attach || tmux new
 fi
 
+# vars
+DOT=$HOME/.dotfiles/zsh/
+ZSH=$DOT/plugins/oh-my-zsh
+DISABLE_AUTO_UPDATE="true"
+COMPLETION_WAITING_DOTS="true"
+DISABLE_UNTRACKED_FILES_DIRTY="true"
+HISTFILE=~/.histfile
+HISTSIZE=9000
+SAVEHIST=9000
+PATH=$PATH:~/.dotfiles/scripts:~/bin/:~/.local/bin
+PATH=$PATH:~/bin/pyprocessing:~/bin/elasticsearch-1.5.1/bin:~/.cabal/bin:~/.rvm/bin
+KEYTIMEOUT=1
+
 # settings
 setopt extendedglob
 setopt GLOB_COMPLETE
@@ -15,6 +28,8 @@ setopt extendedglob
 setopt prompt_subst
 setopt inc_append_history
 
+eval $(dircolors $DOT/dircolors)
+
 # completion
 autoload -U colors && colors
 autoload -U compinit && compinit
@@ -25,52 +40,38 @@ zmodload zsh/terminfo
 zmodload zsh/zle
 
 bindkey -M vicmd v edit-command-line
+bindkey -M menuselect '?' vi-insert
 
+bindkey -v "^r" history-incremental-pattern-search-backward
 bindkey -v
-zstyle ":completion:*" menu select=2
-zstyle ":completion:*" verbose yes
+
+zstyle ":completion:*" menu select verbose,auto-description
 zstyle ":completion:*:processes-names" command "ps -e -o comm="
-
 zstyle ":completion:*:*:vim:*" ignored-patterns \
-	"*.(o|pyc|pdf|png|gif|pbf|dbf|sh[px]|prj|cpg|hi)"
+	"*.(o|pyc|jpg|png|jpeg|bz2|deb|zip|gz|gpx|jar|xz|pdf|png|gif|pbf|dbf|sh[px]|prj|cpg|hi)"
 zstyle ":completion:*:*:pylint:*" file-patterns "*.py *(-/)"
-zstyle ":completion:*:*:ghc:*" file-patterns "*.hs *(-/)"
-zstyle ":completion:*:*:node:*" file-patterns "*.js  *(-/)"
-zstyle ":completion:*:*:osm2pgsql:*" file-patterns "*.pbf *(-/)"
-
-DOT=$HOME/.dotfiles/zsh/
-ZSH=$DOT/plugins/oh-my-zsh
-DISABLE_AUTO_UPDATE="true"
-COMPLETION_WAITING_DOTS="true"
-DISABLE_UNTRACKED_FILES_DIRTY="true"
-HISTFILE=~/.histfile
-HISTSIZE=9000
-SAVEHIST=9000
-PATH=$PATH:~/.dotfiles/scripts:~/bin/:~/.local/bin
-PATH=$PATH:~/bin/pyprocessing:~/bin/elasticsearch-1.5.1/bin:~/.cabal/bin
-KEYTIMEOUT=1
-
+zstyle ":completion:*:default" list-colors ${(s.:.)LS_COLORS}
 zstyle :compinstall filename '/home/sevko/.zshrc'
 
-plugins=(last-working-dir git-extras fzf)
+plugins=(last-working-dir fzf)
 mkdir -p $ZSH/cache/    # For last-working-dir plugin.
 
 # Set fzf installation directory path
-export FZF_BASE=~/.dotfiles/zsh/plugins/oh-my-zsh/plugins/fzf/
-
 if [ -d $ZSH ]; then
 	source $ZSH/oh-my-zsh.sh
 fi
+
+export FZF_BASE=~/.dotfiles/zsh/plugins/oh-my-zsh/plugins/fzf/
+source $DOT/plugins/zsh-ctrlp.zsh
 
 # Configure zsh syntax highlighting
 source $DOT/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor root line)
 
 source $DOT/prompt.zsh
-eval $(dircolors $DOT/dircolors)
 
-bindkey -v "^r" history-incremental-pattern-search-backward
-zstyle ":completion:*:default" list-colors ${(s.:.)LS_COLORS}
+# Highlight flag descriptions.
+# zstyle ':completion:*:options' list-colors '=(-- *)=32'
 
 # aliases
 func_alias(){
@@ -92,34 +93,21 @@ func_alias(){
 	eval "$1(){$2}"
 }
 
-alias workflowy="/opt/google/chrome/google-chrome \
-	--profile-directory=Default --app-id=koegeopamaoljbmhnfjbclbocehhgmkm"
 alias ipm="/usr/lib/inkdrop/resources/app/ipm/bin/ipm"
 alias bpy="bpython+ 3"
 func_alias cc 'gcc $* -o ${*[-1]%.c}'
-alias ccat="pygmentize -O style=monokai -f terminal -g"
 alias clip="xclip -select clipboard"
-alias com=command
 alias gcc="gcc -Wall -Wextra"
-alias google-music-manager="google-musicmanager && google-musicmanager"
 alias gth=gthumb
 alias ghd="git rev-parse --short HEAD | tr --delete '\n'"
 alias jsw="jekyll serve --watch"
 alias jq="noglob jq"
 alias ka=killall
-alias nyan="nc -v nyancat.dakko.us 23"
 alias open=xdg-open
 func_alias processing \
 	'processing-java --force --run --sketch=$1 --output=$1/compiled_sketch'
 func_alias processing_init 'mkdir $1 && vim $1/$1.pde'
-alias ghc="ghc -Wall -fno-warn-type-defaults"
-func_alias ghcr 'ghc -Wall $* && ./${1:r}'
 alias py=python3
-alias pyvenv="command pyvenv venv && . venv/bin/activate"
-alias pylint="pylint --reports=n --output-format=colorized"
-alias pp="python -m json.tool"
-alias scan="command hp-scan --area=0,0,216,279 --mode=color"
-alias sasw="sass --watch"
 func_alias cppath 'readlink -e $1 | tr -d "\n" |  clip'
 alias so=source
 alias soz="source ~/.zshrc"
@@ -139,7 +127,7 @@ alias agrp="sudo apt-get remove --purge"
 alias acs="sudo apt-cache search"
 
 # core utils
-alias l="ls --color=auto -h --group-directories-first -p"
+alias l="ls --color=auto -h --group-directories-first -p -X"
 alias ll="l -al"
 alias m=man
 alias mk="make -j"
@@ -156,7 +144,7 @@ alias ga="git add"
 alias gau="git add -u"
 alias gb="git branch"
 alias gba="git branch -a"
-alias gbd="git branch -d"
+func_alias gbd "git branch -d"
 alias gbm="git branch --merged"
 alias gbnm="git branch --no-merged"
 alias gc="git commit --verbose"
@@ -174,7 +162,6 @@ func_alias gpub \
 	'git push --set-upstream origin $(git symbolic-ref --short HEAD)'
 alias gpuo="git push origin"
 func_alias grf 'noglob git rebase -i $1^'
-alias gr="gradle"
 alias grb="git rebase"
 alias grh="git reset HEAD"
 alias grhh="git reset --hard HEAD"
@@ -215,16 +202,11 @@ alias_bg(){
 	alias "$1"="exec_background $cmd"
 }
 
-alias_bg keepass "keepassx ~/.keepassx/.passwords.kdb"
 alias_bg chrome google-chrome
-alias_bg idea
-alias_bg firefox
 alias_bg libre libreoffice
 alias_bg gummi
 alias_bg ev evince
 alias_bg gimp
-alias_bg tilemill "~/bin/tilemill/index.js"
-alias_bg skype
 
 # variables
 export EDITOR=vim
@@ -322,49 +304,6 @@ gl(){
 	git log --pretty=format:$git_log_format $*
 }
 
-add_host(){
-	# Add a new host entry to ~/.ssh/config.
-	#
-	# use: add_host HOST HOSTNAME USER
-	# args:
-	#   HOST : The host's identifying name.
-	#   HOSTNAME : The IP address/hostname of the server.
-	#   USER : The user's account username on HOSTNAME.
-
-	if [[ $# != 3 ]]; then
-		echo "add_host HOST HOSTNAME USER"
-	else
-		echo "\nHost $1\n\tHostname $2\n\tUser $3" >> ~/.ssh/config
-	fi
-}
-
-def(){
-	# Wrapper for `sdcv` that colorizes its output.
-	#
-	# use: def WORD
-	#   WORD (str) : The word to search for with `sdcv`.
-
-	if [[ $# != 1 ]]; then
-		echo "Missing argument."
-	else
-		if [[ "$(sdcv -n $1)" =~ '^Nothing similar to ' ]]; then
-			echo "No match for '$1' found."
-		else
-			sdcv -n $1 | remark $DOT/remark_syntax/sdcv.remark \
-				| less
-		fi
-	fi
-}
-
-rmw(){
-	# Trash-can alternative to `rm`.
-	#
-	# use: rmw OBJ1 ...
-	#   OBJ1, ...: Files/directories to move to ~/.trash.
-
-	mv $* ~/.trash
-}
-
 memcheck(){
 	# Wrapper around the Valgrind `memcheck` tool; sets helpful flags and
 	# colorizes output using the `remark` utility.
@@ -378,20 +317,8 @@ memcheck(){
 		--show-reachable=yes \
 		--num-callers=20 \
 		--track-fds=yes \
-		--track-origins=yes $* 2>&1 | \
-	remark $DOT/remark_syntax/memcheck.remark
-}
-
-crop(){
-	$* > /tmp/log.txt &
-	let pid=$!
-	less -S +F /tmp/log.txt
-
-	echo "Kill process $pid? [y/n]"
-	read resp
-	if [[ $resp =~ [yY] ]]; then
-		kill -9 $pid > /dev/null && echo "Headshot."
-	fi
+		--track-origins=yes $* 2>&1 |\
+		remark $DOT/remark_syntax/memcheck.remark
 }
 
 tard(){
@@ -416,11 +343,6 @@ list(){
 		echo $file
 	done
 }
-
-print_python_expr(){
-	python -c "from math import *; print $*"
-}
-alias _="noglob print_python_expr"
 
 if [[ -s "/etc/zsh_command_not_found" ]]; then
 	source "/etc/zsh_command_not_found"
@@ -515,15 +437,4 @@ on_directory_enter(){
 		fi
 	done
 }
-
 on_directory_enter
-
-export PATH="$HOME/.cabal/bin:$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
-
-# Initialize pyenv
-export PATH="/home/sevko/.pyenv/bin:$PATH"
-if type pyenv > /dev/null; then
-	eval "$(pyenv init -)"
-fi
-
-source $DOT/plugins/zsh-ctrlp.zsh
