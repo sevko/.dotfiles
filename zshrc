@@ -15,6 +15,10 @@ SAVEHIST=9000
 PATH=$PATH:~/.dotfiles/scripts:~/bin/:~/.local/bin
 PATH=$PATH:~/bin/pyprocessing:~/bin/elasticsearch-1.5.1/bin:~/.cabal/bin:~/.rvm/bin
 KEYTIMEOUT=1
+EDITOR=vim
+TMPDIR=/tmp
+PAGER=less
+LESS=-RScI
 
 # settings
 setopt extendedglob
@@ -39,12 +43,6 @@ zmodload zsh/complist
 zmodload zsh/terminfo
 zmodload zsh/zle
 
-bindkey -M vicmd v edit-command-line
-bindkey -M menuselect '?' vi-insert
-
-bindkey -v "^r" history-incremental-pattern-search-backward
-bindkey -v
-
 zstyle ":completion:*" menu select verbose,auto-description
 zstyle ":completion:*:processes-names" command "ps -e -o comm="
 zstyle ":completion:*:*:vim:*" ignored-patterns \
@@ -56,13 +54,12 @@ zstyle :compinstall filename '/home/sevko/.zshrc'
 plugins=(last-working-dir fzf)
 mkdir -p $ZSH/cache/    # For last-working-dir plugin.
 
-# Set fzf installation directory path
 if [ -d $ZSH ]; then
 	source $ZSH/oh-my-zsh.sh
 fi
 
+# Set fzf installation directory path
 export FZF_BASE=~/.dotfiles/zsh/plugins/oh-my-zsh/plugins/fzf/
-source $DOT/plugins/zsh-ctrlp.zsh
 
 # Configure zsh syntax highlighting
 source $DOT/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
@@ -104,9 +101,6 @@ alias jsw="jekyll serve --watch"
 alias jq="noglob jq"
 alias ka=killall
 alias open=xdg-open
-func_alias processing \
-	'processing-java --force --run --sketch=$1 --output=$1/compiled_sketch'
-func_alias processing_init 'mkdir $1 && vim $1/$1.pde'
 alias py=python3
 func_alias cppath 'readlink -e $1 | tr -d "\n" |  clip'
 alias so=source
@@ -207,12 +201,6 @@ alias_bg libre libreoffice
 alias_bg gummi
 alias_bg ev evince
 alias_bg gimp
-
-# variables
-export EDITOR=vim
-export TMPDIR=/tmp
-export PAGER=less
-export LESS=-RScI
 
 # functions & conditionals
 gdsu(){
@@ -438,3 +426,10 @@ on_directory_enter(){
 	done
 }
 on_directory_enter
+
+bindkey -M vicmd v edit-command-line
+bindkey -M menuselect '?' vi-insert
+bindkey -v "^r" history-incremental-pattern-search-backward
+bindkey -v
+
+source $DOT/plugins/zsh-ctrlp.zsh
