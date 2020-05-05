@@ -215,7 +215,7 @@ func! LocalVimrc()
 	endif
 endfunc
 
-" match _extraWhitespace /\s\+$/
+match _extraWhitespace /\s\+$/
 augroup miscellaneous
 	au!
 	au WinEnter,BufRead,BufNewFile * silent! call StatusLine()
